@@ -15,14 +15,17 @@ public class NewBank {
 	private void addTestData() {
 		Customer bhagy = new Customer();
 		bhagy.addAccount(new Account("Main", 1000.0));
+		bhagy.setPassword("password");
 		customers.put("Bhagy", bhagy);
-		
+
 		Customer christina = new Customer();
 		christina.addAccount(new Account("Savings", 1500.0));
+		christina.setPassword("123456");
 		customers.put("Christina", christina);
-		
+
 		Customer john = new Customer();
 		john.addAccount(new Account("Checking", 250.0));
+		john.setPassword("picture1");
 		customers.put("John", john);
 	}
 	
@@ -32,7 +35,10 @@ public class NewBank {
 	
 	public synchronized CustomerID checkLogInDetails(String userName, String password) {
 		if(customers.containsKey(userName)) {
-			return new CustomerID(userName);
+			Customer customer = customers.get(userName);
+			if (customer.getPassword().equals(password)){
+				return new CustomerID(userName);
+			}
 		}
 		return null;
 	}
@@ -40,8 +46,14 @@ public class NewBank {
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(CustomerID customer, String request) {
 		if(customers.containsKey(customer.getKey())) {
-			switch(request) {
+			String[] requestSplit = request.split(" ");
+			switch(requestSplit[0]) {
 			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
+			case "NEWACCOUNT":
+				int openingBalance = 0;
+				String accountName = requestSplit[1];
+				customers.get(customer.getKey()).addAccount(new Account(accountName,openingBalance));
+				return "SUCCESS";
 			default : return "FAIL";
 			}
 		}
