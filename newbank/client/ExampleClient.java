@@ -25,7 +25,9 @@ public class ExampleClient extends Thread{
 				try {
 					while(true) {
 						String responce = bankServerIn.readLine();
-						System.out.println(responce);
+						if (responce != null){
+							System.out.println(responce);
+						}
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -52,6 +54,6 @@ public class ExampleClient extends Thread{
 	}
 	
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
-		new ExampleClient("localhost",14002).start();
+		new ExampleClient("localhost",14001).start();
 	}
 }
