@@ -54,6 +54,6 @@ public class ExampleClient extends Thread{
 	}
 	
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
-		new ExampleClient("localhost",14001).start();
+		new ExampleClient("localhost",14002).start();
 	}
 }
