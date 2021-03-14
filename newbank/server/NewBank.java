@@ -14,17 +14,17 @@ public class NewBank {
 	
 	private void addTestData() {
 		Customer bhagy = new Customer();
-		bhagy.addAccount(new Account("Main", 1000.0));
+		bhagy.setAccount(new Account("Main", 1000.0, Account.AccountType.CHECKING));
 		bhagy.setPassword("password");
 		customers.put("Bhagy", bhagy);
 
 		Customer christina = new Customer();
-		christina.addAccount(new Account("Savings", 1500.0));
+		christina.setAccount(new Account("Savings", 1500.0, Account.AccountType.SAVINGS));
 		christina.setPassword("123456");
 		customers.put("Christina", christina);
 
 		Customer john = new Customer();
-		john.addAccount(new Account("Checking", 250.0));
+		john.setAccount(new Account("Checking", 250.0, Account.AccountType.CHECKING));
 		john.setPassword("picture1");
 		customers.put("John", john);
 	}
@@ -37,7 +37,7 @@ public class NewBank {
 		if(customers.containsKey(userName)) {
 			Customer customer = customers.get(userName);
 			if (customer.getPassword().equals(password)){
-				return new CustomerID(userName);
+				return new CustomerID(userName, password);
 			}
 		}
 		return null;
@@ -45,7 +45,7 @@ public class NewBank {
 
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(CustomerID customer, String request) {
-		if(customers.containsKey(customer.getKey())) {
+		if(customers.containsKey(customer.getKey())) { //this isn't a safe check - how to change?
 			String[] requestSplit = request.split(" ");
 			switch(requestSplit[0]) {
 			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
