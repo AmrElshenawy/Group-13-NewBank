@@ -1,0 +1,17 @@
+/newbank/client/ExampleClient$1.class
+/newbank/client/ExampleClient.class
+/newbank/server/Account.class
+/newbank/server/Customer.class
+/newbank/server/CustomerID.class
+/newbank/server/NewBank.class
+/newbank/server/NewBankClientHandler.class
+/newbank/server/NewBankServer.class
+
+# Default ignored files
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/../../../../../../:\Bath Files\Unit 4\New Bank Project\NewBank\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
