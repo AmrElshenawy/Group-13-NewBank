@@ -6,7 +6,7 @@ SHOWMYACCOUNTS
 Returns a list of all the customers accounts along with their current balance 
 e.g. Main: 1000.0 
 
-NEWACCOUNT <Name>
+NEWACCOUNT <Name> <Type>
 e.g. NEWACCOUNT Savings
 Returns SUCCESS or FAIL
 

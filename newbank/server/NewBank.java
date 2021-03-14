@@ -1,6 +1,7 @@
 package newbank.server;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 public class NewBank {
 	
@@ -52,7 +53,20 @@ public class NewBank {
 			case "NEWACCOUNT":
 				int openingBalance = 0;
 				String accountName = requestSplit[1];
-				customers.get(customer.getKey()).setAccount(new Account(accountName,openingBalance));
+				String accountType = requestSplit[2].toUpperCase();
+				Account.AccountType type;
+				if(requestSplit.length == 3){
+					if(accountType.equals(Account.AccountType.SAVINGS)){
+						type = Account.AccountType.SAVINGS;
+					} else if(accountType.equals(Account.AccountType.CHECKING)){
+						type = Account.AccountType.CHECKING;
+					} else if(accountType.equals(Account.AccountType.OVERDRAFT)){
+						type = Account.AccountType.OVERDRAFT;
+					} else if(accountType.equals(Account.AccountType.MONEYMARKET)){
+						type = Account.AccountType.MONEYMARKET;
+					} else type = Account.AccountType.CHECKING; // default case
+					customers.get(customer.getKey()).setAccount(new Account(accountName,openingBalance,type));
+				} else customers.get(customer.getKey()).setAccount(new Account(accountName,openingBalance));
 				return "SUCCESS";
 			default : return "FAIL";
 			}
