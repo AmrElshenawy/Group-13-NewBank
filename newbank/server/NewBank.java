@@ -52,7 +52,7 @@ public class NewBank {
 			case "NEWACCOUNT":
 				int openingBalance = 0;
 				String accountName = requestSplit[1];
-				customers.get(customer.getKey()).addAccount(new Account(accountName,openingBalance));
+				customers.get(customer.getKey()).setAccount(new Account(accountName,openingBalance));
 				return "SUCCESS";
 			default : return "FAIL";
 			}

@@ -15,6 +15,11 @@ public class Account {
 		this.accountType = type;
 	}
 
+	public Account(String accountName, double openingBalance) {
+		this.accountName = accountName;
+		this.openingBalance = openingBalance;
+	}
+
 	public void modifyBalance(double amount, InstructionType type){
 		if(type.equals(InstructionType.DEPOSIT)){
 			openingBalance += amount;
