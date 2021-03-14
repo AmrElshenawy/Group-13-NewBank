@@ -15,14 +15,17 @@ public class NewBank {
 	private void addTestData() {
 		Customer bhagy = new Customer();
 		bhagy.setAccount(new Account("Main", 1000.0, Account.AccountType.CHECKING));
+		bhagy.setPassword("password");
 		customers.put("Bhagy", bhagy);
-		
+
 		Customer christina = new Customer();
 		christina.setAccount(new Account("Savings", 1500.0, Account.AccountType.SAVINGS));
+		christina.setPassword("123456");
 		customers.put("Christina", christina);
-		
+
 		Customer john = new Customer();
 		john.setAccount(new Account("Checking", 250.0, Account.AccountType.CHECKING));
+		john.setPassword("picture1");
 		customers.put("John", john);
 	}
 	
@@ -32,7 +35,10 @@ public class NewBank {
 	
 	public synchronized CustomerID checkLogInDetails(String userName, String password) {
 		if(customers.containsKey(userName)) {
-			return new CustomerID(userName, password);
+			Customer customer = customers.get(userName);
+			if (customer.getPassword().equals(password)){
+				return new CustomerID(userName, password);
+			}
 		}
 		return null;
 	}
@@ -40,8 +46,14 @@ public class NewBank {
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(CustomerID customer, String request) {
 		if(customers.containsKey(customer.getKey())) { //this isn't a safe check - how to change?
-			switch(request) {
+			String[] requestSplit = request.split(" ");
+			switch(requestSplit[0]) {
 			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
+			case "NEWACCOUNT":
+				int openingBalance = 0;
+				String accountName = requestSplit[1];
+				customers.get(customer.getKey()).addAccount(new Account(accountName,openingBalance));
+				return "SUCCESS";
 			default : return "FAIL";
 			}
 		}

@@ -11,6 +11,7 @@ public class Customer {
 	private String dob;
 	private String taxId;
 	private CustomerID customerId;
+	private String password;
 	
 	public Customer() {
 		accounts = new ArrayList<>();
@@ -79,5 +80,13 @@ public class Customer {
 
 	public int getCustomerId() {
 		return customerId.getUniqueID();
+	}
+
+	public void setPassword(String password){
+		this.password = password;
+	}
+
+	public String getPassword(){
+		return this.password;
 	}
 }
