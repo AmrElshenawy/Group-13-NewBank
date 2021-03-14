@@ -4,61 +4,63 @@
   <OriginalElement>newbank</OriginalElement>
   <nodes>
     <node x="0.0" y="172.0">newbank.server.Customer</node>
-    <node x="169.52604166666663" y="604.0">newbank.server.NewBankClientHandler</node>
-    <node x="211.09374999999997" y="798.0">newbank.server.NewBankServer</node>
-    <node x="49.84374999999997" y="344.0">newbank.server.NewBank</node>
-    <node x="473.0" y="0.0">newbank.client.ExampleClient</node>
-    <node x="253.99999999999997" y="194.5">newbank.server.CustomerID</node>
-    <node x="70.85937499999997" y="0.0">newbank.server.Account</node>
+    <node x="193.49479166666669" y="692.0">newbank.server.NewBankClientHandler</node>
+    <node x="234.52083333333334" y="886.0">newbank.server.NewBankServer</node>
+    <node x="72.41145833333334" y="432.0">newbank.server.NewBank</node>
+    <node x="499.0" y="0.0">newbank.client.ExampleClient</node>
+    <node x="280.0" y="238.5">newbank.server.CustomerID</node>
+    <node x="91.578125" y="0.0">newbank.server.Account</node>
   </nodes>
   <notes />
   <edges>
     <edge source="newbank.server.NewBankClientHandler" target="newbank.server.NewBank">
       <point x="-82.66666666666669" y="-72.0" />
-      <point x="210.85937499999994" y="579.0" />
-      <point x="133.09374999999997" y="579.0" />
+      <point x="234.828125" y="667.0" />
+      <point x="155.66145833333334" y="667.0" />
       <point x="-83.25" y="105.0" />
     </edge>
     <edge source="newbank.server.NewBank" target="newbank.server.Customer">
       <point x="-138.75" y="-105.0" />
-      <point x="77.59374999999997" y="319.0" />
-      <point x="38.833333333333314" y="319.0" />
-      <point x="-77.66666666666667" y="61.0" />
+      <point x="100.16145833333334" y="407.0" />
+      <point x="43.166666666666686" y="407.0" />
+      <point x="-86.33333333333333" y="105.0" />
     </edge>
     <edge source="newbank.server.NewBank" target="newbank.server.CustomerID">
       <point x="83.25" y="-105.0" />
-      <point x="299.59375" y="319.0" />
-      <point x="283.0" y="319.0" />
+      <point x="322.16145833333337" y="407.0" />
+      <point x="309.0" y="407.0" />
       <point x="-58.0" y="38.5" />
     </edge>
     <edge source="newbank.server.NewBank" target="newbank.server.Account">
       <point x="27.75" y="-105.0" />
-      <point x="243.49999999999997" y="147.0" />
-      <point x="238.35937499999997" y="147.0" />
+      <point x="266.66145833333337" y="407.0" />
+      <point x="269.5" y="407.0" />
+      <point x="269.5" y="147.0" />
+      <point x="259.078125" y="147.0" />
       <point x="67.0" y="61.0" />
     </edge>
     <edge source="newbank.server.Customer" target="newbank.server.Account">
-      <point x="58.25" y="-61.0" />
-      <point x="174.75" y="147.0" />
-      <point x="171.35937499999997" y="147.0" />
+      <point x="64.75" y="-105.0" />
+      <point x="194.25" y="147.0" />
+      <point x="192.078125" y="147.0" />
       <point x="0.0" y="61.0" />
     </edge>
     <edge source="newbank.server.NewBankServer" target="newbank.server.NewBankClientHandler">
       <point x="-44.25" y="-61.0" />
-      <point x="255.34374999999997" y="773.0" />
-      <point x="231.52604166666663" y="773.0" />
+      <point x="278.77083333333337" y="861.0" />
+      <point x="255.49479166666669" y="861.0" />
       <point x="-62.0" y="72.0" />
     </edge>
     <edge source="newbank.server.NewBankClientHandler" target="newbank.server.CustomerID">
       <point x="82.66666666666669" y="-72.0" />
-      <point x="376.1927083333333" y="579.0" />
-      <point x="396.51041666666663" y="579.0" />
-      <point x="396.51041666666663" y="319.0" />
-      <point x="399.0" y="319.0" />
-      <point x="58.0" y="38.5" />
+      <point x="400.16145833333337" y="667.0" />
+      <point x="419.03645833333337" y="667.0" />
+      <point x="419.03645833333337" y="407.0" />
+      <point x="425.0" y="407.0" />
+      <point x="57.999999999999986" y="38.5" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="1.0" x="372.0" y="460.0" />
+  <settings layout="Hierarchic Group" zoom="0.9095744680851063" x="371.99999999999994" y="449.99999999999994" />
   <SelectedNodes>
     <node>newbank.server.Customer</node>
   </SelectedNodes>
