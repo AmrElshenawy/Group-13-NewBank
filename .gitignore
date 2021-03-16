@@ -1,12 +1,3 @@
-/newbank/client/ExampleClient$1.class
-/newbank/client/ExampleClient.class
-/newbank/server/Account.class
-/newbank/server/Customer.class
-/newbank/server/CustomerID.class
-/newbank/server/NewBank.class
-/newbank/server/NewBankClientHandler.class
-/newbank/server/NewBankServer.class
-
 # Default ignored files
 /shelf/
 /workspace.xml
@@ -15,3 +6,20 @@
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+# Micellaenous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.vscode/
+.code-workspace
+.history
+.svn/
+.idea/
+.classpath
+NewBank.iml
+.project
+ExampleClient/
