@@ -51,9 +51,10 @@ public class NewBank {
 			switch(requestSplit[0]) {
 			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
 			case "NEWACCOUNT":
-				int openingBalance = 0;
+				double openingBalance = 0;
 				String accountName = requestSplit[1];
-				String accountType = requestSplit[2].toUpperCase();
+				String accountType = requestSplit[3].toUpperCase();
+				openingBalance = Double.parseDouble(requestSplit[2]);
 				Account.AccountType type;
 				if(requestSplit.length == 3){
 					if(accountType.equals(Account.AccountType.SAVINGS)){
