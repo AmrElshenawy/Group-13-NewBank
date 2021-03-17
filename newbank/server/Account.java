@@ -4,7 +4,7 @@ public class Account {
 	
 	private String accountName;
 	private double openingBalance;
-	enum AccountType {SAVINGS, CHECKING, OVERDRAFT, MONEYMARKET}
+	enum AccountType {CHILDREN, SENIOR, CHECKING, SAVINGS, MONEYMARKET, OVERDRAFT}
 	private AccountType accountType;
 	enum InstructionType {WITHDRAW, DEPOSIT}
 	private InstructionType instructionType;
