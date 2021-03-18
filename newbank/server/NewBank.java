@@ -58,17 +58,23 @@ public class NewBank {
 				if(requestSplit.length == 4){
 					String accountType = requestSplit[3];
 
-					if(accountType.equalsIgnoreCase(Account.AccountType.SAVINGS.toString())){
-						type = Account.AccountType.SAVINGS;
-					} 
+					if(accountType.equalsIgnoreCase(Account.AccountType.CHILDREN.toString())){
+						type = Account.AccountType.CHILDREN;
+					}
+					else if(accountType.equalsIgnoreCase(Account.AccountType.SENIOR.toString())){
+						type = Account.AccountType.SENIOR;
+					}  
 					else if(accountType.equalsIgnoreCase(Account.AccountType.CHECKING.toString())){
 						type = Account.AccountType.CHECKING;
 					} 
-					else if(accountType.equalsIgnoreCase(Account.AccountType.OVERDRAFT.toString())){
-						type = Account.AccountType.OVERDRAFT;
+					else if(accountType.equalsIgnoreCase(Account.AccountType.SAVINGS.toString())){
+						type = Account.AccountType.SAVINGS;
 					} 
 					else if(accountType.equalsIgnoreCase(Account.AccountType.MONEYMARKET.toString())){
 						type = Account.AccountType.MONEYMARKET;
+					} 
+					else if(accountType.equalsIgnoreCase(Account.AccountType.OVERDRAFT.toString())){
+						type = Account.AccountType.OVERDRAFT;
 					} 
 					else{
 						type = Account.AccountType.CHECKING; // default case
