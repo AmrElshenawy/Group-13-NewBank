@@ -1,12 +1,13 @@
 package newbank.server;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.Locale;
 
 public class NewBank {
 	
 	private static final NewBank bank = new NewBank();
 	private HashMap<String,Customer> customers;
+	private DatabaseHandler customerDB = new DatabaseHandler();
 	
 	private NewBank() {
 		customers = new HashMap<>();
@@ -16,17 +17,14 @@ public class NewBank {
 	private void addTestData() {
 		Customer bhagy = new Customer();
 		bhagy.setAccount(new Account("Main", 1000.0, Account.AccountType.CHECKING));
-		bhagy.setPassword("password");
 		customers.put("Bhagy", bhagy);
 
 		Customer christina = new Customer();
 		christina.setAccount(new Account("Savings", 1500.0, Account.AccountType.SAVINGS));
-		christina.setPassword("123456");
 		customers.put("Christina", christina);
 
 		Customer john = new Customer();
 		john.setAccount(new Account("Checking", 250.0, Account.AccountType.CHECKING));
-		john.setPassword("picture1");
 		customers.put("John", john);
 	}
 	
@@ -34,10 +32,10 @@ public class NewBank {
 		return bank;
 	}
 	
-	public synchronized CustomerID checkLogInDetails(String userName, String password) {
-		if(customers.containsKey(userName)) {
-			Customer customer = customers.get(userName);
-			if (customer.getPassword().equals(password)){
+	public synchronized CustomerID checkLogInDetails(String userName, String password) throws FileNotFoundException {
+		customerDB.readDB(userName.toLowerCase());
+		if(customerDB.getName().equalsIgnoreCase(userName)) {
+			if (customerDB.getPassword().equals(password)){
 				return new CustomerID(userName, password);
 			}
 		}
