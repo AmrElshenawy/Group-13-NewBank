@@ -20,8 +20,13 @@ public class Customer {
 	
 	public String accountsToString() {
 		String s = "";
-		for(Account a : accounts) {
-			s += a.toString();
+		for(int i = 0; i < accounts.size(); i++){
+			if(i != accounts.size() - 1){
+				s += accounts.get(i).toString() + "\n";
+			}
+			else{
+				s += accounts.get(i).toString();
+			}
 		}
 		return s;
 	}

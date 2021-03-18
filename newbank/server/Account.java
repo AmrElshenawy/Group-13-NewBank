@@ -4,15 +4,10 @@ public class Account {
 	
 	private String accountName;
 	private double openingBalance;
-	enum AccountType {SAVINGS, CHECKING, OVERDRAFT, MONEYMARKET}
+	enum AccountType {CHILDREN, SENIOR, CHECKING, SAVINGS, MONEYMARKET, OVERDRAFT}
 	private AccountType accountType;
 	enum InstructionType {WITHDRAW, DEPOSIT}
 	private InstructionType instructionType;
-
-	public Account(String accountName, double openingBalance) {
-		this.accountName = accountName;
-		this.openingBalance = openingBalance;
-	}
 
 	public Account(String accountName, double openingBalance, AccountType type) {
 		this.accountName = accountName;
@@ -33,7 +28,7 @@ public class Account {
 	}
 
 	public String toString() {
-		return (accountName + ": " + openingBalance);
+		return (accountType + ", " + accountName + ": " + openingBalance);
 	}
 
 }
