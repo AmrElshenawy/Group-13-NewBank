@@ -53,21 +53,32 @@ public class NewBank {
 			case "NEWACCOUNT":
 				double openingBalance = 0;
 				String accountName = requestSplit[1];
-				String accountType = requestSplit[3].toUpperCase();
 				openingBalance = Double.parseDouble(requestSplit[2]);
 				Account.AccountType type;
-				if(requestSplit.length == 3){
-					if(accountType.equals(Account.AccountType.SAVINGS)){
+				if(requestSplit.length == 4){
+					String accountType = requestSplit[3];
+
+					if(accountType.equalsIgnoreCase(Account.AccountType.SAVINGS.toString())){
 						type = Account.AccountType.SAVINGS;
-					} else if(accountType.equals(Account.AccountType.CHECKING)){
+					} 
+					else if(accountType.equalsIgnoreCase(Account.AccountType.CHECKING.toString())){
 						type = Account.AccountType.CHECKING;
-					} else if(accountType.equals(Account.AccountType.OVERDRAFT)){
+					} 
+					else if(accountType.equalsIgnoreCase(Account.AccountType.OVERDRAFT.toString())){
 						type = Account.AccountType.OVERDRAFT;
-					} else if(accountType.equals(Account.AccountType.MONEYMARKET)){
+					} 
+					else if(accountType.equalsIgnoreCase(Account.AccountType.MONEYMARKET.toString())){
 						type = Account.AccountType.MONEYMARKET;
-					} else type = Account.AccountType.CHECKING; // default case
+					} 
+					else{
+						type = Account.AccountType.CHECKING; // default case
+					} 
 					customers.get(customer.getKey()).setAccount(new Account(accountName,openingBalance,type));
-				} else customers.get(customer.getKey()).setAccount(new Account(accountName,openingBalance));
+				} 
+				else{
+					type = Account.AccountType.CHECKING; //default account type if no type is specified
+					customers.get(customer.getKey()).setAccount(new Account(accountName, openingBalance,type));
+				} 
 				return "SUCCESS";
 			default : return "FAIL";
 			}

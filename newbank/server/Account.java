@@ -9,11 +9,6 @@ public class Account {
 	enum InstructionType {WITHDRAW, DEPOSIT}
 	private InstructionType instructionType;
 
-	public Account(String accountName, double openingBalance) {
-		this.accountName = accountName;
-		this.openingBalance = openingBalance;
-	}
-
 	public Account(String accountName, double openingBalance, AccountType type) {
 		this.accountName = accountName;
 		this.openingBalance = openingBalance;
