@@ -1,6 +1,8 @@
 package newbank.server;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHandler  {
 
@@ -11,8 +13,34 @@ public class DatabaseHandler  {
     private String accountType;
     private String accountName;
     private String accountBalance;
+    private ArrayList<Account> accounts;
+    private List<String[]> returnInfo = new ArrayList<String[]>();
     
-    public void readDB(String name) throws FileNotFoundException{
+    public List<String[]> scanFullDB() throws FileNotFoundException{
+        String info = "";
+        try{
+            BufferedReader reader = new BufferedReader(new FileReader(dB));
+            info = reader.readLine();
+            while(info != null){
+                String[] commas = info.split(",");
+                String[] values = new String[6];
+                int i = 0;
+                for(String field : commas){
+                    String[] semicolons = field.split(":");
+                    values[i++] = semicolons[1]; 
+                }
+                returnInfo.add(values);
+                info = reader.readLine();
+            }
+            reader.close();
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+        return returnInfo;
+    }
+    
+    public void findInDB(String name) throws FileNotFoundException{
         String info = "";
         try{
             BufferedReader reader = new BufferedReader(new FileReader(dB));

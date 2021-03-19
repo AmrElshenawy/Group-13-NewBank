@@ -2,30 +2,34 @@ package newbank.server;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.List;
 
 public class NewBank {
 	
 	private static final NewBank bank = new NewBank();
 	private HashMap<String,Customer> customers;
-	private DatabaseHandler customerDB = new DatabaseHandler();
+	private DatabaseHandler fullReport = new DatabaseHandler();
 	
 	private NewBank() {
 		customers = new HashMap<>();
-		addTestData();
+		fillHashMap_fromDB();
 	}
 	
-	private void addTestData() {
-		Customer bhagy = new Customer();
-		bhagy.setAccount(new Account("Main", 1000.0, Account.AccountType.CHECKING));
-		customers.put("Bhagy", bhagy);
-
-		Customer christina = new Customer();
-		christina.setAccount(new Account("Savings", 1500.0, Account.AccountType.SAVINGS));
-		customers.put("Christina", christina);
-
-		Customer john = new Customer();
-		john.setAccount(new Account("Checking", 250.0, Account.AccountType.CHECKING));
-		customers.put("John", john);
+	private void fillHashMap_fromDB() {
+		List<String[]> scanOutput;
+		try {
+			scanOutput = fullReport.scanFullDB();
+			for(String[] line : scanOutput){
+				for(int i = 0; i < line.length; i++){
+					Customer x = new Customer(line[1]);
+					x.setAccount((new Account(line[4], Double.parseDouble(line[5]), Account.AccountType.valueOf(line[3].toUpperCase()))));
+					x.setPassword(line[2]);
+					customers.put(line[1], x);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static NewBank getBank() {
@@ -33,10 +37,11 @@ public class NewBank {
 	}
 	
 	public synchronized CustomerID checkLogInDetails(String userName, String password) throws FileNotFoundException {
-		customerDB.readDB(userName.toLowerCase());
+		DatabaseHandler customerDB = new DatabaseHandler();
+		customerDB.findInDB(userName.toLowerCase());
 		if(customerDB.getName().equalsIgnoreCase(userName)) {
 			if (customerDB.getPassword().equals(password)){
-				return new CustomerID(userName, password);
+				return new CustomerID(userName.toLowerCase(), password);
 			}
 		}
 		return null;
