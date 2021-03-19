@@ -6,7 +6,7 @@ import java.util.List;
 
 public class DatabaseHandler  {
 
-    private File dB = new File("newbank\\Database.txt");
+    private File dB = new File("newbank/Database.txt");
     private String id;
     private String customerName;
     private String password;

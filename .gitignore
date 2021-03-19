@@ -18,6 +18,7 @@
 .code-workspace
 .history
 .svn/
+*.iml
 .idea/
 .classpath
 NewBank.iml
