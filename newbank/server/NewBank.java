@@ -1,6 +1,7 @@
 package newbank.server;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,16 +17,23 @@ public class NewBank {
 	}
 	
 	private void fillHashMap_fromDB() {
-		List<String[]> scanOutput;
+		List<ArrayList<String>> scanOutput;
 		try {
 			scanOutput = fullReport.scanFullDB();
-			for(String[] line : scanOutput){
-				for(int i = 0; i < line.length; i++){
-					Customer x = new Customer(line[1]);
-					x.setAccount((new Account(line[4], Double.parseDouble(line[5]), Account.AccountType.valueOf(line[3].toUpperCase()))));
-					x.setPassword(line[2]);
-					customers.put(line[1], x);
+			for(ArrayList<String> line : scanOutput){
+				for(int i = 0; i < line.size(); i++){
+					Customer x = new Customer(line.get(1));
+					x.setAccount(new Account(line.get(4), Double.parseDouble(line.get(5)), Account.AccountType.valueOf(line.get(3).toUpperCase())));
+					x.setPassword(line.get(2));
+					customers.put(line.get(1), x);
+					if(line.size() > 6){
+						x.setAccount(new Account(line.get(7), Double.parseDouble(line.get(8)), Account.AccountType.valueOf(line.get(6).toUpperCase())));
+					}
+					if(line.size() > 9){
+						x.setAccount(new Account(line.get(10), Double.parseDouble(line.get(11)), Account.AccountType.valueOf(line.get(9).toUpperCase())));
+					}
 				}
+				
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

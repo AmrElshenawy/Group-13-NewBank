@@ -14,20 +14,19 @@ public class DatabaseHandler  {
     private String accountName;
     private String accountBalance;
     private ArrayList<Account> accounts;
-    private List<String[]> returnInfo = new ArrayList<String[]>();
+    private List<ArrayList<String>> returnInfo = new ArrayList<ArrayList<String>>();
     
-    public List<String[]> scanFullDB() throws FileNotFoundException{
+    public List<ArrayList<String>> scanFullDB() throws FileNotFoundException{
         String info = "";
         try{
             BufferedReader reader = new BufferedReader(new FileReader(dB));
             info = reader.readLine();
             while(info != null){
                 String[] commas = info.split(",");
-                String[] values = new String[6];
-                int i = 0;
+                ArrayList<String> values = new ArrayList<String>();
                 for(String field : commas){
                     String[] semicolons = field.split(":");
-                    values[i++] = semicolons[1]; 
+                    values.add(semicolons[1]); 
                 }
                 returnInfo.add(values);
                 info = reader.readLine();
