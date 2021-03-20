@@ -1,0 +1,3 @@
+id:1,name:bhagy,password:123bhagy123,accounttype:moneymarket,accountname:investment,accountbalance:100000,accounttype:checking,accountname:general,accountbalance:22000,
+id:2,name:christina,password:123christina123,accounttype:children,accountname:kids,accountbalance:2000,
+id:3,name:john,password:123john123,accounttype:senior,accountname:retirement,accountbalance:30000,accounttype:children,accountname:forkids,accountbalance:1000,accounttype:savings,accountname:longhold,accountbalance:77000,

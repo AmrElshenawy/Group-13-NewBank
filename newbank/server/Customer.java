@@ -14,9 +14,10 @@ public class Customer {
 	private CustomerID customerId;
 	private String password;
 	
-	public Customer() {
+	public Customer(String name) {
 		accounts = new ArrayList<>();
 		address = new HashMap<>();
+		fullName = name;
 	}
 	
 	public String accountsToString() {

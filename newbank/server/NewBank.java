@@ -1,44 +1,54 @@
 package newbank.server;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 
 public class NewBank {
 	
 	private static final NewBank bank = new NewBank();
 	private HashMap<String,Customer> customers;
+	private DatabaseHandler fullReport = new DatabaseHandler();
 	
 	private NewBank() {
 		customers = new HashMap<>();
-		addTestData();
+		fillHashMap_fromDB();
 	}
 	
-	private void addTestData() {
-		Customer bhagy = new Customer();
-		bhagy.setAccount(new Account("Main", 1000.0, Account.AccountType.CHECKING));
-		bhagy.setPassword("Password!");
-		customers.put("Bhagy", bhagy);
-
-		Customer christina = new Customer();
-		christina.setAccount(new Account("Savings", 1500.0, Account.AccountType.SAVINGS));
-		christina.setPassword("123456");
-		customers.put("Christina", christina);
-
-		Customer john = new Customer();
-		john.setAccount(new Account("Checking", 250.0, Account.AccountType.CHECKING));
-		john.setPassword("picture1");
-		customers.put("John", john);
-	}
+	private void fillHashMap_fromDB() {
+		List<ArrayList<String>> scanOutput;
+		try {
+			scanOutput = fullReport.scanFullDB();
+			for(ArrayList<String> line : scanOutput){
+				for(int i = 0; i < line.size(); i++){
+					Customer x = new Customer(line.get(1));
+					x.setAccount(new Account(line.get(4), Double.parseDouble(line.get(5)), Account.AccountType.valueOf(line.get(3).toUpperCase())));
+					x.setPassword(line.get(2));
+					customers.put(line.get(1), x);
+					if(line.size() > 6){
+						x.setAccount(new Account(line.get(7), Double.parseDouble(line.get(8)), Account.AccountType.valueOf(line.get(6).toUpperCase())));
+					}
+					if(line.size() > 9){
+						x.setAccount(new Account(line.get(10), Double.parseDouble(line.get(11)), Account.AccountType.valueOf(line.get(9).toUpperCase())));
+					}
+				}
+				
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	
 	public static NewBank getBank() {
 		return bank;
 	}
 	
-	public synchronized CustomerID checkLogInDetails(String userName, String password) {
-		if(customers.containsKey(userName)) {
-			Customer customer = customers.get(userName);
-			if (customer.getPassword().equals(password)){
-				return new CustomerID(userName, password);
+	public synchronized CustomerID checkLogInDetails(String userName, String password) throws FileNotFoundException {
+		DatabaseHandler customerDB = new DatabaseHandler();
+		customerDB.findInDB(userName.toLowerCase());
+		if(customerDB.getName().equalsIgnoreCase(userName)) {
+			if (customerDB.getPassword().equals(password)){
+				return new CustomerID(userName.toLowerCase(), password);
 			}
 		}
 		return null;
