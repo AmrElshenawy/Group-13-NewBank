@@ -38,7 +38,6 @@ public class NewBank {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-	}
 	
 	public static NewBank getBank() {
 		return bank;
@@ -97,6 +96,22 @@ public class NewBank {
 					customers.get(customer.getKey()).setAccount(new Account(accountName, openingBalance,type));
 				} 
 				return "SUCCESS";
+			case "MOVE":
+				// MOVE <Amount> <From> <To>
+				if (requestSplit.length != 4){
+					return "FAIL";
+				} else {
+					Account accountFrom = returnAccount(requestSplit[2], customers.get(customer.getKey()));
+					Account accountTo = returnAccount(requestSplit[3], customers.get(customer.getKey()));
+					Double amount = Double.parseDouble(requestSplit[1]);
+					if (accountFrom == null || accountTo == null || !sufficientFunds(accountFrom, amount)) {
+						return "FAIL";
+					} else {
+						accountFrom.modifyBalance(amount, Account.InstructionType.WITHDRAW);
+						accountTo.modifyBalance(amount, Account.InstructionType.DEPOSIT);
+						return "SUCCESS";
+					}
+				}
 			default : return "FAIL";
 			}
 		}
@@ -105,6 +120,27 @@ public class NewBank {
 	
 	private String showMyAccounts(CustomerID customer) {
 		return (customers.get(customer.getKey())).accountsToString();
+	}
+
+	// Helper method for MOVE to check whether the account requested is registered to the user
+	// and return the corresponding account object.
+	public Account returnAccount(String accountNameString, Customer customer){
+		for (Account account : customer.getAccounts()){
+			if (account.getAccountName().equals(accountNameString)){
+				return account;
+			}
+		}
+		return null;
+	}
+
+	// Helper method for MOVE to check that the account that the user woould like to transfer
+	// funds from has sufficient funds to cover the transfer.
+	public boolean sufficientFunds(Account account, Double amount){
+		if (account.getOpeningBalance() >= amount){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

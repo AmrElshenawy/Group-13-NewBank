@@ -27,6 +27,24 @@ public class Account {
 		}
 	}
 
+	// getters
+
+	public String getAccountName(){
+		return accountName;
+	}
+
+	public double getOpeningBalance(){
+		return openingBalance;
+	}
+
+	public AccountType getAccountType(){
+		return accountType;
+	}
+
+	private InstructionType getInstructionType(){
+		return instructionType;
+	}
+
 	public String toString() {
 		return (accountType + ", " + accountName + ": " + openingBalance);
 	}
