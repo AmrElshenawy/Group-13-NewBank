@@ -16,7 +16,7 @@ public class NewBank {
 	private void addTestData() {
 		Customer bhagy = new Customer();
 		bhagy.setAccount(new Account("Main", 1000.0, Account.AccountType.CHECKING));
-		bhagy.setPassword("password");
+		bhagy.setPassword("Password!");
 		customers.put("Bhagy", bhagy);
 
 		Customer christina = new Customer();
@@ -111,8 +111,6 @@ public class NewBank {
 	private String showMyAccounts(CustomerID customer) {
 		return (customers.get(customer.getKey())).accountsToString();
 	}
-
-
 
 	// Helper method for MOVE to check whether the account requested is registered to the user
 	// and return the corresponding account object.
