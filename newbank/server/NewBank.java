@@ -38,6 +38,7 @@ public class NewBank {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+	}
 	
 	public static NewBank getBank() {
 		return bank;
