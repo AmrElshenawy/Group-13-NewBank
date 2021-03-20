@@ -20,6 +20,8 @@
 .svn/
 *.iml
 .idea/
+/.idea
+/classes
 .classpath
 NewBank.iml
 .project
