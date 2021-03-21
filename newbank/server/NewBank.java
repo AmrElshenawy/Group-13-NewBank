@@ -155,23 +155,19 @@ public class NewBank {
 	Expected input: String from command line: PAY <Amount> <From Users Account> <To Payee's UserName>
 	assumptions:
 		- Person paying is using main account to pay from
-		- Payee's account is checking account
+		- Payee's account is the first account
 	*/
 	private String payPerson (CustomerID customer, String[] requestSplit ) throws FileNotFoundException {
 		Double payment = Double.parseDouble(requestSplit[1]);
 		CustomerID payeeID = findPayeeID(requestSplit[3]);
+		String payeeAccountName = findPayeeAccountName();
 		Account userAccount = returnAccount(requestSplit[2], customers.get(customer.getKey()));
-		Account payeeAccount = returnAccount("CHECKING", customers.get(payeeID.getKey()));
-		if (userAccount == null || payeeAccount == null || !sufficientFunds(userAccount, payment)){
-			return "FAIL";
-		} else {
-			userAccount.modifyBalance(payment, Account.InstructionType.WITHDRAW);
-			payeeAccount.modifyBalance(payment, Account.InstructionType.DEPOSIT);
-			return "SUCCESS";
-		}
+		Account payeeAccount = returnAccount(payeeAccountName, customers.get(payeeID.getKey()));
+		return transferFunds(userAccount, payeeAccount, payment);
+
 	}
 
-	// Helper method for payPerson to return the first account object.
+	// Helper method for to return a Payee CustomerID .
 	private CustomerID findPayeeID(String userName) throws FileNotFoundException{
 		DatabaseHandler customerDB = new DatabaseHandler();
 		customerDB.findInDB(userName.toLowerCase());
@@ -180,5 +176,21 @@ public class NewBank {
 		}
 		return null;
 	}
+	// Helper method for to return the Payee's first account object.
+	private String findPayeeAccountName () throws FileNotFoundException{
+		DatabaseHandler customerDB = new DatabaseHandler();
+		return customerDB.getAccountType(1);
+	}
+	// Helper method to transfer funds
+	private String transferFunds(Account user, Account payee, double payment){
+		if (user == null || payee == null || !sufficientFunds(user, payment)){
+			return "FAIL";
+		} else {
+			user.modifyBalance(payment, Account.InstructionType.WITHDRAW);
+			payee.modifyBalance(payment, Account.InstructionType.DEPOSIT);
+			return "SUCCESS";
+		}
+	}
+
 
 }
