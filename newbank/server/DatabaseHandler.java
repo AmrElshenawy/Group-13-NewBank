@@ -10,25 +10,25 @@ public class DatabaseHandler  {
     private String id;
     private String customerName;
     private String password;
-    private String accountType;
-    private String accountName;
-    private String accountBalance;
-    private ArrayList<Account> accounts;
-    private List<ArrayList<String>> returnInfo = new ArrayList<ArrayList<String>>();
+    private ArrayList<String> allAccounts;  // Holds all accounts information about a customer
+    private List<ArrayList<String>> returnInfo = new ArrayList<ArrayList<String>>();    // Holds all database information
     
+    // Method used to fully scan the database and return information in an arraylist of arraylists line by line.
+    // This method is primairly used to fill in and refresh the Hashmap with information from the database.
     public List<ArrayList<String>> scanFullDB() throws FileNotFoundException{
-        String info = "";
+        String info = "";   // A full line in the database
         try{
             BufferedReader reader = new BufferedReader(new FileReader(dB));
             info = reader.readLine();
             while(info != null){
-                String[] commas = info.split(",");
-                ArrayList<String> values = new ArrayList<String>();
+                String[] commas = info.split(",");  // Take a line, split it on commas
+                ArrayList<String> values = new ArrayList<String>(); // Used to store the key:value value of each key in the database.
                 for(String field : commas){
-                    String[] semicolons = field.split(":");
-                    values.add(semicolons[1]); 
+                    // Array semicolons refreshes on each key:value pair. So it is always size 2.
+                    String[] semicolons = field.split(":"); // Take each each split on comma earlier, and split again on semicolons.
+                    values.add(semicolons[1]);  // Take the value and add it
                 }
-                returnInfo.add(values);
+                returnInfo.add(values); // After Arraylist values is filled with values from a complete line, add it to returnInfo
                 info = reader.readLine();
             }
             reader.close();
@@ -39,17 +39,20 @@ public class DatabaseHandler  {
         return returnInfo;
     }
     
+    // Method used to search for a specific customer name
     public void findInDB(String name) throws FileNotFoundException{
-        String info = "";
+        String info = "";   // A full line in the database
         try{
             BufferedReader reader = new BufferedReader(new FileReader(dB));
             info = reader.readLine();
             while(info != null){
-                String[] commas = info.split(",");
-                if(commas[1].contains(name)){
+                String[] commas = info.split(",");  // Take a line, split it on commas
+                if(commas[1].contains(name)){   // If the line belongs to the customer specified
+                    allAccounts = new ArrayList<String>();  // Holds all accounts information
                     for(String field : commas){
-                        String[] semicolons = field.split(":");
-                        switch(semicolons[0]){
+                        // Array semicolons refreshes on each key:value pair. So it is always size 2.
+                        String[] semicolons = field.split(":"); // Take each split on comma earlier, and split again on semicolons
+                        switch(semicolons[0]){      // Switch on each key value, if the key matches the case, add the value
                             case "id":
                                 id = semicolons[1];
                                 break;
@@ -59,14 +62,32 @@ public class DatabaseHandler  {
                             case "password":
                                 password = semicolons[1];
                                 break;
-                            case "accounttype":
-                                accountType = semicolons[1];
+                            case "accounttype1":
+                                allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountname":
-                                accountName = semicolons[1];
+                            case "accountname1":
+                                allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountbalance":
-                                accountBalance = semicolons[1];
+                            case "accountbalance1":
+                                allAccounts.add(semicolons[1]);;
+                                break;
+                            case "accounttype2":
+                                allAccounts.add(semicolons[1]);
+                                break;
+                            case "accountname2":
+                                allAccounts.add(semicolons[1]);
+                                break;
+                            case "accountbalance2":
+                                allAccounts.add(semicolons[1]);
+                                break;
+                            case "accounttype3":
+                                allAccounts.add(semicolons[1]);
+                                break;
+                            case "accountname3":
+                                allAccounts.add(semicolons[1]);
+                                break;
+                            case "accountbalance3":
+                                allAccounts.add(semicolons[1]);
                                 break;
                             default:
                                 break;
@@ -82,30 +103,79 @@ public class DatabaseHandler  {
         }
     }
 
+    // Get specified customer ID
     public String getID(){
         return this.id;
     }
 
+    // Get specified customer name
     public String getName(){
         return this.customerName;
     }
 
+    // Get specified customer password
     public String getPassword(){
         return this.password;
     }
 
-    public String getAccountType(){
-        return this.accountType;
+    // Method used to get account type, for a specific account number
+    // If account number doesn't exist, returns null
+    public String getAccountType(int i){
+        try{
+            switch(i){
+                case 1:
+                    return allAccounts.get(0);
+                case 2:
+                    return allAccounts.get(3); 
+                case 3:
+                    return allAccounts.get(6);
+            }
+            return null;
+        }
+        catch(IndexOutOfBoundsException x){
+            return null;
+        }
     }
 
-    public String getAccountName(){
-        return this.accountName;
+    // Method used to get account name, for a specific account number
+    // If account number doesn't exist, returns null
+    public String getAccountName(int i){
+        try{
+            switch(i){
+                case 1:
+                     return allAccounts.get(1);
+                case 2:
+                    return allAccounts.get(4); 
+                case 3:
+                    return allAccounts.get(7);
+            }
+            return null;
+        }
+        catch(IndexOutOfBoundsException x){
+            return null;
+        } 
     }
 
-    public String getAccountBalance(){
-        return this.accountBalance;
+    // Method used to get account balance, for a specific account number
+    // If account number doesn't exist, returns null
+    public String getAccountBalance(int i){
+        try{
+            switch(i){
+                case 1:
+                    return allAccounts.get(2);
+                case 2:
+                    return allAccounts.get(5);
+                case 3:
+                    return allAccounts.get(8);
+            }
+            return null;
+        }
+        catch(IndexOutOfBoundsException x){
+            return null;
+        }
     }
 
+    // Method used to write and update the database
     public void writeDB(){
 
     }

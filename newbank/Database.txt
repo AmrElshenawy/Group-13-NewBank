@@ -1,3 +1,3 @@
-id:1,name:bhagy,password:123bhagy123,accounttype:moneymarket,accountname:investment,accountbalance:100000,accounttype:checking,accountname:general,accountbalance:22000,
-id:2,name:christina,password:123christina123,accounttype:children,accountname:kids,accountbalance:2000,
-id:3,name:john,password:123john123,accounttype:senior,accountname:retirement,accountbalance:30000,accounttype:children,accountname:forkids,accountbalance:1000,accounttype:savings,accountname:longhold,accountbalance:77000,
+id:1,name:bhagy,password:123bhagy123,accounttype1:moneymarket,accountname1:investment,accountbalance1:100000,accounttype2:checking,accountname2:general,accountbalance2:22000,
+id:2,name:christina,password:123christina123,accounttype1:children,accountname1:kids,accountbalance1:2000,
+id:3,name:john,password:123john123,accounttype1:senior,accountname1:retirement,accountbalance1:30000,accounttype2:children,accountname2:forkids,accountbalance2:1000,accounttype3:savings,accountname3:longhold,accountbalance3:77000,
