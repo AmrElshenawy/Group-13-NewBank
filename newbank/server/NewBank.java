@@ -56,7 +56,7 @@ public class NewBank {
 	}
 
 	// commands from the NewBank customer are processed in this method
-	public synchronized String processRequest(CustomerID customer, String request) {
+	public synchronized String processRequest(CustomerID customer, String request) throws FileNotFoundException {
 		if(customers.containsKey(customer.getKey())) { //this isn't a safe check - how to change?
 			String[] requestSplit = request.split(" ");
 			switch(requestSplit[0]) {
@@ -113,6 +113,14 @@ public class NewBank {
 						return "SUCCESS";
 					}
 				}
+				case "PAY":
+					//PAY <Amount> <From Users Account> <To Payee's UserName>
+					if (requestSplit.length != 4){
+						return "FAIL";
+					} else {
+						return payPerson(customer, requestSplit );
+					}
+
 			default : return "FAIL";
 			}
 		}
@@ -142,6 +150,35 @@ public class NewBank {
 		} else {
 			return false;
 		}
+	}
+	/* Method: payPerson
+	Expected input: String from command line: PAY <Amount> <From Users Account> <To Payee's UserName>
+	assumptions:
+		- Person paying is using main account to pay from
+		- Payee's account is checking account
+	*/
+	private String payPerson (CustomerID customer, String[] requestSplit ) throws FileNotFoundException {
+		Double payment = Double.parseDouble(requestSplit[1]);
+		CustomerID payeeID = findPayeeID(requestSplit[3]);
+		Account userAccount = returnAccount(requestSplit[2], customers.get(customer.getKey()));
+		Account payeeAccount = returnAccount("CHECKING", customers.get(payeeID.getKey()));
+		if (userAccount == null || payeeAccount == null || !sufficientFunds(userAccount, payment)){
+			return "FAIL";
+		} else {
+			userAccount.modifyBalance(payment, Account.InstructionType.WITHDRAW);
+			payeeAccount.modifyBalance(payment, Account.InstructionType.DEPOSIT);
+			return "SUCCESS";
+		}
+	}
+
+	// Helper method for payPerson to return the first account object.
+	private CustomerID findPayeeID(String userName) throws FileNotFoundException{
+		DatabaseHandler customerDB = new DatabaseHandler();
+		customerDB.findInDB(userName.toLowerCase());
+		if(customerDB.getName().equalsIgnoreCase(userName)){
+			return checkLogInDetails(userName.toLowerCase(), customerDB.getPassword());
+		}
+		return null;
 	}
 
 }
