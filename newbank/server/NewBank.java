@@ -56,7 +56,7 @@ public class NewBank {
 	}
 
 	// commands from the NewBank customer are processed in this method
-	public synchronized String processRequest(CustomerID customer, String request) {
+	public synchronized String processRequest(CustomerID customer, String request) throws FileNotFoundException {
 		if(customers.containsKey(customer.getKey())) { //this isn't a safe check - how to change?
 			String[] requestSplit = request.split(" ");
 			switch(requestSplit[0]) {
@@ -113,6 +113,14 @@ public class NewBank {
 						return "SUCCESS";
 					}
 				}
+				case "PAY":
+					//PAY <Amount> <From Users Account> <To Payee's UserName>
+					if (requestSplit.length != 4){
+						return "FAIL";
+					} else {
+						return payPerson(customer, requestSplit );
+					}
+
 			default : return "FAIL";
 			}
 		}
@@ -143,5 +151,46 @@ public class NewBank {
 			return false;
 		}
 	}
+	/* Method: payPerson
+	Expected input: String from command line: PAY <Amount> <From Users Account> <To Payee's UserName>
+	assumptions:
+		- Person paying is using main account to pay from
+		- Payee's account is the first account
+	*/
+	private String payPerson (CustomerID customer, String[] requestSplit ) throws FileNotFoundException {
+		Double payment = Double.parseDouble(requestSplit[1]);
+		CustomerID payeeID = findPayeeID(requestSplit[3]);
+		String payeeAccountName = findPayeeAccountName();
+		Account userAccount = returnAccount(requestSplit[2], customers.get(customer.getKey()));
+		Account payeeAccount = returnAccount(payeeAccountName, customers.get(payeeID.getKey()));
+		return transferFunds(userAccount, payeeAccount, payment);
+
+	}
+
+	// Helper method for to return a Payee CustomerID .
+	private CustomerID findPayeeID(String userName) throws FileNotFoundException{
+		DatabaseHandler customerDB = new DatabaseHandler();
+		customerDB.findInDB(userName.toLowerCase());
+		if(customerDB.getName().equalsIgnoreCase(userName)){
+			return checkLogInDetails(userName.toLowerCase(), customerDB.getPassword());
+		}
+		return null;
+	}
+	// Helper method for to return the Payee's first account object.
+	private String findPayeeAccountName () throws FileNotFoundException{
+		DatabaseHandler customerDB = new DatabaseHandler();
+		return customerDB.getAccountType(1);
+	}
+	// Helper method to transfer funds
+	private String transferFunds(Account user, Account payee, double payment){
+		if (user == null || payee == null || !sufficientFunds(user, payment)){
+			return "FAIL";
+		} else {
+			user.modifyBalance(payment, Account.InstructionType.WITHDRAW);
+			payee.modifyBalance(payment, Account.InstructionType.DEPOSIT);
+			return "SUCCESS";
+		}
+	}
+
 
 }
