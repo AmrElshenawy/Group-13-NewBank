@@ -118,6 +118,7 @@ public class NewBank {
 					if (requestSplit.length != 4){
 						return "FAIL";
 					} else {
+						System.out.println(customer.getKey());
 						return payPerson(customer, requestSplit );
 					}
 
@@ -160,7 +161,9 @@ public class NewBank {
 	private String payPerson (CustomerID customer, String[] requestSplit ) throws FileNotFoundException {
 		Double payment = Double.parseDouble(requestSplit[1]);
 		CustomerID payeeID = findPayeeID(requestSplit[3]);
-		String payeeAccountName = findPayeeAccountName();
+		System.out.println("PayeeID = " + payeeID.getKey());
+		String payeeAccountName = findPayeeAccountName(requestSplit[3]);
+		System.out.println("PayeeAccountName= " + payeeAccountName);
 		Account userAccount = returnAccount(requestSplit[2], customers.get(customer.getKey()));
 		Account payeeAccount = returnAccount(payeeAccountName, customers.get(payeeID.getKey()));
 		return transferFunds(userAccount, payeeAccount, payment);
@@ -172,18 +175,23 @@ public class NewBank {
 		DatabaseHandler customerDB = new DatabaseHandler();
 		customerDB.findInDB(userName.toLowerCase());
 		if(customerDB.getName().equalsIgnoreCase(userName)){
-			return checkLogInDetails(userName.toLowerCase(), customerDB.getPassword());
+			return new CustomerID(userName.toLowerCase(), customerDB.getPassword());
 		}
 		return null;
 	}
 	// Helper method for to return the Payee's first account object.
-	private String findPayeeAccountName () throws FileNotFoundException{
+	private String findPayeeAccountName (String userName) throws FileNotFoundException{
 		DatabaseHandler customerDB = new DatabaseHandler();
-		return customerDB.getAccountType(1);
+		customerDB.findInDB(userName.toLowerCase());
+		if(customerDB.getName().equalsIgnoreCase(userName)){
+			return customerDB.getAccountName(1);
+		}
+		return null;
 	}
 	// Helper method to transfer funds
 	private String transferFunds(Account user, Account payee, double payment){
 		if (user == null || payee == null || !sufficientFunds(user, payment)){
+			System.out.println("User: "+ user + " payee: " + payee + "Got Funds? " + sufficientFunds(user, payment) );
 			return "FAIL";
 		} else {
 			user.modifyBalance(payment, Account.InstructionType.WITHDRAW);
