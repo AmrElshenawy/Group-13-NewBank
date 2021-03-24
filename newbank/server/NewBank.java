@@ -1,44 +1,55 @@
 package newbank.server;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 
 public class NewBank {
 	
 	private static final NewBank bank = new NewBank();
 	private HashMap<String,Customer> customers;
+	private DatabaseHandler fullReport = new DatabaseHandler();
 	
 	private NewBank() {
 		customers = new HashMap<>();
-		addTestData();
+		fillHashMap_fromDB();
 	}
-	
-	private void addTestData() {
-		Customer bhagy = new Customer();
-		bhagy.setAccount(new Account("Main", 1000.0, Account.AccountType.CHECKING));
-		bhagy.setPassword("Password!");
-		customers.put("Bhagy", bhagy);
 
-		Customer christina = new Customer();
-		christina.setAccount(new Account("Savings", 1500.0, Account.AccountType.SAVINGS));
-		christina.setPassword("123456");
-		customers.put("Christina", christina);
-
-		Customer john = new Customer();
-		john.setAccount(new Account("Checking", 250.0, Account.AccountType.CHECKING));
-		john.setPassword("picture1");
-		customers.put("John", john);
+	private void fillHashMap_fromDB() {
+		List<ArrayList<String>> scanOutput;
+		try {
+			scanOutput = fullReport.scanFullDB();
+			for(ArrayList<String> line : scanOutput){
+				for(int i = 0; i < line.size(); i++){
+					Customer x = new Customer(line.get(1));
+					x.setAccount(new Account(line.get(4), Double.parseDouble(line.get(5)), Account.AccountType.valueOf(line.get(3).toUpperCase())));
+					x.setPassword(line.get(2));
+					customers.put(line.get(1), x);
+					if(line.size() > 6){
+						x.setAccount(new Account(line.get(7), Double.parseDouble(line.get(8)), Account.AccountType.valueOf(line.get(6).toUpperCase())));
+					}
+					if(line.size() > 9){
+						x.setAccount(new Account(line.get(10), Double.parseDouble(line.get(11)), Account.AccountType.valueOf(line.get(9).toUpperCase())));
+					}
+				}
+				
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static NewBank getBank() {
 		return bank;
 	}
 	
-	public synchronized CustomerID checkLogInDetails(String userName, String password) {
-		if(customers.containsKey(userName)) {
-			Customer customer = customers.get(userName);
-			if (customer.getPassword().equals(password)){
-				return new CustomerID(userName, password);
+	public synchronized CustomerID checkLogInDetails(String userName, String password) throws FileNotFoundException {
+		DatabaseHandler customerDB = new DatabaseHandler();
+		customerDB.findInDB(userName.toLowerCase());
+		if(customerDB.getName().equalsIgnoreCase(userName)) {
+			if (customerDB.getPassword().equals(password)){
+				return new CustomerID(userName.toLowerCase(), password);
 			}
 		}
 		return null;
@@ -89,17 +100,22 @@ public class NewBank {
 			case "MOVE":
 				// MOVE <Amount> <From> <To>
 				if (requestSplit.length != 4){
-					return "FAIL";
+					return "Error: Invalid input. To move money between accounts, please use the following" +
+							" input format: \"MOVE <Amount> <From> <To>\"";
 				} else {
 					Account accountFrom = returnAccount(requestSplit[2], customers.get(customer.getKey()));
 					Account accountTo = returnAccount(requestSplit[3], customers.get(customer.getKey()));
 					Double amount = Double.parseDouble(requestSplit[1]);
-					if (accountFrom == null || accountTo == null || !sufficientFunds(accountFrom, amount)) {
-						return "FAIL";
+					if (accountFrom == null || accountTo == null) {
+						return "Error: One or more accounts not recognised. Please check account details and try again.";
+					} else if (amount <= 0){
+						return "Error: Invalid amount specified. Transfers must be at least £0.01";
+					} else if (!sufficientFunds(accountFrom, amount)){
+						return "Error: insufficient funds available to carry out transfer";
 					} else {
 						accountFrom.modifyBalance(amount, Account.InstructionType.WITHDRAW);
 						accountTo.modifyBalance(amount, Account.InstructionType.DEPOSIT);
-						return "SUCCESS";
+						return "SUCCESS! Move transfer complete.";
 					}
 				}
 			default : return "FAIL";
@@ -114,9 +130,10 @@ public class NewBank {
 
 	// Helper method for MOVE to check whether the account requested is registered to the user
 	// and return the corresponding account object.
-	public Account returnAccount(String accountNameString, Customer customer){
+	public Account returnAccount(String accountTypeString, Customer customer){
+		Account.AccountType accountType = Account.AccountType.valueOf(accountTypeString);
 		for (Account account : customer.getAccounts()){
-			if (account.getAccountName().equals(accountNameString)){
+			if (account.getAccountType().equals(accountType)){
 				return account;
 			}
 		}
@@ -127,6 +144,18 @@ public class NewBank {
 	// funds from has sufficient funds to cover the transfer.
 	public boolean sufficientFunds(Account account, Double amount){
 		if (account.getOpeningBalance() >= amount){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void addCustomer(String hashKey, Customer customer){
+		customers.put(hashKey, customer);
+	}
+
+	public boolean checkCustomer(String username) {
+		if (customers.containsKey(username)){
 			return true;
 		} else {
 			return false;

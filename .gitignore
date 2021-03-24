@@ -18,8 +18,12 @@
 .code-workspace
 .history
 .svn/
+*.iml
 .idea/
+/.idea
+/classes
 .classpath
 NewBank.iml
 .project
 ExampleClient/
+out/
