@@ -2,6 +2,7 @@ package newbank.server;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class DatabaseHandler  {
@@ -10,6 +11,7 @@ public class DatabaseHandler  {
     private String id;
     private String customerName;
     private String password;
+    private ArrayList<String> plainDBContent = new ArrayList<>(); // Used for updating database
     private ArrayList<String> allAccounts;  // Holds all accounts information about a customer
     private List<ArrayList<String>> returnInfo = new ArrayList<ArrayList<String>>();    // Holds all database information
     
@@ -17,10 +19,12 @@ public class DatabaseHandler  {
     // This method is primairly used to fill in and refresh the Hashmap with information from the database.
     public List<ArrayList<String>> scanFullDB() throws FileNotFoundException{
         String info = "";   // A full line in the database
+        plainDBContent.clear();
         try{
             BufferedReader reader = new BufferedReader(new FileReader(dB));
             info = reader.readLine();
             while(info != null){
+                plainDBContent.add(info + System.lineSeparator()); // Used for updating database
                 String[] commas = info.split(",");  // Take a line, split it on commas
                 ArrayList<String> values = new ArrayList<String>(); // Used to store the key:value value of each key in the database.
                 for(String field : commas){
@@ -143,7 +147,7 @@ public class DatabaseHandler  {
         try{
             switch(i){
                 case 1:
-                     return allAccounts.get(1);
+                    return allAccounts.get(1);
                 case 2:
                     return allAccounts.get(4); 
                 case 3:
@@ -175,8 +179,24 @@ public class DatabaseHandler  {
         }
     }
 
-    // Method used to write and update the database
-    public void writeDB(){
-
+    // Method used to save session transactions and update the database
+    public void saveSession(HashMap<String, Customer> customers) throws IOException{
+        BufferedWriter writer = new BufferedWriter(new FileWriter(dB, false));
+        String output = "";
+        for(Customer customer : customers.values()){
+            output += "id:" + customer.getCustomerId() + ",";
+            output += "name:" + customer.getFullName() + ",";
+            output += "password:" + customer.getPassword() + ",";
+            Integer counter = 1;
+            for(Account account : customer.getAccounts()){
+                output += "accounttype" + counter.toString() + ":" + account.getAccountType().toString().toLowerCase() + ",";
+                output += "accountname" + counter.toString() + ":" + account.getAccountName().toString().toLowerCase() + ",";
+                output += "accountbalance" + counter.toString() + ":" + account.getOpeningBalance() + ",";
+                counter++;
+            }
+            output += System.lineSeparator();
+        }
+        writer.write(output);
+        writer.close();
     }
 }

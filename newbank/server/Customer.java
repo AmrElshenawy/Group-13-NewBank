@@ -11,7 +11,7 @@ public class Customer {
 	private HashMap<String, String> address;
 	private String dob;
 	private String taxId;
-	private CustomerID customerId;
+	private int customerId;
 	private String password;
 	
 	public Customer(String name) {
@@ -94,8 +94,12 @@ public class Customer {
 		return taxId;
 	}
 
+	public void setCustomerID(int code){
+		this.customerId = code;
+	}
+	
 	public int getCustomerId() {
-		return customerId.getUniqueID();
+		return customerId;
 	}
 
 	public String getPassword(){

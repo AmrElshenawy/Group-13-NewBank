@@ -1,6 +1,7 @@
 package newbank.server;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ public class NewBank {
 					Customer x = new Customer(line.get(1));
 					x.setAccount(new Account(line.get(4), Double.parseDouble(line.get(5)), Account.AccountType.valueOf(line.get(3).toUpperCase())));
 					x.setPassword(line.get(2));
+					x.setCustomerID((x.getFullName() + x.getPassword()).hashCode());
 					customers.put(line.get(1), x);
 					if(line.size() > 6){
 						x.setAccount(new Account(line.get(7), Double.parseDouble(line.get(8)), Account.AccountType.valueOf(line.get(6).toUpperCase())));
@@ -49,7 +51,7 @@ public class NewBank {
 		customerDB.findInDB(userName.toLowerCase());
 		if(customerDB.getName().equalsIgnoreCase(userName)) {
 			if (customerDB.getPassword().equals(password)){
-				return new CustomerID(userName.toLowerCase(), password);
+				return new CustomerID(userName.toLowerCase());
 			}
 		}
 		return null;
@@ -62,6 +64,10 @@ public class NewBank {
 			switch(requestSplit[0]) {
 			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
 			case "NEWACCOUNT":
+				ArrayList<Account> accountsList = customers.get(customer.getKey()).getAccounts();
+				if(accountsList.size() >= 3){
+					return "MAXIMUM NUMBER OF ACCOUNTS REACHED!";
+				}
 				double openingBalance = 0;
 				String accountName = requestSplit[1];
 				openingBalance = Double.parseDouble(requestSplit[2]);
@@ -120,6 +126,14 @@ public class NewBank {
 					} else {
 						return payPerson(customer, requestSplit );
 					}
+				case "CONFIRM":
+					DatabaseHandler save = new DatabaseHandler();
+					try {
+						save.saveSession(customers);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return "TRANSACTION CONFIRMED!";
 
 			default : return "FAIL";
 			}
