@@ -186,7 +186,7 @@ public class NewBank {
 		DatabaseHandler customerDB = new DatabaseHandler();
 		customerDB.findInDB(userName.toLowerCase());
 		if(customerDB.getName().equalsIgnoreCase(userName)){
-			return new CustomerID(userName.toLowerCase(), customerDB.getPassword());
+			return new CustomerID(userName.toLowerCase());
 		}
 		return null;
 	}
@@ -209,6 +209,4 @@ public class NewBank {
 			return "SUCCESS";
 		}
 	}
-
-
 }

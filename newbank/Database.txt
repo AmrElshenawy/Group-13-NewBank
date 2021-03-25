@@ -1,3 +1,3 @@
-id:1647908596,name:christina,password:Christina123&,accounttype1:checking,accountname1:main,accountbalance1:7000.0,accounttype2:moneymarket,accountname2:trading,accountbalance2:50000.0,
-id:-737511372,name:bhagy,password:Bhagy123&,accounttype1:checking,accountname1:main,accountbalance1:92000.0,accounttype2:moneymarket,accountname2:investment,accountbalance2:30000.0,
-id:1618832874,name:john,password:John123&,accounttype1:checking,accountname1:main,accountbalance1:20000.0,accounttype2:children,accountname2:forkids,accountbalance2:28000.0,accounttype3:savings,accountname3:longhold,accountbalance3:60000.0,
+id:1647908596,name:christina,password:Christina123&,accounttype1:checking,accountname1:main,accountbalance1:9000.0,accounttype2:moneymarket,accountname2:trading,accountbalance2:50000.0,
+id:-737511372,name:bhagy,password:Bhagy123&,accounttype1:checking,accountname1:main,accountbalance1:50000.0,accounttype2:moneymarket,accountname2:investment,accountbalance2:30000.0,
+id:1618832874,name:john,password:John123&,accounttype1:checking,accountname1:main,accountbalance1:60000.0,accounttype2:children,accountname2:forkids,accountbalance2:28000.0,accounttype3:savings,accountname3:longhold,accountbalance3:60000.0,
