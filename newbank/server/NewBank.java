@@ -16,7 +16,7 @@ public class NewBank {
 		customers = new HashMap<>();
 		fillHashMap_fromDB();
 	}
-	
+
 	private void fillHashMap_fromDB() {
 		List<ArrayList<String>> scanOutput;
 		try {
@@ -106,17 +106,22 @@ public class NewBank {
 			case "MOVE":
 				// MOVE <Amount> <From> <To>
 				if (requestSplit.length != 4){
-					return "FAIL";
+					return "Error: Invalid input. To move money between accounts, please use the following" +
+							" input format: \"MOVE <Amount> <From> <To>\"";
 				} else {
 					Account accountFrom = returnAccount(requestSplit[2], customers.get(customer.getKey()));
 					Account accountTo = returnAccount(requestSplit[3], customers.get(customer.getKey()));
 					Double amount = Double.parseDouble(requestSplit[1]);
-					if (accountFrom == null || accountTo == null || !sufficientFunds(accountFrom, amount)) {
-						return "FAIL";
+					if (accountFrom == null || accountTo == null) {
+						return "Error: One or more accounts not recognised. Please check account details and try again.";
+					} else if (amount <= 0){
+						return "Error: Invalid amount specified. Transfers must be at least £0.01";
+					} else if (!sufficientFunds(accountFrom, amount)){
+						return "Error: insufficient funds available to carry out transfer";
 					} else {
 						accountFrom.modifyBalance(amount, Account.InstructionType.WITHDRAW);
 						accountTo.modifyBalance(amount, Account.InstructionType.DEPOSIT);
-						return "SUCCESS";
+						return "SUCCESS! Move transfer complete.";
 					}
 				}
 				case "PAY":
@@ -147,9 +152,10 @@ public class NewBank {
 
 	// Helper method for MOVE to check whether the account requested is registered to the user
 	// and return the corresponding account object.
-	public Account returnAccount(String accountNameString, Customer customer){
+	public Account returnAccount(String accountTypeString, Customer customer){
+		Account.AccountType accountType = Account.AccountType.valueOf(accountTypeString);
 		for (Account account : customer.getAccounts()){
-			if (account.getAccountName().equals(accountNameString)){
+			if (account.getAccountType().equals(accountType)){
 				return account;
 			}
 		}
@@ -178,7 +184,18 @@ public class NewBank {
 		Account userAccount = returnAccount(requestSplit[2], customers.get(customer.getKey()));
 		Account payeeAccount = returnAccount(payeeAccountName, customers.get(payeeID.getKey()));
 		return transferFunds(userAccount, payeeAccount, payment);
+	}
 
+	public void addCustomer(String hashKey, Customer customer){
+		customers.put(hashKey, customer);
+	}
+
+	public boolean checkCustomer(String username) {
+		if (customers.containsKey(username)){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	// Helper method for to return a Payee CustomerID .
@@ -210,3 +227,4 @@ public class NewBank {
 		}
 	}
 }
+
