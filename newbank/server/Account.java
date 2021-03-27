@@ -72,7 +72,7 @@ public class Account {
 
     // getters
 
-    public String getAccountName(AccountType savings) {
+    public String getAccountName() {
         return accountName;
     }
 
