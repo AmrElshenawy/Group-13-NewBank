@@ -46,6 +46,10 @@ public class Customer {
 		accounts.add(account);
 	}
 
+	public void deleteAccount(Account account){
+		accounts.remove(account);
+	}
+
 	public void setFullName(String name) {
 		fullName = name;
 	}

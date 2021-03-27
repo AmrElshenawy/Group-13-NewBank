@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NewBank {
 	
@@ -143,7 +144,40 @@ public class NewBank {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					return "TRANSACTION CONFIRMED!";
+					return "ACTION CONFIRMED!";
+				case "DELETE":
+					// DELETE <Customer ID>
+					// DELETE <Customer ID> <AccountType>
+					if(customer.getKey().equalsIgnoreCase("staff")){
+						if(requestSplit.length == 2){
+							for(Map.Entry<String, Customer> record : customers.entrySet()){
+								String user = record.getKey();
+								Customer object = record.getValue();
+								if(Integer.toString(object.getCustomerId()).equals(requestSplit[1])){
+									customers.remove(user);
+									return "Customer ID# " + object.getCustomerId() + " DELETED!";
+								}
+							}
+						}
+						else if(requestSplit.length == 3){
+							for(Map.Entry<String, Customer> record :customers.entrySet()){
+								Customer object = record.getValue();
+								if(Integer.toString(object.getCustomerId()).equals(requestSplit[1])){
+									ArrayList<Account> accList = object.getAccounts();
+									for(Account acc : accList){
+										if(acc.getAccountType().toString().equalsIgnoreCase(requestSplit[2])){
+											object.deleteAccount(acc);
+											return "Account type " + requestSplit[2].toUpperCase() + " for customer ID# " + object.getCustomerId() + " DELETED!";
+										}
+									}
+
+								}
+							}
+						}
+					}
+					else{
+						return "NOT A STAFF MEMBER. ACTION DENIED!";
+					}
 
 			default : return "FAIL";
 			}
