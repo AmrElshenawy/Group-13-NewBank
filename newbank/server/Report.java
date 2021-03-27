@@ -28,7 +28,7 @@ public class Report {
     //methods
     //get all customer from the db
     public String allCustomers(){
-        String outputString = "";
+        String outputString = "Customer accounts:"+"\n";
         for(Customer record : bank.getCustomers().values()){
             outputString += record.getFullName()+" "+record.getAccounts().toString()+"\n";
         }

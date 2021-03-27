@@ -13,7 +13,6 @@ public class NewBankClientHandler extends Thread{
 	private PrintWriter out;
 	private Socket s;
 	
-	
 	public NewBankClientHandler(Socket s) throws IOException {
 		bank = NewBank.getBank();
 		in = new BufferedReader(new InputStreamReader(s.getInputStream()));
