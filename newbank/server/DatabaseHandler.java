@@ -188,13 +188,15 @@ public class DatabaseHandler  {
             output += "name:" + customer.getFullName() + ",";
             output += "password:" + customer.getPassword() + ",";
             Integer counter = 1;
-            for(Account account : customer.getAccounts()){
-                output += "accounttype" + counter.toString() + ":" + account.getAccountType().toString().toLowerCase() + ",";
-                output += "accountname" + counter.toString() + ":" + account.getAccountName().toString().toLowerCase() + ",";
-                output += "accountbalance" + counter.toString() + ":" + account.getOpeningBalance() + ",";
-                counter++;
+            if(customer.getAccounts().size() >= 1){
+                for(Account account : customer.getAccounts()){
+                    output += "accounttype" + counter.toString() + ":" + account.getAccountType().toString().toLowerCase() + ",";
+                    output += "accountname" + counter.toString() + ":" + account.getAccountName().toString().toLowerCase() + ",";
+                    output += "accountbalance" + counter.toString() + ":" + account.getOpeningBalance() + ",";
+                    counter++;
+                }
+                output += System.lineSeparator();
             }
-            output += System.lineSeparator();
         }
         writer.write(output);
         writer.close();

@@ -24,7 +24,9 @@ public class NewBank {
 			for(ArrayList<String> line : scanOutput){
 				for(int i = 0; i < line.size(); i++){
 					Customer x = new Customer(line.get(1));
-					x.setAccount(new Account(line.get(4), Double.parseDouble(line.get(5)), Account.AccountType.valueOf(line.get(3).toUpperCase())));
+					if(line.size() > 3){
+						x.setAccount(new Account(line.get(4), Double.parseDouble(line.get(5)), Account.AccountType.valueOf(line.get(3).toUpperCase())));
+					}
 					x.setPassword(line.get(2));
 					x.setCustomerID((x.getFullName() + x.getPassword()).hashCode());
 					customers.put(line.get(1), x);
@@ -35,7 +37,6 @@ public class NewBank {
 						x.setAccount(new Account(line.get(10), Double.parseDouble(line.get(11)), Account.AccountType.valueOf(line.get(9).toUpperCase())));
 					}
 				}
-				
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
