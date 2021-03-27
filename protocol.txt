@@ -14,6 +14,17 @@ MOVE <Amount> <From> <To>
 e.g. MOVE 100 Main Savings 
 Returns SUCCESS or FAIL
 
-PAY <Person/Company> <Ammount>
+PAY <Amount> <From Users Account> <To Payee's UserName>
 e.g. PAY John 100
+Returns SUCCESS or FAIL
+
+DELETE <Customer ID> <AccountType>
+Deletes a customer. Accessible by staff only
+
+CONFIRM
+Confirms CRUD operations on database
+Returns ACTION CONFIRMED!
+
+AUDITREPORT
+Generates a report of banking activity. Accessible by staff only
 Returns SUCCESS or FAIL
