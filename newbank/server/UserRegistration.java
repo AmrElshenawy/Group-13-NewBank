@@ -104,7 +104,7 @@ public class UserRegistration {
             out.println("Please choose an account name:");
             String accountName = in.readLine();
 
-            customer.setAccount(new Account(accountName, openingBalanceDouble, accountType));
+            customer.setAccount(new Account(Integer.parseInt(accountName), openingBalanceDouble, accountType));
         }
         catch (IOException e){
             System.out.println(e);
