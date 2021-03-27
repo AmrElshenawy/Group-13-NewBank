@@ -4,8 +4,6 @@
   <OriginalElement>newbank</OriginalElement>
   <nodes>
     <node x="483.0" y="0.0">newbank.server.Customer</node>
-    <node x="610.0" y="515.0">newbank.server.NewBankClientHandler</node>
-    <node x="236.0" y="880.0">newbank.server.NewBankServer</node>
     <node x="223.0" y="305.0">newbank.server.Account.InstructionType</node>
     <node x="0.0" y="515.0">newbank.server.NewBank</node>
     <node x="332.0" y="515.0">newbank.client.ExampleClient</node>
@@ -28,7 +26,7 @@
       <point x="-71.75" y="105.5" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="0.5587084148727984" x="414.0" y="501.0" />
+  <settings layout="Hierarchic Group" zoom="0.7400204708290685" x="384.5" y="478.50000000000006" />
   <SelectedNodes>
     <node>newbank.server.Customer</node>
   </SelectedNodes>

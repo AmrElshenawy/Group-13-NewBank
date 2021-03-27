@@ -1,7 +1,5 @@
 package newbank.server;
 
-import newbank.client.ExampleClient;
-
 import java.io.FileNotFoundException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -16,21 +14,23 @@ public class Report {
 
     //fields
     private ArrayList<Account> accounts;
-    private DatabaseHandler dbHandler;
-    private List<ArrayList<String>> dbCopy;
+//    private DatabaseHandler dbHandler;
+//    private List<ArrayList<String>> dbCopy;
+    private NewBank bank;
 
     //constructor
     public Report() throws FileNotFoundException, IOException {
-        dbHandler = new DatabaseHandler();
-        dbCopy = dbHandler.scanFullDB();
+//        dbHandler = new DatabaseHandler();
+//        dbCopy = dbHandler.scanFullDB();
+        bank = new NewBank();
     }
 
     //methods
     //get all customer from the db
     public String allCustomers(){
         String outputString = "";
-        for(ArrayList<String> arr : dbCopy){
-            outputString += arr.toString()+"\n";
+        for(Customer record : bank.getCustomers().values()){
+            outputString += record.getFullName()+" "+record.getAccounts().toString()+"\n";
         }
         return outputString;
     }
@@ -40,10 +40,10 @@ public class Report {
         Integer count = 0;
         int i = 0;
         List types = Arrays.asList(Account.AccountType.values());
-        for(ArrayList<String> arr : dbCopy){
-            for(String s: arr){
+        for(Customer record : bank.getCustomers().values()){
+            for(Account acc: record.getAccounts()){
                 try{
-                    if(types.contains(Account.AccountType.valueOf(s.toUpperCase()))){
+                    if(types.contains(Account.AccountType.valueOf(acc.getAccountType().toString().toUpperCase()))){
                         count++;
                     }
                 }catch (Exception e){
@@ -58,16 +58,10 @@ public class Report {
 
     //get total amount of deposits
     public String getTotalDeposits(){
-        int total = 0;
-
-        for(ArrayList<String> arr : dbCopy) {
-            for(int i = 1; i < arr.size(); i++){
-                try{
-                    if(arr.get(i).matches("[-+]?\\d*\\.?\\d+")){
-                        total += Double.parseDouble(arr.get(i));
-                    }
-                }catch (Exception e){
-                }
+        double total = 0;
+        for(Customer record : bank.getCustomers().values()){
+            for(Account acc: record.getAccounts()){
+                total += acc.getOpeningBalance();
             }
         }
         return "Total deposits: "+total;
@@ -104,7 +98,7 @@ public class Report {
             if(myFile.createNewFile()){
                 //now write output to the file
                 System.out.println("File created: "+myFile.getName());
-                FileWriter myWriter = new FileWriter("report.txt");
+                FileWriter myWriter = new FileWriter("auditReport.txt");
                 myWriter.write(output);
                 myWriter.close();
                 System.out.println("Successfully wrote output to the file.");

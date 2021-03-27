@@ -12,7 +12,7 @@ public class NewBank {
 	private HashMap<String,Customer> customers;
 	private DatabaseHandler fullReport = new DatabaseHandler();
 	
-	private NewBank() {
+	public NewBank() {
 		customers = new HashMap<>();
 		fillHashMap_fromDB();
 	}
@@ -45,6 +45,10 @@ public class NewBank {
 	
 	public static NewBank getBank() {
 		return bank;
+	}
+
+	public HashMap<String,Customer> getCustomers(){
+		return customers;
 	}
 	
 	public synchronized CustomerID checkLogInDetails(String userName, String password) throws FileNotFoundException {
