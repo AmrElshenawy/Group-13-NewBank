@@ -15,7 +15,15 @@ public class Account {
 	private ArrayList<Transaction> transactions;
 
     public Account(int accountId, double openingBalance, AccountType type) {
-        this.accountId = accountId;
+        
+		this.accountId = accountId;
+        this.openingBalance = openingBalance;
+        this.accountType = type;
+    }
+
+	public Account(double openingBalance, AccountType type) {
+        
+		this.accountId = setAccountNumber(type);
         this.openingBalance = openingBalance;
         this.accountType = type;
     }
@@ -37,7 +45,7 @@ public class Account {
         }
     }
 
-    public String setAccountNumber(AccountType type) {
+    public Integer setAccountNumber(AccountType type) {
 
         Random rand = new Random();
 
@@ -70,7 +78,7 @@ public class Account {
         String accountNumber = prefix + baseAccountNumber;
 
 
-        return accountNumber; //WE HAVE TO ENSURE ACCOUNT NUMBER IS UNIQUE
+        return Integer.parseInt(accountNumber); //WE HAVE TO ENSURE ACCOUNT NUMBER IS UNIQUE
     }
 
 	public int getAccountId(){

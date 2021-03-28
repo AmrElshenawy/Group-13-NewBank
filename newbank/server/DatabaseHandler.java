@@ -143,7 +143,7 @@ public class DatabaseHandler  {
 
     // Method used to get account name, for a specific account number
     // If account number doesn't exist, returns null
-    public String getAccountName(int i){
+    public String getAccountID(int i){
         try{
             switch(i){
                 case 1:

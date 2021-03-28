@@ -112,11 +112,10 @@ public class NewBank {
 					return "MAXIMUM NUMBER OF ACCOUNTS REACHED!";
 				}
 				double openingBalance = 0;
-				String accountName = requestSplit[1];
-				openingBalance = Double.parseDouble(requestSplit[2]);
+				openingBalance = Double.parseDouble(requestSplit[1]);
 				Account.AccountType type;
-				if(requestSplit.length == 4){
-					String accountType = requestSplit[3];
+				if(requestSplit.length == 3){
+					String accountType = requestSplit[2];
 
 					if(accountType.equalsIgnoreCase(Account.AccountType.CHILDREN.toString())){
 						type = Account.AccountType.CHILDREN;
@@ -139,11 +138,11 @@ public class NewBank {
 					else{
 						type = Account.AccountType.CHECKING; // default case
 					} 
-					customers.get(customer.getKey()).setAccount(new Account(Integer.parseInt(accountName),openingBalance,type));
+					customers.get(customer.getKey()).setAccount(new Account(openingBalance,type));
 				} 
 				else{
 					type = Account.AccountType.CHECKING; //default account type if no type is specified
-					customers.get(customer.getKey()).setAccount(new Account(Integer.parseInt(accountName), openingBalance,type));
+					customers.get(customer.getKey()).setAccount(new Account(openingBalance,type));
 				} 
 				return "SUCCESS";
 			case "MOVE":
@@ -279,9 +278,9 @@ public class NewBank {
 	private String payPerson (CustomerID customer, String[] requestSplit ) throws FileNotFoundException {
 		Double payment = Double.parseDouble(requestSplit[1]);
 		CustomerID payeeID = findPayeeID(requestSplit[3]);
-		String payeeAccountName = findPayeeAccountName(requestSplit[3]);
+		String payeeAccountID = findPayeeAccountID(requestSplit[3]);
 		Account userAccount = returnAccount(requestSplit[2], customers.get(customer.getKey()));
-		Account payeeAccount = returnAccount(payeeAccountName, customers.get(payeeID.getKey()));
+		Account payeeAccount = returnAccount(payeeAccountID, customers.get(payeeID.getKey()));
 		return transferFunds(userAccount, payeeAccount, payment);
 	}
 
@@ -307,11 +306,11 @@ public class NewBank {
 		return null;
 	}
 	// Helper method for to return the Payee's first account object.
-	private String findPayeeAccountName (String userName) throws FileNotFoundException{
+	private String findPayeeAccountID (String userName) throws FileNotFoundException{
 		DatabaseHandler customerDB = new DatabaseHandler();
 		customerDB.findInDB(userName.toLowerCase());
 		if(customerDB.getName().equalsIgnoreCase(userName)){
-			return customerDB.getAccountName(1);
+			return customerDB.getAccountID(1);
 		}
 		return null;
 	}
