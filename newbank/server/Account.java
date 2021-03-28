@@ -1,25 +1,29 @@
 package newbank.server;
 
 import java.util.Random;
+import java.util.ArrayList;
 
 public class Account {
 
-    private String accountName;
-    private double openingBalance;
+	//private String accountName;
+	private int accountId;
+	private double openingBalance;
+	enum AccountType {CHILDREN, SENIOR, CHECKING, SAVINGS, MONEYMARKET, OVERDRAFT}
+	private Account.AccountType accountType;
+	enum InstructionType {WITHDRAW, DEPOSIT}
+	private Account.InstructionType instructionType;
+	private ArrayList<Transaction> transactions;
 
-    enum AccountType {CHILDREN, SENIOR, CHECKING, SAVINGS, MONEYMARKET, OVERDRAFT}
-
-    private AccountType accountType;
-
-    enum InstructionType {WITHDRAW, DEPOSIT}
-
-    private InstructionType instructionType;
-
-    public Account(String accountName, double openingBalance, AccountType type) {
-        this.accountName = accountName;
+    public Account(int accountId, double openingBalance, AccountType type) {
+        this.accountId = accountId;
         this.openingBalance = openingBalance;
         this.accountType = type;
     }
+
+	// do not delete this second constructor please
+	public Account(int accountId){
+		this.accountId = accountId;
+	}
 
     public void modifyBalance(double amount, InstructionType type) {
         if (type.equals(InstructionType.DEPOSIT)) {
@@ -66,30 +70,49 @@ public class Account {
         String accountNumber = prefix + baseAccountNumber;
 
 
-        return accountNumber;
+        return accountNumber; //WE HAVE TO ENSURE ACCOUNT NUMBER IS UNIQUE
     }
 
+	public int getAccountId(){
+		return accountId;
+	}
 
-    // getters
+	public double getOpeningBalance(){
+		return openingBalance;
+	}
 
-    public String getAccountName() {
-        return accountName;
-    }
+	public Account.AccountType getAccountType(){
+		return accountType;
+	}
 
-    public double getOpeningBalance() {
-        return openingBalance;
-    }
+	public Account.InstructionType getInstructionType(){
+		return instructionType;
+	}
 
-    public AccountType getAccountType() {
-        return accountType;
-    }
+	public ArrayList<Transaction> getTransactions(){
+		return transactions;
+	}
 
-    private InstructionType getInstructionType() {
-        return instructionType;
-    }
+	//setters
+	public void setTransactions(ArrayList<Transaction> transactions) {
+		this.transactions = transactions;
+	}
 
-    public String toString() {
-        return (accountType + ", " + accountName + ": " + openingBalance);
-    }
+	//print functions
+	public String toString() {
+		return (accountType + ", " + accountId + ": " + openingBalance);
+	}
 
+	public String transactionsToString() {
+		String s = "";
+		for(int i = 0; i < transactions.size(); i++){
+			if(i != transactions.size() - 1){
+				s += transactions.get(i).toString() + "\n";
+			}
+			else{
+				s += transactions.get(i).toString();
+			}
+		}
+		return s;
+	}
 }

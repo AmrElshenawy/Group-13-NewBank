@@ -14,21 +14,17 @@ public class Report {
 
     //fields
     private ArrayList<Account> accounts;
-//    private DatabaseHandler dbHandler;
-//    private List<ArrayList<String>> dbCopy;
     private NewBank bank;
 
     //constructor
     public Report() throws FileNotFoundException, IOException {
-//        dbHandler = new DatabaseHandler();
-//        dbCopy = dbHandler.scanFullDB();
         bank = new NewBank();
     }
 
     //methods
     //get all customer from the db
     public String allCustomers(){
-        String outputString = "";
+        String outputString = "Customer accounts:"+"\n";
         for(Customer record : bank.getCustomers().values()){
             outputString += record.getFullName()+" "+record.getAccounts().toString()+"\n";
         }
@@ -120,10 +116,5 @@ public class Report {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
-        Report report = new Report();
-        report.generateReport();
     }
 }

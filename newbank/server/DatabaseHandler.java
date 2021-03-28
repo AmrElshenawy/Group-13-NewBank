@@ -191,7 +191,7 @@ public class DatabaseHandler  {
             if(customer.getAccounts().size() >= 1){
                 for(Account account : customer.getAccounts()){
                     output += "accounttype" + counter.toString() + ":" + account.getAccountType().toString().toLowerCase() + ",";
-                    output += "accountname" + counter.toString() + ":" + account.getAccountName().toString().toLowerCase() + ",";
+                    output += "accountnumber" + counter.toString() + ":" + account.getAccountId() + ",";
                     output += "accountbalance" + counter.toString() + ":" + account.getOpeningBalance() + ",";
                     counter++;
                 }
