@@ -107,13 +107,13 @@ public class TransactionHandler {
         BufferedWriter writer = new BufferedWriter(new FileWriter(dB, false));
         String output = "";
         for(Transaction transaction: transactions.values()){
-            output += "transactionId" + transaction.getTransactionId() + ",";
-            output += "transactionDateTime" + new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(transaction.getTransactionDateTime()) + ",";
-            output += "senderAccountId" + String.valueOf( transaction.getSenderId()) + ",";
-            output += "senderName" + transaction.getSenderName() + ",";
-            output += "receiverAccountId" + String.valueOf(transaction.getReceiverId()) + ",";
-            output += "receiverName" + transaction.getReceiverName() + ",";
-            output += "amount" + String.valueOf(transaction.getAmount()) + ",";
+            output += "transactionId" + ":" + transaction.getTransactionId() + ",";
+            output += "transactionDateTime" + ":" + new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(transaction.getTransactionDateTime()) + ",";
+            output += "senderAccountId" + ":" + String.valueOf( transaction.getSenderId()) + ",";
+            output += "senderName" + ":" + transaction.getSenderName() + ",";
+            output += "receiverAccountId" + ":" + String.valueOf(transaction.getReceiverId()) + ",";
+            output += "receiverName" + ":" + transaction.getReceiverName() + ",";
+            output += "amount" + ":" + String.valueOf(transaction.getAmount()) + ",";
             output += System.lineSeparator();
         }
         writer.write(output);
