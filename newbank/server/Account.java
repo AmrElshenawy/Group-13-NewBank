@@ -1,5 +1,7 @@
 package newbank.server;
 
+import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -49,37 +51,52 @@ public class Account {
 
         Random rand = new Random();
 
+
         //7 random digits form the base of the account number
         String baseAccountNumber = String.format("%07d", rand.nextInt(10000000));
 
         //the first digit of the account number relates to account type: 0 for children;
         //1 for seniors; 2 for checking; 3 for saving; 4 for money market; 5 for overdraft.
         String prefix = "";
-        switch (type) {
-            case CHILDREN:
-                prefix = "0";
-                break;
-            case SENIOR:
-                prefix = "1";
-                break;
-            case CHECKING:
-                prefix = "2";
-                break;
-            case SAVINGS:
-                prefix = "3";
-                break;
-            case MONEYMARKET:
-                prefix = "4";
-                break;
-            case OVERDRAFT:
-                prefix = "5";
-                break;
-        }
-        String accountNumber = prefix + baseAccountNumber;
 
+        String accountNumber;
+        //do {
+            switch (type) {
+                case CHILDREN:
+                    prefix = "0";
+                    break;
+                case SENIOR:
+                    prefix = "1";
+                    break;
+                case CHECKING:
+                    prefix = "2";
+                    break;
+                case SAVINGS:
+                    prefix = "3";
+                    break;
+                case MONEYMARKET:
+                    prefix = "4";
+                    break;
+                case OVERDRAFT:
+                    prefix = "5";
+                    break;
+            }
 
-        return Integer.parseInt(accountNumber); //WE HAVE TO ENSURE ACCOUNT NUMBER IS UNIQUE
+            accountNumber = prefix + baseAccountNumber;
+            NewBank bank = new NewBank();
+            HashMap<String, Customer> customerAccounts = bank.getCustomers();
+            for(Customer customer: customerAccounts.values()){
+                for(Account account: customer.getAccounts()){
+                    if(account.getAccountId() !=Integer.parseInt(accountNumber)){
+                        return Integer.parseInt(accountNumber);
+                    } else {
+                        return setAccountNumber(type);
+                    }
+                }
+            }
+            return null;
     }
+
 
 	public int getAccountId(){
 		return accountId;
