@@ -60,7 +60,7 @@ public class Account {
         String prefix = "";
 
         String accountNumber;
-        //do {
+
             switch (type) {
                 case CHILDREN:
                     prefix = "0";
