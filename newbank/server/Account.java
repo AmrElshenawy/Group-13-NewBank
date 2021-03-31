@@ -1,6 +1,6 @@
 package newbank.server;
 
-import java.io.FileNotFoundException;
+
 import java.util.HashMap;
 import java.util.Random;
 import java.util.ArrayList;
@@ -17,20 +17,17 @@ public class Account {
 	private ArrayList<Transaction> transactions;
 
     public Account(int accountId, double openingBalance, AccountType type) {
-        
 		this.accountId = accountId;
         this.openingBalance = openingBalance;
         this.accountType = type;
     }
 
 	public Account(double openingBalance, AccountType type) {
-        
 		this.accountId = setAccountNumber(type);
         this.openingBalance = openingBalance;
         this.accountType = type;
     }
 
-	// do not delete this second constructor please
 	public Account(int accountId){
 		this.accountId = accountId;
 	}
