@@ -18,8 +18,11 @@ PAY <Amount> <From Users Account> <To Payee's UserName>
 e.g. PAY John 100
 Returns SUCCESS or FAIL
 
+DELETE <Customer ID>
+Deletes the customer record for the specified customer ID.
+
 DELETE <Customer ID> <AccountType>
-Deletes a customer. Accessible by staff only
+Deletes the specified account type for the specified customer. Accessible by staff only
 
 CONFIRM
 Confirms CRUD operations on database
@@ -28,3 +31,9 @@ Returns ACTION CONFIRMED!
 AUDITREPORT
 Generates a report of banking activity. Accessible by staff only
 Returns SUCCESS or FAIL
+
+HELP
+Displays all of the available commands.
+
+HELP <command name>
+Displays information about the specified command.
