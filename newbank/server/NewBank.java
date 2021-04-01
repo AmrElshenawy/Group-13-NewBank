@@ -40,13 +40,13 @@ public class NewBank {
 					}
 					x.setPassword(line.get(2));
 					x.setCustomerID((x.getFullName() + x.getPassword()).hashCode());
-					customers.put(line.get(1), x);
 					if(line.size() > 6){
 						x.setAccount(new Account(Integer.parseInt(line.get(7)), Double.parseDouble(line.get(8)), Account.AccountType.valueOf(line.get(6).toUpperCase())));
 					}
 					if(line.size() > 9){
 						x.setAccount(new Account(Integer.parseInt(line.get(10)), Double.parseDouble(line.get(11)), Account.AccountType.valueOf(line.get(9).toUpperCase())));
 					}
+					customers.put(line.get(1), x);
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -237,6 +237,20 @@ public class NewBank {
 				}else{
 					return "NOT A STAFF MEMBER. ACTION DENIED!";
 				}
+
+			case "HELP":
+				if(requestSplit.length == 1){
+					if(customer.getKey().equalsIgnoreCase("staff")){
+						return getAvailableCommands("staff");
+					}
+					else{
+						return getAvailableCommands("general");
+					}
+				}
+				else if(requestSplit.length == 2){
+					return helpCommandDescription(requestSplit[1]);
+				}
+				
 			default : return "FAIL";
 			}
 		}
@@ -286,6 +300,14 @@ public class NewBank {
 
 	public void addCustomer(String hashKey, Customer customer){
 		customers.put(hashKey, customer);
+		DatabaseHandler save = new DatabaseHandler();
+		try {
+			save.saveSession(customers);
+			handleTransactions.saveSession(transactions);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		fillHashMap_fromDB();
 	}
 
 	public boolean checkCustomer(String username) {
@@ -339,5 +361,53 @@ public class NewBank {
 			return "SUCCESS";
 		}
 	}
-}
 
+	private String getAvailableCommands(String name){
+		String commands = "";
+		if(name.equals("staff")){
+			commands += "Available commands: \n";
+			commands += "* DELETE <customer ID> \n";
+			commands += "* DELETE <customer ID> <account type> \n";
+			commands += "* CONFIRM";
+		}
+		else if(name.equals("general")){
+			commands += "Available commands: \n";
+			commands += "* NEWACCOUNT <openingbalance> <account type> \n";
+			commands += "* SHOWMYACCOUNTS \n";
+			commands += "* MOVE <amount> <from> <to> \n";
+			commands += "* PAY <amount> <from account type> <to customer name> \n";
+			commands += "* HELP \n";
+			commands += "* HELP <command name> \n";
+			commands += "* CONFIRM";
+		}
+		return commands;
+	}
+
+	private String helpCommandDescription(String commandName){
+		String description = "";
+		switch(commandName.toUpperCase()){
+			case "NEWACCOUNT":
+				description += "NEWACCOUNT 2500 moneymarket - Will create a new Moneymarket account with 2500 balance.";
+				break;
+			case "SHOWMYACCOUNTS":
+				description += "Will display all accounts and their information for the customer.";
+				break;
+			case "MOVE":
+				description += "MOVE 5000 checking savings - Will move 5000 from Checkings account to Savings account.";
+				break;
+			case "PAY":
+				description += "PAY 5500 checking john - Will pay 5500 deducted from Checkings paid to John's default account which is always Checkings.";
+				break;
+			case "DELETE":
+				description += "DELETE 489418943 - Will delete all records pertinent to the customer with ID# 489418943. Accessible by staff members only. \n";
+				description += "DELETE 489418943 moneymarket - Will delete Moneymarket account for customer ID# 489418943. Accessible by staff members only.";
+				break;
+			case "AUDITREPORT":
+				description += "Generates a report of all banking activity. Accessible by staff members only.";
+			case "CONFIRM":
+				description += "Will save and confirm all session actions into the database.";
+				break;
+		}
+		return description;
+	}
+}

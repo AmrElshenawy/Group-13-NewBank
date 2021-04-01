@@ -32,7 +32,7 @@ public class NewBankClientHandler extends Thread{
 					run();
 				case "2": // Log in existing user
 					// ask for user name
-					out.println("Enter Username");
+					out.println("Enter Registered Name");
 					String userName = in.readLine();
 					// ask for password
 					out.println("Enter Password");

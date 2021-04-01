@@ -1,4 +1,5 @@
 id:1647908596,name:christina,password:Christina123&,accounttype1:checking,accountnumber1:27110635,accountbalance1:40000.0,
+id:522655285,name:amrelshenawy,password:Amro123&,accounttype1:moneymarket,accountnumber1:45890347,accountbalance1:100600.0,
 id:-737511372,name:bhagy,password:Bhagy123&,accounttype1:checking,accountnumber1:20512469,accountbalance1:2000.0,
 id:1618832874,name:john,password:John123&,accounttype1:checking,accountnumber1:25058458,accountbalance1:22000.0,
 id:-1444844,name:staff,password:Staff123&,

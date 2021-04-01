@@ -195,8 +195,8 @@ public class DatabaseHandler  {
                     output += "accountbalance" + counter.toString() + ":" + account.getOpeningBalance() + ",";
                     counter++;
                 }
-                output += System.lineSeparator();
             }
+            output += System.lineSeparator();
         }
         writer.write(output);
         writer.close();

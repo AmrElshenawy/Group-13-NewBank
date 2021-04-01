@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.HashMap;
 
 public class UserRegistration {
 
@@ -28,7 +27,7 @@ public class UserRegistration {
                 }
             } while (bank.checkCustomer(userName) && userName != null);
             // ask for user's name
-            out.println("Enter your full name, as you would like it to appear on your accounts:");
+            out.println("Enter your name, you will use this to login:");
             String fullName = in.readLine();
             // ask for user's address
             out.println("Enter the first line of your address. E.g \"123 Penny Lane\"");
@@ -58,12 +57,12 @@ public class UserRegistration {
                 }
             } while (!passwordOK(password1) || !password1.equals(password2) || password1 == null || password2 == null);
 
-            customer = new Customer(fullName);
+            customer = new Customer(fullName.toLowerCase());
             customer.setAddress(addressLine1, addressLine2, addressLine3);
             customer.setBirthdate(dob);
             customer.setTaxId(taxID);
             customer.setPassword(password1);
-
+            customer.setCustomerID((customer.getFullName() + customer.getPassword()).hashCode());
             out.println(accountSelectionMessage());
             String selection = in.readLine();
             switch (selection) {
@@ -101,10 +100,8 @@ public class UserRegistration {
             out.println("Enter the opening balance for the account:");
             String openingBalance = in.readLine();
             Double openingBalanceDouble = Double.parseDouble(openingBalance);
-            out.println("Please choose an account name:");
-            String accountName = in.readLine();
 
-            customer.setAccount(new Account(Integer.parseInt(accountName), openingBalanceDouble, accountType));
+            customer.setAccount(new Account(openingBalanceDouble, accountType));
         }
         catch (IOException e){
             System.out.println(e);
