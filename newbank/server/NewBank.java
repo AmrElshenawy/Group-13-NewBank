@@ -17,6 +17,7 @@ public class NewBank {
 	
 	private static final NewBank bank = new NewBank();
 	private HashMap<String,Customer> customers;
+	private HashMap<Integer,Customer> accounts;
 	private DatabaseHandler fullReport = new DatabaseHandler();
 	private HashMap<Account,Transaction> transactions;
 	private TransactionHandler handleTransactions = new TransactionHandler();
@@ -60,16 +61,24 @@ public class NewBank {
 				for(int i = 0; i < line.size(); i++){
 					Customer x = new Customer(line.get(1));
 					if(line.size() > 3){
-						x.setAccount(new Account(Integer.parseInt(line.get(4)), Double.parseDouble(line.get(5)), Account.AccountType.valueOf(line.get(3).toUpperCase())));
+						Account account1 = new Account(Integer.parseInt(line.get(4)), Double.parseDouble(line.get(5)), Account.AccountType.valueOf(line.get(3).toUpperCase()));
+						x.setAccount(account1);
+						accounts.put(account1.getAccountId(), x);
 					}
 					x.setPassword(line.get(2));
 					x.setCustomerID((x.getFullName() + x.getPassword()).hashCode());
 					customers.put(line.get(1), x);
+
 					if(line.size() > 6){
-						x.setAccount(new Account(Integer.parseInt(line.get(7)), Double.parseDouble(line.get(8)), Account.AccountType.valueOf(line.get(6).toUpperCase())));
+						Account account2 = new Account(Integer.parseInt(line.get(7)), Double.parseDouble(line.get(8)), Account.AccountType.valueOf(line.get(6).toUpperCase()));
+						x.setAccount(account2);
+						accounts.put(account2.getAccountId(), x);
 					}
 					if(line.size() > 9){
-						x.setAccount(new Account(Integer.parseInt(line.get(10)), Double.parseDouble(line.get(11)), Account.AccountType.valueOf(line.get(9).toUpperCase())));
+						Account account3 = new Account(Integer.parseInt(line.get(10)), Double.parseDouble(line.get(11)), Account.AccountType.valueOf(line.get(9).toUpperCase()));
+						x.setAccount(account3);
+						accounts.put(account3.getAccountId(), x);
+
 					}
 				}
 			}
@@ -203,8 +212,8 @@ public class NewBank {
 					return "FAIL";
 				} else {
 					String payeeAccountID = requestSplit[2];
-					Customer payee = customers.get(payeeAccountID);
-					Customer sender = customers.get(customer);
+					Customer payee = accounts.get(Integer.parseInt(payeeAccountID)); //wrong
+					Customer sender = accounts.get(Integer.parseInt(customer.getKey())); //wrong
 					if(sender.canOfferLoan() && payee.canTakeLoan()){
 						return payPerson(customer, requestSplit, Transaction.TransactionType.MICROLOAN);
 					} else if(!sender.canOfferLoan()) {
@@ -377,8 +386,8 @@ public class NewBank {
 			Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, payment, message, type);
 			transactions.put(user, transaction);
 			if(type.equals(Transaction.TransactionType.MICROLOAN)){
-				Double interest = 7.00;
-				int installments = 12;
+				Double interest = 7.00; //this will need to handled better in the future
+				int installments = 12; //this will need to handled better in the future
 				LocalDate repaymentDate = dateTime.plus(Period.ofYears(1));
 				MicroLoan microLoan = new MicroLoan(dateTime, senderId, senderName, receiverId, receiverName, payment, message, type, interest, installments, repaymentDate);
 				customerMicroloansOffered.put(sender, microLoan); //creates a lookup mapping for the sending customer to the loan offered
