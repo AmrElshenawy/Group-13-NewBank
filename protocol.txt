@@ -14,7 +14,11 @@ MOVE <Amount> <From> <To>
 e.g. MOVE 100 Main Savings 
 Returns SUCCESS or FAIL
 
-PAY <Amount> <From Users Account> <To Payee's UserName>
+PAY <Amount> <From User's Account> <To Payee's Account>
+e.g. PAY John 100
+Returns SUCCESS or FAIL
+
+MICROLOAN <Amount> <From User's Account> <To Payee's Account>
 e.g. PAY John 100
 Returns SUCCESS or FAIL
 
