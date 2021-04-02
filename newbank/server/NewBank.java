@@ -2,10 +2,10 @@ package newbank.server;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +20,10 @@ public class NewBank {
 	private DatabaseHandler fullReport = new DatabaseHandler();
 	private HashMap<Account,Transaction> transactions;
 	private TransactionHandler handleTransactions = new TransactionHandler();
+	private HashMap<Customer, MicroLoan> customerMicroloansOffered;
+	private HashMap<Customer, MicroLoan> customerMicroloansReceived;
+	private HashMap<Account, MicroLoan> accountMicroloansOffered;
+	private HashMap<Account, MicroLoan> accountMicroloansReceived;
 	
 	public NewBank() {
 		customers = new HashMap<>();
@@ -27,6 +31,26 @@ public class NewBank {
 		transactions = new HashMap<>();
 		readTransactionsFromDB();
 	}
+
+	public static NewBank getBank() {
+		return bank;
+	}
+
+	public HashMap<String,Customer> getName2CustomersMapping(){
+		return customers;
+	}
+
+	public HashMap<Account,Transaction> getAccount2TransactionsMapping(){
+		return transactions;
+	}
+
+	public HashMap<Customer, MicroLoan> getCustomer2MicroloansOffered(){ return customerMicroloansOffered; }
+
+	public HashMap<Customer, MicroLoan> getCustomer2MicroloansReceived(){ return customerMicroloansReceived; }
+
+	public HashMap<Account, MicroLoan> getAccount2MicroloansOffered(){ return accountMicroloansOffered; }
+
+	public HashMap<Account, MicroLoan> getAccount2MicroloansReceived(){ return accountMicroloansReceived; }
 
 	private void fillHashMap_fromDB() {
 		List<ArrayList<String>> scanOutput;
@@ -61,32 +85,21 @@ public class NewBank {
 			for(ArrayList<String> line: scanOutput){
 				for(int i = 0; i < line.size(); i++){
 					Account account = new Account(parseInt(line.get(2)));
-					Date dateTime = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(line.get(1));
+					LocalDate dateTime = (LocalDate) DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").parse(line.get(1));
 					int senderId = parseInt(line.get(2));
 					String senderName = line.get(3);
 					int receiverId = parseInt(line.get(4));
 					String receiverName = line.get(5);
 					Double amount = parseDouble(line.get(6));
 					String message = line.get(7);
-					Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, amount, message);
+					Transaction.TransactionType tranType = Transaction.TransactionType.valueOf(line.get(8));
+					Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, amount, message, tranType);
 					transactions.put(account, transaction);
 				}
 			}
-		} catch (FileNotFoundException | ParseException e) {
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public static NewBank getBank() {
-		return bank;
-	}
-
-	public HashMap<String,Customer> getCustomers(){
-		return customers;
-	}
-
-	public HashMap<Account,Transaction> getTransactions(){
-		return transactions;
 	}
 	
 	public synchronized CustomerID checkLogInDetails(String userName, String password) throws FileNotFoundException {
@@ -105,7 +118,8 @@ public class NewBank {
 		if(customers.containsKey(customer.getKey())) {
 			String[] requestSplit = request.split(" ");
 			switch(requestSplit[0]) {
-			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
+			case "SHOWMYACCOUNTS" :
+				return showMyAccounts(customer);
 			case "NEWACCOUNT":
 				ArrayList<Account> accountsList = customers.get(customer.getKey()).getAccounts();
 				if(accountsList.size() >= 3){
@@ -113,36 +127,36 @@ public class NewBank {
 				}
 				double openingBalance = 0;
 				openingBalance = Double.parseDouble(requestSplit[1]);
-				Account.AccountType type;
+				Account.AccountType accType;
 				if(requestSplit.length == 3){
 					String accountType = requestSplit[2];
 
 					if(accountType.equalsIgnoreCase(Account.AccountType.CHILDREN.toString())){
-						type = Account.AccountType.CHILDREN;
+						accType = Account.AccountType.CHILDREN;
 					}
 					else if(accountType.equalsIgnoreCase(Account.AccountType.SENIOR.toString())){
-						type = Account.AccountType.SENIOR;
+						accType = Account.AccountType.SENIOR;
 					}  
 					else if(accountType.equalsIgnoreCase(Account.AccountType.CHECKING.toString())){
-						type = Account.AccountType.CHECKING;
+						accType = Account.AccountType.CHECKING;
 					} 
 					else if(accountType.equalsIgnoreCase(Account.AccountType.SAVINGS.toString())){
-						type = Account.AccountType.SAVINGS;
+						accType = Account.AccountType.SAVINGS;
 					} 
 					else if(accountType.equalsIgnoreCase(Account.AccountType.MONEYMARKET.toString())){
-						type = Account.AccountType.MONEYMARKET;
+						accType = Account.AccountType.MONEYMARKET;
 					} 
 					else if(accountType.equalsIgnoreCase(Account.AccountType.OVERDRAFT.toString())){
-						type = Account.AccountType.OVERDRAFT;
+						accType = Account.AccountType.OVERDRAFT;
 					} 
 					else{
-						type = Account.AccountType.CHECKING; // default case
+						accType = Account.AccountType.CHECKING; // default case
 					} 
-					customers.get(customer.getKey()).setAccount(new Account(openingBalance,type));
+					customers.get(customer.getKey()).setAccount(new Account(openingBalance,accType));
 				} 
 				else{
-					type = Account.AccountType.CHECKING; //default account type if no type is specified
-					customers.get(customer.getKey()).setAccount(new Account(openingBalance,type));
+					accType = Account.AccountType.CHECKING; //default account type if no type is specified
+					customers.get(customer.getKey()).setAccount(new Account(openingBalance,accType));
 				} 
 				return "SUCCESS";
 			case "MOVE":
@@ -163,25 +177,43 @@ public class NewBank {
 					} else {
 						accountFrom.modifyBalance(amount, Account.InstructionType.WITHDRAW);
 						accountTo.modifyBalance(amount, Account.InstructionType.DEPOSIT);
-						Date dateTime = new Date();
-						String formattedDate = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(dateTime);
+						LocalDate dateTime = LocalDate.now();
+						String formattedDate = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss").format(dateTime);
 						int senderId = accountFrom.getAccountId();
 						String senderName = customer.getKey();
 						int receiverId = accountTo.getAccountId();
 						String receiverName = customer.getKey();
 						String message = "payment from "+senderName+" to "+receiverName+" of "+amount+" on "+ formattedDate;
-						Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, amount, message);
+						Transaction.TransactionType tranType = Transaction.TransactionType.TRANSFER;
+						Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, amount, message, tranType);
 						transactions.put(accountFrom, transaction);
 						return "SUCCESS! Move transfer complete.";
 					}
 				}
 			case "PAY":
-				//PAY <Amount> <From Users Account> <To Payee's UserName>
+				//PAY <Amount> <From User's Account> <To Payee's Account>
 				if (requestSplit.length != 4){
 					return "FAIL";
 				} else {
-					return payPerson(customer, requestSplit );
+					return payPerson(customer, requestSplit, Transaction.TransactionType.PAYMENT);
 				}
+			case "MICROLOAN":
+				// MICROLOAN <Amount> <From User's Account> <To Payee's Account>
+				if (requestSplit.length != 4){
+					return "FAIL";
+				} else {
+					String payeeAccountID = requestSplit[2];
+					Customer payee = customers.get(payeeAccountID);
+					Customer sender = customers.get(customer);
+					if(sender.canOfferLoan() && payee.canTakeLoan()){
+						return payPerson(customer, requestSplit, Transaction.TransactionType.MICROLOAN);
+					} else if(!sender.canOfferLoan()) {
+						return "YOU ARE NOT AUTHORIZED TO OFFER LOANS";
+					} else if(!payee.canTakeLoan()){
+						return "YOU ARE NOT AUTHORIZED TO RECEIVE LOANS";
+					} else return "FAIL";
+				}
+
 			case "CONFIRM":
 				DatabaseHandler save = new DatabaseHandler();
 				try {
@@ -192,7 +224,6 @@ public class NewBank {
 				}
 				return "ACTION CONFIRMED!";
 			case "DELETE":
-				// DELETE <Customer ID>
 				// DELETE <Customer ID> <AccountType>
 				if(customer.getKey().equalsIgnoreCase("staff")){
 					if(requestSplit.length == 2){
@@ -242,7 +273,7 @@ public class NewBank {
 		}
 		return "FAIL";
 	}
-	
+
 	private String showMyAccounts(CustomerID customer) {
 		return (customers.get(customer.getKey())).accountsToString();
 	}
@@ -259,7 +290,7 @@ public class NewBank {
 		return null;
 	}
 
-	// Helper method for MOVE to check that the account that the user woould like to transfer
+	// Helper method for MOVE to check that the account that the user would like to transfer
 	// funds from has sufficient funds to cover the transfer.
 	public boolean sufficientFunds(Account account, Double amount){
 		if (account.getOpeningBalance() >= amount){
@@ -275,13 +306,13 @@ public class NewBank {
 		- Person paying is using main account to pay from
 		- Payee's account is the first account
 	*/
-	private String payPerson (CustomerID customer, String[] requestSplit ) throws FileNotFoundException {
+	private String payPerson (CustomerID customer, String[] requestSplit, Transaction.TransactionType type) throws FileNotFoundException {
 		Double payment = Double.parseDouble(requestSplit[1]);
 		CustomerID payeeID = findPayeeID(requestSplit[3]);
 		String payeeAccountID = findPayeeAccountID(requestSplit[3]);
 		Account userAccount = returnAccount(requestSplit[2], customers.get(customer.getKey()));
 		Account payeeAccount = returnAccount(payeeAccountID, customers.get(payeeID.getKey()));
-		return transferFunds(userAccount, payeeAccount, payment);
+		return transferFunds(userAccount, payeeAccount, payment, type);
 	}
 
 	public void addCustomer(String hashKey, Customer customer){
@@ -315,29 +346,51 @@ public class NewBank {
 		return null;
 	}
 	// Helper method to transfer funds
-	private String transferFunds(Account user, Account payee, double payment){
+	private String transferFunds(Account user, Account payee, double payment, Transaction.TransactionType type){
 		if (user == null || payee == null || !sufficientFunds(user, payment)){
 			return "FAIL";
 		} else {
 			user.modifyBalance(payment, Account.InstructionType.WITHDRAW);
 			payee.modifyBalance(payment, Account.InstructionType.DEPOSIT);
-			Date dateTime = new Date();
-			String formattedDate = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(dateTime);
+			LocalDate dateTime = LocalDate.now();
+			String formattedDate = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss").format(dateTime);
 			int senderId = user.getAccountId();
-			String senderName = "";
-			for(Map.Entry<String, Customer> record : customers.entrySet()) {
-				senderName = record.getKey();
-			}
 			int receiverId = payee.getAccountId();
+			String senderName = "";
+			Customer sender = null;
 			String receiverName = "";
-			for(Map.Entry<String, Customer> record : customers.entrySet()) {
-				receiverName = record.getKey();
+			Customer receiver = null;
+			for(Map.Entry<String, Customer> record : customers.entrySet()) { //record is of type Map, record.getValue() returns a Customer object
+				for(Account account: record.getValue().getAccounts()){ //record.getValue().getAccounts() returns a List of Account objects
+					if(account.getAccountId() == senderId){
+						senderName = record.getKey();
+						sender = record.getValue();
+					}
+					if(account.getAccountId() == senderId){
+						receiverName = record.getKey();
+						receiver = record.getValue();
+					}
+					break;
+				}
 			}
 			String message = "payment from "+senderName+" to "+receiverName+" of "+payment+" on "+formattedDate;
-			Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, payment, message);
+			Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, payment, message, type);
 			transactions.put(user, transaction);
+			if(type.equals(Transaction.TransactionType.MICROLOAN)){
+				Double interest = 7.00;
+				int installments = 12;
+				LocalDate repaymentDate = dateTime.plus(Period.ofYears(1));
+				MicroLoan microLoan = new MicroLoan(dateTime, senderId, senderName, receiverId, receiverName, payment, message, type, interest, installments, repaymentDate);
+				customerMicroloansOffered.put(sender, microLoan); //creates a lookup mapping for the sending customer to the loan offered
+				customerMicroloansReceived.put(receiver, microLoan); //creates a lookup mapping for the receiving customer to the loan taken
+				accountMicroloansOffered.put(user, microLoan); //creates a lookup mapping for the sending account to the loan offered
+				accountMicroloansReceived.put(payee, microLoan); //creates a lookup mapping for the receiving account to the loan taken
+				receiver.incrementNumberLoans();
+			}
+
 			return "SUCCESS";
 		}
 	}
+
 }
 
