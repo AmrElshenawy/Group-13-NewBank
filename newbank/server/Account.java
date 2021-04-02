@@ -81,7 +81,7 @@ public class Account {
 
             accountNumber = prefix + baseAccountNumber;
             NewBank bank = new NewBank();
-            HashMap<String, Customer> customerAccounts = bank.getCustomers();
+            HashMap<String, Customer> customerAccounts = bank.getName2CustomersMapping();
             for(Customer customer: customerAccounts.values()){
                 for(Account account: customer.getAccounts()){
                     if(account.getAccountId() !=Integer.parseInt(accountNumber)){
