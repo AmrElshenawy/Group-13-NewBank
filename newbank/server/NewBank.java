@@ -205,11 +205,7 @@ public class NewBank {
 				if (requestSplit.length != 4){
 					return "FAIL";
 				} else {
-<<<<<<< HEAD
 					return payPerson(customer, requestSplit, Transaction.TransactionType.PAYMENT);
-=======
-					return payPerson(customer, requestSplit);
->>>>>>> main
 				}
 			case "MICROLOAN":
 				// MICROLOAN <Amount> <From User's Account> <To Payee's Account>
@@ -339,13 +335,8 @@ public class NewBank {
 		CustomerID payeeName = findPayeeID(requestSplit[3]);
 		String payeeAccountType = findPayeeAccountType(requestSplit[3]);
 		Account userAccount = returnAccount(requestSplit[2], customers.get(customer.getKey()));
-<<<<<<< HEAD
-		Account payeeAccount = returnAccount(payeeAccountID, customers.get(payeeID.getKey()));
-		return transferFunds(userAccount, payeeAccount, payment, type);
-=======
 		Account payeeAccount = returnAccount(payeeAccountType, customers.get(payeeName.getKey()));
-		return transferFunds(userAccount, payeeAccount, payment);
->>>>>>> main
+		return transferFunds(userAccount, payeeAccount, payment, type);
 	}
 
 	public void addCustomer(String hashKey, Customer customer){

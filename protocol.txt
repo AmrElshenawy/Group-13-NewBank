@@ -14,18 +14,12 @@ MOVE <Amount> <From> <To>
 e.g. MOVE 100 Checking Savings 
 Returns SUCCESS or FAIL
 
-<<<<<<< HEAD
-PAY <Amount> <From User's Account> <To Payee's Account>
-e.g. PAY 100 12345 56789
+PAY <amount> <from account type> <to customer name>
+e.g. PAY 100 Checking John
 Returns SUCCESS or FAIL
 
 MICROLOAN <Amount> <From User's Account> <To Payee's Account>
 e.g. MICROLOAN 100 12345 56789
-=======
-PAY <amount> <from account type> <to customer name>
-e.g. PAY 100 Checking John
->>>>>>> main
-Returns SUCCESS or FAIL
 
 DELETE <Customer ID>
 Deletes the customer record for the specified customer ID.
