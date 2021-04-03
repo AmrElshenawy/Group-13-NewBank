@@ -12,21 +12,21 @@ public class ExampleClient extends Thread{
 	private Socket server;
 	private PrintWriter bankServerOut;	
 	private BufferedReader userInput;
-	private Thread bankServerResponceThread;
+	private Thread bankServerResponseThread;
 	
 	public ExampleClient(String ip, int port) throws UnknownHostException, IOException {
 		server = new Socket(ip,port);
 		userInput = new BufferedReader(new InputStreamReader(System.in)); 
 		bankServerOut = new PrintWriter(server.getOutputStream(), true); 
 		
-		bankServerResponceThread = new Thread() {
+		bankServerResponseThread = new Thread() {
 			private BufferedReader bankServerIn = new BufferedReader(new InputStreamReader(server.getInputStream())); 
 			public void run() {
 				try {
 					while(true) {
-						String responce = bankServerIn.readLine();
-						if (responce != null){
-							System.out.println(responce);
+						String response = bankServerIn.readLine();
+						if (response != null){
+							System.out.println(response);
 						}
 					}
 				} catch (IOException e) {
@@ -35,7 +35,7 @@ public class ExampleClient extends Thread{
 				}
 			}
 		};
-		bankServerResponceThread.start();
+		bankServerResponseThread.start();
 	}
 	
 	

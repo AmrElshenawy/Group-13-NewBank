@@ -107,12 +107,14 @@ public class TransactionHandler {
     }
 
     // Method used to save transactions and update the database
-    public void saveSession(HashMap<Account, Transaction> transactions) throws IOException{
-        BufferedWriter writer = new BufferedWriter(new FileWriter(dB, false));
+    //public void saveSession(HashMap<Account, Transaction> transactions) throws IOException{
+    public void saveSession(ArrayList<Transaction> transactionsList) throws IOException{
+        BufferedWriter writer = new BufferedWriter(new FileWriter(dB, true));
         String output = "";
-        for(Transaction transaction: transactions.values()){
+        //for(Transaction transaction: transactions.values()){
+        for(Transaction transaction: transactionsList){
             output += "transactionId" + ":" + transaction.getTransactionId() + ",";
-            output += "transactionDateTime" + ":" + DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss").format(transaction.getTransactionDateTime()) + ",";
+            output += "transactionDateTime" + ":" + DateTimeFormatter.ofPattern("MM/dd/yyyy HH.mm.ss").format(transaction.getTransactionDateTime()) + ",";
             output += "senderAccountId" + ":" + String.valueOf( transaction.getSenderId()) + ",";
             output += "senderName" + ":" + transaction.getSenderName() + ",";
             output += "receiverAccountId" + ":" + String.valueOf(transaction.getReceiverId()) + ",";

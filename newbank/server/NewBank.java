@@ -2,9 +2,10 @@ package newbank.server;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,9 +18,10 @@ public class NewBank {
 	
 	private static final NewBank bank = new NewBank();
 	private HashMap<String,Customer> customers;
-	private HashMap<Integer,Customer> accounts;
+	private HashMap<Integer,Customer> accounts; //maps account number to customer object
 	private DatabaseHandler fullReport = new DatabaseHandler();
 	private HashMap<Account,Transaction> transactions;
+	private ArrayList<Transaction> transactionsList;
 	private TransactionHandler handleTransactions = new TransactionHandler();
 	private HashMap<Customer, MicroLoan> customerMicroloansOffered;
 	private HashMap<Customer, MicroLoan> customerMicroloansReceived;
@@ -28,9 +30,16 @@ public class NewBank {
 	
 	public NewBank() {
 		customers = new HashMap<>();
-		fillHashMap_fromDB();
 		transactions = new HashMap<>();
+		accounts = new HashMap<>();
+		customerMicroloansOffered = new HashMap<>();
+		customerMicroloansReceived = new HashMap<>();
+		accountMicroloansOffered = new HashMap<>();
+		accountMicroloansReceived = new HashMap<>();
+		fillHashMap_fromDB();
 		readTransactionsFromDB();
+		transactionsList = new ArrayList<>();
+
 	}
 
 	public static NewBank getBank() {
@@ -95,7 +104,7 @@ public class NewBank {
 			for(ArrayList<String> line: scanOutput){
 				for(int i = 0; i < line.size(); i++){
 					Account account = new Account(parseInt(line.get(2)));
-					LocalDate dateTime = (LocalDate) DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").parse(line.get(1));
+					LocalDateTime dateTime = LocalDateTime.parse(line.get(1),DateTimeFormatter.ofPattern("dd/MM/yyyy HH.mm.ss"));
 					int senderId = parseInt(line.get(2));
 					String senderName = line.get(3);
 					int receiverId = parseInt(line.get(4));
@@ -131,15 +140,16 @@ public class NewBank {
 			case "SHOWMYACCOUNTS" :
 				return showMyAccounts(customer);
 			case "NEWACCOUNT":
+				// NEWACCOUNT <Name> <OpeningBalance> <Type>
 				ArrayList<Account> accountsList = customers.get(customer.getKey()).getAccounts();
 				if(accountsList.size() >= 3){
 					return "MAXIMUM NUMBER OF ACCOUNTS REACHED!";
 				}
 				double openingBalance = 0;
-				openingBalance = Double.parseDouble(requestSplit[1]);
+				openingBalance = Double.parseDouble(requestSplit[2]);
 				Account.AccountType accType;
 				if(requestSplit.length == 3){
-					String accountType = requestSplit[2];
+					String accountType = requestSplit[3];
 
 					if(accountType.equalsIgnoreCase(Account.AccountType.CHILDREN.toString())){
 						accType = Account.AccountType.CHILDREN;
@@ -187,8 +197,8 @@ public class NewBank {
 					} else {
 						accountFrom.modifyBalance(amount, Account.InstructionType.WITHDRAW);
 						accountTo.modifyBalance(amount, Account.InstructionType.DEPOSIT);
-						LocalDate dateTime = LocalDate.now();
-						String formattedDate = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss").format(dateTime);
+						LocalDateTime dateTime = LocalDateTime.now();
+						String formattedDate = DateTimeFormatter.ofPattern("MM/dd/yyyy HH.mm.ss").format(dateTime);
 						int senderId = accountFrom.getAccountId();
 						String senderName = customer.getKey();
 						int receiverId = accountTo.getAccountId();
@@ -197,18 +207,19 @@ public class NewBank {
 						Transaction.TransactionType tranType = Transaction.TransactionType.TRANSFER;
 						Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, amount, message, tranType);
 						transactions.put(accountFrom, transaction);
+						transactionsList.add(transaction);
 						return "SUCCESS! Move transfer complete.";
 					}
 				}
 			case "PAY":
-				//PAY <Amount> <From User's Account> <To Payee's Account>
+				// PAY <Amount> <From User's Account> <To Payee's UserName>
 				if (requestSplit.length != 4){
 					return "FAIL";
 				} else {
 					return payPerson(customer, requestSplit, Transaction.TransactionType.PAYMENT);
 				}
 			case "MICROLOAN":
-				// MICROLOAN <Amount> <From User's Account> <To Payee's Account>
+				// MICROLOAN <Amount> <From User's Account> <To Payee's UserName>
 				if (requestSplit.length != 4){
 					return "FAIL";
 				} else {
@@ -226,14 +237,17 @@ public class NewBank {
 
 			case "CONFIRM":
 				DatabaseHandler save = new DatabaseHandler();
+				//TransactionHandler saveTransactions = new TransactionHandler();
 				try {
 					save.saveSession(customers);
-					handleTransactions.saveSession(transactions);
+					handleTransactions.saveSession(transactionsList);
+					//saveTransactions.saveSession(transactions);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				return "ACTION CONFIRMED!";
 			case "DELETE":
+				// DELETE
 				// DELETE <Customer ID> <AccountType>
 				if(customer.getKey().equalsIgnoreCase("staff")){
 					if(requestSplit.length == 2){
@@ -344,7 +358,7 @@ public class NewBank {
 		DatabaseHandler save = new DatabaseHandler();
 		try {
 			save.saveSession(customers);
-			handleTransactions.saveSession(transactions);
+			handleTransactions.saveSession(transactionsList);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -384,8 +398,8 @@ public class NewBank {
 		} else {
 			user.modifyBalance(payment, Account.InstructionType.WITHDRAW);
 			payee.modifyBalance(payment, Account.InstructionType.DEPOSIT);
-			LocalDate dateTime = LocalDate.now();
-			String formattedDate = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss").format(dateTime);
+			LocalDateTime dateTime = LocalDateTime.now();
+			String formattedDate = DateTimeFormatter.ofPattern("MM/dd/yyyy HH.mm.ss").format(dateTime);
 			int senderId = user.getAccountId();
 			int receiverId = payee.getAccountId();
 			String senderName = "";
@@ -398,7 +412,7 @@ public class NewBank {
 						senderName = record.getKey();
 						sender = record.getValue();
 					}
-					if(account.getAccountId() == senderId){
+					if(account.getAccountId() == receiverId){
 						receiverName = record.getKey();
 						receiver = record.getValue();
 					}
@@ -408,10 +422,11 @@ public class NewBank {
 			String message = "payment from "+senderName+" to "+receiverName+" of "+payment+" on "+formattedDate;
 			Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, payment, message, type);
 			transactions.put(user, transaction);
+			transactionsList.add(transaction);
 			if(type.equals(Transaction.TransactionType.MICROLOAN)){
 				Double interest = 7.00; //this will need to handled better in the future
 				int installments = 12; //this will need to handled better in the future
-				LocalDate repaymentDate = dateTime.plus(Period.ofYears(1));
+				LocalDateTime repaymentDate = dateTime.plus(Period.ofYears(1));
 				MicroLoan microLoan = new MicroLoan(dateTime, senderId, senderName, receiverId, receiverName, payment, message, type, interest, installments, repaymentDate);
 				customerMicroloansOffered.put(sender, microLoan); //creates a lookup mapping for the sending customer to the loan offered
 				customerMicroloansReceived.put(receiver, microLoan); //creates a lookup mapping for the receiving customer to the loan taken
@@ -438,6 +453,7 @@ public class NewBank {
 			commands += "* SHOWMYACCOUNTS \n";
 			commands += "* MOVE <amount> <from> <to> \n";
 			commands += "* PAY <amount> <from account type> <to customer name> \n";
+			commands += "* MICROLOAN <amount> <from account type> <to customer name> \n";
 			commands += "* HELP \n";
 			commands += "* HELP <command name> \n";
 			commands += "* CONFIRM";
@@ -455,10 +471,13 @@ public class NewBank {
 				description += "Will display all accounts and their information for the customer.";
 				break;
 			case "MOVE":
-				description += "MOVE 5000 checking savings - Will move 5000 from Checkings account to Savings account.";
+				description += "MOVE 5000 checking savings - Will move 5000 from Checking account to Savings account.";
 				break;
 			case "PAY":
-				description += "PAY 5500 checking john - Will pay 5500 deducted from Checkings paid to John's default account which is always Checkings.";
+				description += "PAY 5500 checking john - Will pay 5500 deducted from Checking paid to John's default account which is always Checking.";
+				break;
+			case "MICROLOAN":
+				description += "MICROLOAN 5500 checking john - Will send 1000 deducted from Checking to John's default account which is always Checkings.";
 				break;
 			case "DELETE":
 				description += "DELETE 489418943 - Will delete all records pertinent to the customer with ID# 489418943. Accessible by staff members only. \n";
