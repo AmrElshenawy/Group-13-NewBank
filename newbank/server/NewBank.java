@@ -180,7 +180,7 @@ public class NewBank {
 				if (requestSplit.length != 4){
 					return "FAIL";
 				} else {
-					return payPerson(customer, requestSplit );
+					return payPerson(customer, requestSplit);
 				}
 			case "CONFIRM":
 				DatabaseHandler save = new DatabaseHandler();
@@ -264,7 +264,7 @@ public class NewBank {
 	// Helper method for MOVE to check whether the account requested is registered to the user
 	// and return the corresponding account object.
 	public Account returnAccount(String accountTypeString, Customer customer){
-		Account.AccountType accountType = Account.AccountType.valueOf(accountTypeString);
+		Account.AccountType accountType = Account.AccountType.valueOf(accountTypeString.toUpperCase());
 		for (Account account : customer.getAccounts()){
 			if (account.getAccountType().equals(accountType)){
 				return account;
@@ -291,10 +291,10 @@ public class NewBank {
 	*/
 	private String payPerson (CustomerID customer, String[] requestSplit ) throws FileNotFoundException {
 		Double payment = Double.parseDouble(requestSplit[1]);
-		CustomerID payeeID = findPayeeID(requestSplit[3]);
-		String payeeAccountID = findPayeeAccountID(requestSplit[3]);
+		CustomerID payeeName = findPayeeID(requestSplit[3]);
+		String payeeAccountType = findPayeeAccountType(requestSplit[3]);
 		Account userAccount = returnAccount(requestSplit[2], customers.get(customer.getKey()));
-		Account payeeAccount = returnAccount(payeeAccountID, customers.get(payeeID.getKey()));
+		Account payeeAccount = returnAccount(payeeAccountType, customers.get(payeeName.getKey()));
 		return transferFunds(userAccount, payeeAccount, payment);
 	}
 
@@ -328,11 +328,11 @@ public class NewBank {
 		return null;
 	}
 	// Helper method for to return the Payee's first account object.
-	private String findPayeeAccountID (String userName) throws FileNotFoundException{
+	private String findPayeeAccountType (String userName) throws FileNotFoundException{
 		DatabaseHandler customerDB = new DatabaseHandler();
 		customerDB.findInDB(userName.toLowerCase());
 		if(customerDB.getName().equalsIgnoreCase(userName)){
-			return customerDB.getAccountID(1);
+			return customerDB.getAccountType(1);
 		}
 		return null;
 	}

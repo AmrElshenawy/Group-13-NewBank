@@ -6,16 +6,16 @@ SHOWMYACCOUNTS
 Returns a list of all the customers accounts along with their current balance 
 e.g. Main: 1000.0 
 
-NEWACCOUNT <Name> <OpeningBalance> <Type>
-e.g. NEWACCOUNT Investments 50000 MONEYMARKET
+NEWACCOUNT <OpeningBalance> <Type>
+e.g. NEWACCOUNT 50000 MONEYMARKET
 Returns SUCCESS or FAIL
 
 MOVE <Amount> <From> <To>
-e.g. MOVE 100 Main Savings 
+e.g. MOVE 100 Checking Savings 
 Returns SUCCESS or FAIL
 
-PAY <Amount> <From Users Account> <To Payee's UserName>
-e.g. PAY John 100
+PAY <amount> <from account type> <to customer name>
+e.g. PAY 100 Checking John
 Returns SUCCESS or FAIL
 
 DELETE <Customer ID>
