@@ -66,31 +66,31 @@ public class DatabaseHandler  {
                             case "password":
                                 password = semicolons[1];
                                 break;
-                            case "accounttype1":
+                            case "accounttype1": //0
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountname1":
+                            case "accountname1": //1
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountbalance1":
+                            case "accountbalance1": //2
                                 allAccounts.add(semicolons[1]);;
                                 break;
-                            case "accounttype2":
+                            case "accounttype2": //3
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountname2":
+                            case "accountname2": //4
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountbalance2":
+                            case "accountbalance2": //5
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accounttype3":
+                            case "accounttype3": //6
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountname3":
+                            case "accountname3": //7
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountbalance3":
+                            case "accountbalance3": //8
                                 allAccounts.add(semicolons[1]);
                                 break;
                             default:
@@ -195,8 +195,8 @@ public class DatabaseHandler  {
                     output += "accountbalance" + counter.toString() + ":" + account.getOpeningBalance() + ",";
                     counter++;
                 }
-                output += System.lineSeparator();
             }
+            output += System.lineSeparator();
         }
         writer.write(output);
         writer.close();

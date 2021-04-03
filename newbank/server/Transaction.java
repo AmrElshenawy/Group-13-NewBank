@@ -1,10 +1,10 @@
 package newbank.server;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Transaction {
     protected int transactionId;
-    protected LocalDate transactionDateTime;
+    protected LocalDateTime transactionDateTime;
     protected int senderAccountId;
     protected String senderName;
     protected int receiverAccountId;
@@ -14,7 +14,7 @@ public class Transaction {
     enum TransactionType {DEPOSIT, WITHDRAWAL, TRANSFER, PAYMENT, MICROLOAN, REPAYMENT}
     private Transaction.TransactionType transactionType;
 
-    public Transaction(LocalDate dateTime, int senderId, String senderName, int receiverId, String receiverName, Double amount, String message, TransactionType type){
+    public Transaction(LocalDateTime dateTime, int senderId, String senderName, int receiverId, String receiverName, Double amount, String message, TransactionType type){
         this.transactionDateTime = dateTime;
         this.senderAccountId = senderId;
         this.senderName = senderName;
@@ -28,7 +28,7 @@ public class Transaction {
     }
 
     //getters
-    public LocalDate getTransactionDateTime() {
+    public LocalDateTime getTransactionDateTime() {
         return transactionDateTime;
     }
 
@@ -59,7 +59,7 @@ public class Transaction {
     }
 
     //setters
-    public void setTransactionDateTime(LocalDate transactionDateTime) {
+    public void setTransactionDateTime(LocalDateTime transactionDateTime) {
         this.transactionDateTime = transactionDateTime;
     }
 

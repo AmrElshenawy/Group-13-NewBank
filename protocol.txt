@@ -14,16 +14,19 @@ MOVE <Amount> <From> <To>
 e.g. MOVE 100 Main Savings 
 Returns SUCCESS or FAIL
 
-PAY <Amount> <From User's Account> <To Payee's Account>
-e.g. PAY 100 12345 56789
+PAY <Amount> <From User's Account> <To Payee's UserName>
+e.g. PAY 100 Main John
 Returns SUCCESS or FAIL
 
-MICROLOAN <Amount> <From User's Account> <To Payee's Account>
+MICROLOAN <Amount> <From User's Account> <To Payee's UserName>
 e.g. MICROLOAN 100 12345 56789
 Returns SUCCESS or FAIL
 
+DELETE <Customer ID>
+Deletes the customer record for the specified customer ID.
+
 DELETE <Customer ID> <AccountType>
-Deletes a customer. Accessible by staff only
+Deletes the specified account type for the specified customer. Accessible by staff only
 
 CONFIRM
 Confirms CRUD operations on database
@@ -32,3 +35,9 @@ Returns ACTION CONFIRMED!
 AUDITREPORT
 Generates a report of banking activity. Accessible by staff only
 Returns SUCCESS or FAIL
+
+HELP
+Displays all of the available commands.
+
+HELP <command name>
+Displays information about the specified command.

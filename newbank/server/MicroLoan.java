@@ -1,15 +1,15 @@
 package newbank.server;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class MicroLoan extends Transaction{
 
     protected Double interestRate;
     protected int installments;
-    protected LocalDate repaymentDate;
+    protected LocalDateTime repaymentDate;
     protected Double maxLoanAmount = 1000.00;
 
-    public MicroLoan(LocalDate dateTime, int senderId, String senderName, int receiverId, String receiverName, Double amount, String message, TransactionType type, Double interestRate, int installments, LocalDate repaymentDate) {
+    public MicroLoan(LocalDateTime dateTime, int senderId, String senderName, int receiverId, String receiverName, Double amount, String message, TransactionType type, Double interestRate, int installments, LocalDateTime repaymentDate) {
         super(dateTime, senderId, senderName, receiverId, receiverName, amount, message, type);
         this.interestRate = interestRate;
         this.installments = installments;
@@ -25,7 +25,7 @@ public class MicroLoan extends Transaction{
         return installments;
     }
 
-    public LocalDate getRepaymentDate() {
+    public LocalDateTime getRepaymentDate() {
         return repaymentDate;
     }
 
@@ -42,7 +42,7 @@ public class MicroLoan extends Transaction{
         this.installments = installments;
     }
 
-    public void setRepaymentDate(LocalDate repaymentDate) {
+    public void setRepaymentDate(LocalDateTime repaymentDate) {
         this.repaymentDate = repaymentDate;
     }
 
