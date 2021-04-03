@@ -109,7 +109,7 @@ public class TransactionHandler {
     // Method used to save transactions and update the database
     //public void saveSession(HashMap<Account, Transaction> transactions) throws IOException{
     public void saveSession(ArrayList<Transaction> transactionsList) throws IOException{
-        BufferedWriter writer = new BufferedWriter(new FileWriter(dB, false));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(dB, true));
         String output = "";
         //for(Transaction transaction: transactions.values()){
         for(Transaction transaction: transactionsList){

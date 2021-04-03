@@ -319,7 +319,7 @@ public class NewBank {
 	// Helper method for MOVE to check whether the account requested is registered to the user
 	// and return the corresponding account object.
 	public Account returnAccount(String accountTypeString, Customer customer){
-		Account.AccountType accountType = Account.AccountType.valueOf(accountTypeString);
+		Account.AccountType accountType = Account.AccountType.valueOf(accountTypeString.toUpperCase());
 		for (Account account : customer.getAccounts()){
 			if (account.getAccountType().equals(accountType)){
 				return account;
@@ -346,10 +346,10 @@ public class NewBank {
 	*/
 	private String payPerson (CustomerID customer, String[] requestSplit, Transaction.TransactionType type) throws FileNotFoundException {
 		Double payment = Double.parseDouble(requestSplit[1]);
-		CustomerID payeeID = findPayeeID(requestSplit[3]);
-		String payeeAccountID = findPayeeAccountID(requestSplit[3]);
+		CustomerID payeeName = findPayeeID(requestSplit[3]);
+		String payeeAccountType = findPayeeAccountType(requestSplit[3]);
 		Account userAccount = returnAccount(requestSplit[2], customers.get(customer.getKey()));
-		Account payeeAccount = returnAccount(payeeAccountID, customers.get(payeeID.getKey()));
+		Account payeeAccount = returnAccount(payeeAccountType, customers.get(payeeName.getKey()));
 		return transferFunds(userAccount, payeeAccount, payment, type);
 	}
 
@@ -383,13 +383,11 @@ public class NewBank {
 		return null;
 	}
 	// Helper method for to return the Payee's first account object.
-	private String findPayeeAccountID (String userName) throws FileNotFoundException{
+	private String findPayeeAccountType (String userName) throws FileNotFoundException{
 		DatabaseHandler customerDB = new DatabaseHandler();
 		customerDB.findInDB(userName.toLowerCase());
 		if(customerDB.getName().equalsIgnoreCase(userName)){
-			//return customerDB.getAccountID(1);
 			return customerDB.getAccountType(1);
-
 		}
 		return null;
 	}
@@ -414,7 +412,7 @@ public class NewBank {
 						senderName = record.getKey();
 						sender = record.getValue();
 					}
-					if(account.getAccountId() == senderId){
+					if(account.getAccountId() == receiverId){
 						receiverName = record.getKey();
 						receiver = record.getValue();
 					}
@@ -473,13 +471,13 @@ public class NewBank {
 				description += "Will display all accounts and their information for the customer.";
 				break;
 			case "MOVE":
-				description += "MOVE 5000 checking savings - Will move 5000 from Checkings account to Savings account.";
+				description += "MOVE 5000 checking savings - Will move 5000 from Checking account to Savings account.";
 				break;
 			case "PAY":
-				description += "PAY 5500 checking john - Will pay 5500 deducted from Checkings paid to John's default account which is always Checkings.";
+				description += "PAY 5500 checking john - Will pay 5500 deducted from Checking paid to John's default account which is always Checking.";
 				break;
 			case "MICROLOAN":
-				description += "MICROLOAN 1000 23456 56789 - Will send 1000 deducted from account number 23456 paid to account number 56789";
+				description += "MICROLOAN 5500 checking john - Will send 1000 deducted from Checking to John's default account which is always Checkings.";
 				break;
 			case "DELETE":
 				description += "DELETE 489418943 - Will delete all records pertinent to the customer with ID# 489418943. Accessible by staff members only. \n";

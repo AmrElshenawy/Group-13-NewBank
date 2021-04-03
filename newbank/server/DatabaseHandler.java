@@ -16,7 +16,7 @@ public class DatabaseHandler  {
     private List<ArrayList<String>> returnInfo = new ArrayList<ArrayList<String>>();    // Holds all database information
     
     // Method used to fully scan the database and return information in an arraylist of arraylists line by line.
-    // This method is primairly used to fill in and refresh the Hashmap with information from the database.
+    // This method is primarily used to fill in and refresh the Hashmap with information from the database.
     public List<ArrayList<String>> scanFullDB() throws FileNotFoundException{
         String info = "";   // A full line in the database
         plainDBContent.clear();
@@ -69,7 +69,7 @@ public class DatabaseHandler  {
                             case "accounttype1": //0
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountname1": //1
+                            case "accountnumber1": //1
                                 allAccounts.add(semicolons[1]);
                                 break;
                             case "accountbalance1": //2
@@ -78,7 +78,7 @@ public class DatabaseHandler  {
                             case "accounttype2": //3
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountname2": //4
+                            case "accountnumber2": //4
                                 allAccounts.add(semicolons[1]);
                                 break;
                             case "accountbalance2": //5
@@ -87,7 +87,7 @@ public class DatabaseHandler  {
                             case "accounttype3": //6
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountname3": //7
+                            case "accountnumber3": //7
                                 allAccounts.add(semicolons[1]);
                                 break;
                             case "accountbalance3": //8
