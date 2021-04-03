@@ -1,18 +1,20 @@
 package newbank.server;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Transaction {
-    private int transactionId;
-    private Date transactionDateTime;
-    private int senderAccountId;
-    private String senderName;
-    private int receiverAccountId;
-    private String receiverName;
-    private Double amount;
-    private String message;
+    protected int transactionId;
+    protected LocalDate transactionDateTime;
+    protected int senderAccountId;
+    protected String senderName;
+    protected int receiverAccountId;
+    protected String receiverName;
+    protected Double amount;
+    protected String message;
+    enum TransactionType {DEPOSIT, WITHDRAWAL, TRANSFER, PAYMENT, MICROLOAN, REPAYMENT}
+    private Transaction.TransactionType transactionType;
 
-    public Transaction(Date dateTime, int senderId, String senderName, int receiverId, String receiverName, Double amount, String message){
+    public Transaction(LocalDate dateTime, int senderId, String senderName, int receiverId, String receiverName, Double amount, String message, TransactionType type){
         this.transactionDateTime = dateTime;
         this.senderAccountId = senderId;
         this.senderName = senderName;
@@ -22,10 +24,11 @@ public class Transaction {
         this.message = message;
         //transaction id defined a hashcode of combination datetime + sender account + receiver account
         this.transactionId = (dateTime.toString()+senderId+receiverId).hashCode();
+        this.transactionType = type;
     }
 
     //getters
-    public Date getTransactionDateTime() {
+    public LocalDate getTransactionDateTime() {
         return transactionDateTime;
     }
 
@@ -51,8 +54,12 @@ public class Transaction {
 
     public int getTransactionId(){ return transactionId; }
 
+    public TransactionType getTransactionType() {
+        return transactionType;
+    }
+
     //setters
-    public void setTransactionDateTime(Date transactionDateTime) {
+    public void setTransactionDateTime(LocalDate transactionDateTime) {
         this.transactionDateTime = transactionDateTime;
     }
 

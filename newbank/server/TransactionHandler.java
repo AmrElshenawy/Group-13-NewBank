@@ -2,6 +2,7 @@ package newbank.server;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +80,9 @@ public class TransactionHandler {
                             case "message":
                                 allTransactions.add(semicolons[1]);
                                 break;
+                            case "type":
+                                allTransactions.add(semicolons[1]);
+                                break;
                             default:
                                 break;
                         }
@@ -108,12 +112,14 @@ public class TransactionHandler {
         String output = "";
         for(Transaction transaction: transactions.values()){
             output += "transactionId" + ":" + transaction.getTransactionId() + ",";
-            output += "transactionDateTime" + ":" + new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(transaction.getTransactionDateTime()) + ",";
+            output += "transactionDateTime" + ":" + DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss").format(transaction.getTransactionDateTime()) + ",";
             output += "senderAccountId" + ":" + String.valueOf( transaction.getSenderId()) + ",";
             output += "senderName" + ":" + transaction.getSenderName() + ",";
             output += "receiverAccountId" + ":" + String.valueOf(transaction.getReceiverId()) + ",";
             output += "receiverName" + ":" + transaction.getReceiverName() + ",";
             output += "amount" + ":" + String.valueOf(transaction.getAmount()) + ",";
+            output += "message" + ":" + String.valueOf(transaction.getMessage()) + ",";
+            output += "type" + ":" + String.valueOf(transaction.getTransactionType()) + ",";
             output += System.lineSeparator();
         }
         writer.write(output);
