@@ -69,7 +69,7 @@ public class DatabaseHandler  {
                             case "accounttype1":
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountname1":
+                            case "accountnumber1":
                                 allAccounts.add(semicolons[1]);
                                 break;
                             case "accountbalance1":
@@ -78,7 +78,7 @@ public class DatabaseHandler  {
                             case "accounttype2":
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountname2":
+                            case "accountnumber2":
                                 allAccounts.add(semicolons[1]);
                                 break;
                             case "accountbalance2":
@@ -87,7 +87,7 @@ public class DatabaseHandler  {
                             case "accounttype3":
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountname3":
+                            case "accountnumber3":
                                 allAccounts.add(semicolons[1]);
                                 break;
                             case "accountbalance3":
