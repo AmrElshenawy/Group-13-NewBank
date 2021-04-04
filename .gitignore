@@ -28,3 +28,4 @@ NewBank.iml
 ExampleClient/
 out/
 auditReport.txt
+.gradle/

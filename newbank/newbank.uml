@@ -3,33 +3,31 @@
   <ID>JAVA</ID>
   <OriginalElement>newbank</OriginalElement>
   <nodes>
-    <node x="483.0" y="0.0">newbank.server.Customer</node>
-    <node x="223.0" y="305.0">newbank.server.Account.InstructionType</node>
-    <node x="0.0" y="515.0">newbank.server.NewBank</node>
-    <node x="332.0" y="515.0">newbank.client.ExampleClient</node>
-    <node x="0.0" y="261.0">newbank.server.Account.AccountType</node>
-    <node x="0.0" y="880.0">newbank.server.CustomerID</node>
-    <node x="72.5" y="0.0">newbank.server.Account</node>
+    <node x="0.0" y="602.0">newbank.server.Customer</node>
+    <node x="251.0" y="392.0">newbank.server.Account.InstructionType</node>
+    <node x="541.0" y="0.0">newbank.server.NewBank</node>
+    <node x="331.0" y="602.0">newbank.client.ExampleClient</node>
+    <node x="0.0" y="348.0">newbank.server.Account.AccountType</node>
+    <node x="647.0" y="602.0">newbank.server.CustomerID</node>
+    <node x="81.5" y="0.0">newbank.server.Account</node>
   </nodes>
   <notes />
   <edges>
     <edge source="newbank.server.Account.InstructionType" target="newbank.server.Account">
       <point x="0.0" y="-60.5" />
-      <point x="330.5" y="236.0" />
-      <point x="287.75" y="236.0" />
-      <point x="71.75" y="105.5" />
+      <point x="373.5" y="323.0" />
+      <point x="326.0" y="323.0" />
+      <point x="81.5" y="149.0" />
     </edge>
     <edge source="newbank.server.Account.AccountType" target="newbank.server.Account">
       <point x="0.0" y="-104.5" />
-      <point x="101.5" y="236.0" />
-      <point x="144.25" y="236.0" />
-      <point x="-71.75" y="105.5" />
+      <point x="115.5" y="323.0" />
+      <point x="163.0" y="323.0" />
+      <point x="-81.5" y="149.0" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="0.7400204708290685" x="384.5" y="478.50000000000006" />
-  <SelectedNodes>
-    <node>newbank.server.Customer</node>
-  </SelectedNodes>
+  <settings layout="Hierarchic Group" zoom="1.0" x="384.5" y="485.0" />
+  <SelectedNodes />
   <Categories>
     <Category>Fields</Category>
     <Category>Constructors</Category>

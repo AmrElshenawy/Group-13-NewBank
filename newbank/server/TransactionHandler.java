@@ -2,6 +2,7 @@ package newbank.server;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +19,7 @@ public class TransactionHandler {
     // This method is primarily used to fill in and refresh the Hashmap with information from the database.
     public List<ArrayList<String>> scanFullDB() throws FileNotFoundException {
         String info = "";   // A full line in the database
-        plainDBContent.clear();
+        //plainDBContent.clear();
         try{
             BufferedReader reader = new BufferedReader(new FileReader(dB));
             info = reader.readLine();
@@ -79,6 +80,9 @@ public class TransactionHandler {
                             case "message":
                                 allTransactions.add(semicolons[1]);
                                 break;
+                            case "type":
+                                allTransactions.add(semicolons[1]);
+                                break;
                             default:
                                 break;
                         }
@@ -103,19 +107,24 @@ public class TransactionHandler {
     }
 
     // Method used to save transactions and update the database
-    public void saveSession(HashMap<Account, Transaction> transactions) throws IOException{
-        BufferedWriter writer = new BufferedWriter(new FileWriter(dB, false));
+    //public void saveSession(HashMap<Account, Transaction> transactions) throws IOException{
+    public void saveSession(ArrayList<Transaction> transactionsList) throws IOException{
+        BufferedWriter writer = new BufferedWriter(new FileWriter(dB, true));
         String output = "";
-        for(Transaction transaction: transactions.values()){
+        Transaction transaction = transactionsList.get(transactionsList.size()-1);
+        //for(Transaction transaction: transactions.values()){
+        //for(Transaction transaction: transactionsList){
             output += "transactionId" + ":" + transaction.getTransactionId() + ",";
-            output += "transactionDateTime" + ":" + new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(transaction.getTransactionDateTime()) + ",";
+            output += "transactionDateTime" + ":" + DateTimeFormatter.ofPattern("MM/dd/yyyy HH.mm.ss").format(transaction.getTransactionDateTime()) + ",";
             output += "senderAccountId" + ":" + String.valueOf( transaction.getSenderId()) + ",";
             output += "senderName" + ":" + transaction.getSenderName() + ",";
             output += "receiverAccountId" + ":" + String.valueOf(transaction.getReceiverId()) + ",";
             output += "receiverName" + ":" + transaction.getReceiverName() + ",";
             output += "amount" + ":" + String.valueOf(transaction.getAmount()) + ",";
+            output += "message" + ":" + String.valueOf(transaction.getMessage()) + ",";
+            output += "type" + ":" + String.valueOf(transaction.getTransactionType()) + ",";
             output += System.lineSeparator();
-        }
+        //}
         writer.write(output);
         writer.close();
     }

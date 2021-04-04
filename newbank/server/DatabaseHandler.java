@@ -16,7 +16,7 @@ public class DatabaseHandler  {
     private List<ArrayList<String>> returnInfo = new ArrayList<ArrayList<String>>();    // Holds all database information
     
     // Method used to fully scan the database and return information in an arraylist of arraylists line by line.
-    // This method is primairly used to fill in and refresh the Hashmap with information from the database.
+    // This method is primarily used to fill in and refresh the Hashmap with information from the database.
     public List<ArrayList<String>> scanFullDB() throws FileNotFoundException{
         String info = "";   // A full line in the database
         plainDBContent.clear();
@@ -66,31 +66,31 @@ public class DatabaseHandler  {
                             case "password":
                                 password = semicolons[1];
                                 break;
-                            case "accounttype1":
+                            case "accounttype1": //0
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountnumber1":
+                            case "accountnumber1": //1
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountbalance1":
+                            case "accountbalance1": //2
                                 allAccounts.add(semicolons[1]);;
                                 break;
-                            case "accounttype2":
+                            case "accounttype2": //3
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountnumber2":
+                            case "accountnumber2": //4
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountbalance2":
+                            case "accountbalance2": //5
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accounttype3":
+                            case "accounttype3": //6
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountnumber3":
+                            case "accountnumber3": //7
                                 allAccounts.add(semicolons[1]);
                                 break;
-                            case "accountbalance3":
+                            case "accountbalance3": //8
                                 allAccounts.add(semicolons[1]);
                                 break;
                             default:
