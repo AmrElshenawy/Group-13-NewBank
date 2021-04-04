@@ -44,6 +44,9 @@ AUDITREPORT
 Generates a report of banking activity. Accessible by staff only
 Returns SUCCESS or FAIL
 
+SHOWTRANSACTIONS
+Shows all transactions for current logged in user
+
 HELP
 Displays all of the available commands.
 
