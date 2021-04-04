@@ -116,8 +116,8 @@ public class Account {
 	}
 
 	//setters
-	public void setTransactions(ArrayList<Transaction> transactions) {
-		this.transactions = transactions;
+	public void setTransaction(Transaction transactions) {
+        this.transactions.add(transactions);
 	}
 
 	//print functions
