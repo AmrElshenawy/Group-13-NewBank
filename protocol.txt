@@ -22,6 +22,14 @@ MICROLOAN <amount> <from account type> <to customer name>
 e.g. MICROLOAN 100 Checking John
 Returns SUCCESS or FAIL
 
+DEPOSIT <amount> <to account type>
+e.g. DEPOSIT 50 Savings
+Returns SUCCESS or FAIL
+
+WITHDRAW <amount> <from account type>
+e.g. WITHDRAW 60 Checking
+Returns SUCCESS or FAIL
+
 DELETE <Customer ID>
 Deletes the customer record for the specified customer ID.
 
