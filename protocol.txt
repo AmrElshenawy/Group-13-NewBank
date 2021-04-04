@@ -6,8 +6,8 @@ SHOWMYACCOUNTS
 Returns a list of all the customers accounts along with their current balance 
 e.g. Main: 1000.0 
 
-NEWACCOUNT <OpeningBalance> <Type>
-e.g. NEWACCOUNT 50000 MONEYMARKET
+NEWACCOUNT <Type>
+e.g. NEWACCOUNT MONEYMARKET
 Returns SUCCESS or FAIL
 
 MOVE <Amount> <From> <To>
