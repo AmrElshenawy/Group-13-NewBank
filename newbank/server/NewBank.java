@@ -2,10 +2,10 @@ package newbank.server;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +18,7 @@ public class NewBank {
 	
 	private static final NewBank bank = new NewBank();
 	private HashMap<String,Customer> customers;
-	private HashMap<Integer,Customer> accounts; //maps account number to customer object
+	private HashMap<Integer,Customer> accountIdCustomer; //maps account number to customer object
 	private DatabaseHandler fullReport = new DatabaseHandler();
 	private HashMap<Account,Transaction> transactions;
 	private ArrayList<Transaction> transactionsList;
@@ -31,14 +31,14 @@ public class NewBank {
 	public NewBank() {
 		customers = new HashMap<>();
 		transactions = new HashMap<>();
-		accounts = new HashMap<>();
+		accountIdCustomer = new HashMap<>();
 		customerMicroloansOffered = new HashMap<>();
 		customerMicroloansReceived = new HashMap<>();
 		accountMicroloansOffered = new HashMap<>();
 		accountMicroloansReceived = new HashMap<>();
+		transactionsList = new ArrayList<>();
 		fillHashMap_fromDB();
 		readTransactionsFromDB();
-		transactionsList = new ArrayList<>();
 
 	}
 
@@ -49,6 +49,8 @@ public class NewBank {
 	public HashMap<String,Customer> getName2CustomersMapping(){
 		return customers;
 	}
+
+	public HashMap<Integer,Customer> getAccountId2CustomerMapping(){ return accountIdCustomer; }
 
 	public HashMap<Account,Transaction> getAccount2TransactionsMapping(){
 		return transactions;
@@ -72,7 +74,7 @@ public class NewBank {
 					if(line.size() > 3){
 						Account account1 = new Account(Integer.parseInt(line.get(4)), Double.parseDouble(line.get(5)), Account.AccountType.valueOf(line.get(3).toUpperCase()));
 						x.setAccount(account1);
-						accounts.put(account1.getAccountId(), x);
+						accountIdCustomer.put(account1.getAccountId(), x);
 					}
 					x.setPassword(line.get(2));
 					x.setCustomerID((x.getFullName() + x.getPassword()).hashCode());
@@ -81,12 +83,12 @@ public class NewBank {
 					if(line.size() > 6){
 						Account account2 = new Account(Integer.parseInt(line.get(7)), Double.parseDouble(line.get(8)), Account.AccountType.valueOf(line.get(6).toUpperCase()));
 						x.setAccount(account2);
-						accounts.put(account2.getAccountId(), x);
+						accountIdCustomer.put(account2.getAccountId(), x);
 					}
 					if(line.size() > 9){
 						Account account3 = new Account(Integer.parseInt(line.get(10)), Double.parseDouble(line.get(11)), Account.AccountType.valueOf(line.get(9).toUpperCase()));
 						x.setAccount(account3);
-						accounts.put(account3.getAccountId(), x);
+						accountIdCustomer.put(account3.getAccountId(), x);
 
 					}
 					customers.put(line.get(1), x);
@@ -99,12 +101,15 @@ public class NewBank {
 
 	private void readTransactionsFromDB() {
 		List<ArrayList<String>> scanOutput;
+		Transaction transaction = null;
+		Account account = null;
+		LocalDateTime dateTime = null;
 		try {
 			scanOutput = handleTransactions.scanFullDB();
 			for(ArrayList<String> line: scanOutput){
 				for(int i = 0; i < line.size(); i++){
-					Account account = new Account(parseInt(line.get(2)));
-					LocalDateTime dateTime = LocalDateTime.parse(line.get(1),DateTimeFormatter.ofPattern("dd/MM/yyyy HH.mm.ss"));
+					account = new Account(parseInt(line.get(2)));
+					dateTime = LocalDateTime.parse(line.get(1),DateTimeFormatter.ofPattern("dd/MM/yyyy HH.mm.ss"));
 					int senderId = parseInt(line.get(2));
 					String senderName = line.get(3);
 					int receiverId = parseInt(line.get(4));
@@ -112,9 +117,23 @@ public class NewBank {
 					Double amount = parseDouble(line.get(6));
 					String message = line.get(7);
 					Transaction.TransactionType tranType = Transaction.TransactionType.valueOf(line.get(8));
-					Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, amount, message, tranType);
-					transactions.put(account, transaction);
+					transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, amount, message, tranType);
 				}
+				transactions.put(account, transaction);
+				transactionsList.add(transaction);
+				customers.get(line.get(3).toLowerCase()).setTransactionSent(transaction);
+				customers.get(line.get(5).toLowerCase()).setTransactionReceived(transaction);
+				if(transaction.getTransactionType().equals(Transaction.TransactionType.MICROLOAN)){
+					Double interest = 7.00; //this will need to handled better in the future
+					int installments = 12; //this will need to handled better in the future
+					LocalDateTime repaymentDate = dateTime.plus(Period.ofYears(1));
+					MicroLoan microLoan = new MicroLoan(dateTime, parseInt(line.get(2)), line.get(3), parseInt(line.get(4)), line.get(5), parseDouble(line.get(6)), line.get(7), Transaction.TransactionType.MICROLOAN, interest, installments, repaymentDate);
+					customerMicroloansOffered.put(customers.get(line.get(3).toLowerCase()), microLoan); //creates a lookup mapping for the sending customer to the loan offered
+					customerMicroloansReceived.put(customers.get(line.get(5).toLowerCase()), microLoan); //creates a lookup mapping for the receiving customer to the loan taken
+					accountMicroloansOffered.put(account, microLoan); //creates a lookup mapping for the sending account to the loan offered
+					accountMicroloansReceived.put(returnAccount("checking", customers.get(line.get(5).toLowerCase())), microLoan); //creates a lookup mapping for the receiving account to the loan taken
+				}
+
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -137,7 +156,7 @@ public class NewBank {
 		if(customers.containsKey(customer.getKey())) {
 			String[] requestSplit = request.split(" ");
 			switch(requestSplit[0]) {
-			case "SHOWMYACCOUNTS" :
+			case "SHOWMYACCOUNTS":
 				return showMyAccounts(customer);
 			case "NEWACCOUNT":
 				// NEWACCOUNT <OpeningBalance> <Type>
@@ -208,6 +227,8 @@ public class NewBank {
 						Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, amount, message, tranType);
 						transactions.put(accountFrom, transaction);
 						transactionsList.add(transaction);
+						customers.get(customer.getKey()).setTransactionSent(transaction);
+						customers.get(customer.getKey()).setTransactionReceived(transaction);
 						return "SUCCESS! Move transfer complete.";
 					}
 				}
@@ -218,30 +239,75 @@ public class NewBank {
 				} else {
 					return payPerson(customer, requestSplit, Transaction.TransactionType.PAYMENT);
 				}
+			case "DEPOSIT":
+				// DEPOSIT <Amount> <To User's Account>
+				try{
+					Account accountTo = returnAccount(requestSplit[2], customers.get(customer.getKey()));
+					Double deposit = Double.parseDouble(requestSplit[1]);
+					accountTo.modifyBalance(deposit, Account.InstructionType.DEPOSIT);
+					LocalDateTime dateTime = LocalDateTime.now();
+					String formattedDate = DateTimeFormatter.ofPattern("MM/dd/yyyy HH.mm.ss").format(dateTime);
+					int senderId = customers.get(customer.getKey()).getCustomerId(); // customer ID (number)
+					String senderName = customer.getKey();
+					int receiverId = accountTo.getAccountId();
+					String receiverName = customer.getKey();
+					String message = "deposit from "+senderName+" to "+receiverName+" of "+deposit+" on "+ formattedDate;
+					Transaction.TransactionType tranType = Transaction.TransactionType.DEPOSIT;
+					Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, deposit, message, tranType);
+					transactions.put(accountTo, transaction);
+					transactionsList.add(transaction);
+					customers.get(customer.getKey()).setTransactionReceived(transaction);
+					return "SUCCESS! You deposited "+deposit+" into your account: "+accountTo.getAccountType();
+				}catch(Exception e){
+					return "FAIL. Error: "+e.getMessage()+". Please try again";
+				}
+
+			case "WITHDRAW":
+				// WITHDRAW <Amount> <From User's Account>
+				try{
+					Account accountFrom = returnAccount(requestSplit[2], customers.get(customer.getKey()));
+					Double withdrawal = Double.parseDouble(requestSplit[1]);
+					accountFrom.modifyBalance(withdrawal, Account.InstructionType.WITHDRAW);
+					LocalDateTime dateTime = LocalDateTime.now();
+					String formattedDate = DateTimeFormatter.ofPattern("MM/dd/yyyy HH.mm.ss").format(dateTime);
+					int senderId = accountFrom.getAccountId();
+					String senderName = customer.getKey();
+					int receiverId = customers.get(customer.getKey()).getCustomerId(); // customer ID (number)
+					String receiverName = customer.getKey();
+					String message = "withdrawal by "+receiverName+" from "+receiverName+" of "+withdrawal+" on "+ formattedDate;
+					Transaction.TransactionType tranType = Transaction.TransactionType.WITHDRAWAL;
+					Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, withdrawal, message, tranType);
+					transactions.put(accountFrom, transaction);
+					transactionsList.add(transaction);
+					customers.get(customer.getKey()).setTransactionSent(transaction);
+					return "SUCCESS! You withdrew "+withdrawal+" from your account: "+accountFrom.getAccountType();
+				}catch(Exception e){
+					return "FAIL. Error: "+e.getMessage()+". Please try again";
+				}
+
 			case "MICROLOAN":
 				// MICROLOAN <Amount> <From User's Account> <To Payee's UserName>
 				if (requestSplit.length != 4){
 					return "FAIL";
 				} else {
-					String payeeAccountID = requestSplit[2];
-					Customer payee = accounts.get(Integer.parseInt(payeeAccountID)); //wrong
-					Customer sender = accounts.get(Integer.parseInt(customer.getKey())); //wrong
+					String payeeAccountType = requestSplit[2];
+					Customer sender = customers.get(customer.getKey());
+					Customer payee = customers.get(requestSplit[3].toLowerCase());
+					//return payPerson(customer, requestSplit, Transaction.TransactionType.MICROLOAN); //uncomment for testing
 					if(sender.canOfferLoan() && payee.canTakeLoan()){
 						return payPerson(customer, requestSplit, Transaction.TransactionType.MICROLOAN);
 					} else if(!sender.canOfferLoan()) {
 						return "YOU ARE NOT AUTHORIZED TO OFFER LOANS";
 					} else if(!payee.canTakeLoan()){
-						return "YOU ARE NOT AUTHORIZED TO RECEIVE LOANS";
+						return "PAYEE NOT AUTHORIZED TO RECEIVE LOANS";
 					} else return "FAIL";
 				}
 
 			case "CONFIRM":
 				DatabaseHandler save = new DatabaseHandler();
-				//TransactionHandler saveTransactions = new TransactionHandler();
 				try {
 					save.saveSession(customers);
 					handleTransactions.saveSession(transactionsList);
-					//saveTransactions.saveSession(transactions);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -358,7 +424,6 @@ public class NewBank {
 		DatabaseHandler save = new DatabaseHandler();
 		try {
 			save.saveSession(customers);
-			handleTransactions.saveSession(transactionsList);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -423,6 +488,8 @@ public class NewBank {
 			Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, payment, message, type);
 			transactions.put(user, transaction);
 			transactionsList.add(transaction);
+			sender.setTransactionSent(transaction);
+			receiver.setTransactionReceived(transaction);
 			if(type.equals(Transaction.TransactionType.MICROLOAN)){
 				Double interest = 7.00; //this will need to handled better in the future
 				int installments = 12; //this will need to handled better in the future
@@ -432,7 +499,6 @@ public class NewBank {
 				customerMicroloansReceived.put(receiver, microLoan); //creates a lookup mapping for the receiving customer to the loan taken
 				accountMicroloansOffered.put(user, microLoan); //creates a lookup mapping for the sending account to the loan offered
 				accountMicroloansReceived.put(payee, microLoan); //creates a lookup mapping for the receiving account to the loan taken
-				receiver.incrementNumberLoans();
 			}
 
 			return "SUCCESS";
@@ -453,6 +519,8 @@ public class NewBank {
 			commands += "* NEWACCOUNT <openingbalance> <account type> \n";
 			commands += "* SHOWMYACCOUNTS \n";
 			commands += "* MOVE <amount> <from> <to> \n";
+			commands += "* DEPOSIT <amount> <to account type> \n";
+			commands += "* WITHDRAW <amount> <from account type> \n";
 			commands += "* PAY <amount> <from account type> <to customer name> \n";
 			commands += "* MICROLOAN <amount> <from account type> <to customer name> \n";
 			commands += "* HELP \n";
@@ -473,6 +541,12 @@ public class NewBank {
 				break;
 			case "MOVE":
 				description += "MOVE 5000 checking savings - Will move 5000 from Checking account to Savings account.";
+				break;
+			case "DEPOSIT":
+				description += "DEPOSIT 1000 moneymarket - Will deposit 1000 into Moneymarket account.";
+				break;
+			case "WITHDRAW":
+				description += "WITHDRAW 500 savings - Will withdraw 500 from Savings account.";
 				break;
 			case "PAY":
 				description += "PAY 5500 checking john - Will pay 5500 deducted from Checking paid to John's default account which is always Checking.";
