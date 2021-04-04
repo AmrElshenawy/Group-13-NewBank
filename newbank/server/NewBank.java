@@ -140,16 +140,16 @@ public class NewBank {
 			case "SHOWMYACCOUNTS" :
 				return showMyAccounts(customer);
 			case "NEWACCOUNT":
-				// NEWACCOUNT <Name> <OpeningBalance> <Type>
+				// NEWACCOUNT <OpeningBalance> <Type>
 				ArrayList<Account> accountsList = customers.get(customer.getKey()).getAccounts();
 				if(accountsList.size() >= 3){
 					return "MAXIMUM NUMBER OF ACCOUNTS REACHED!";
 				}
 				double openingBalance = 0;
-				openingBalance = Double.parseDouble(requestSplit[2]);
+				openingBalance = Double.parseDouble(requestSplit[1]);
 				Account.AccountType accType;
 				if(requestSplit.length == 3){
-					String accountType = requestSplit[3];
+					String accountType = requestSplit[2];
 
 					if(accountType.equalsIgnoreCase(Account.AccountType.CHILDREN.toString())){
 						accType = Account.AccountType.CHILDREN;
@@ -247,7 +247,7 @@ public class NewBank {
 				}
 				return "ACTION CONFIRMED!";
 			case "DELETE":
-				// DELETE
+				// DELETE <Customer ID>
 				// DELETE <Customer ID> <AccountType>
 				if(customer.getKey().equalsIgnoreCase("staff")){
 					if(requestSplit.length == 2){
@@ -445,6 +445,7 @@ public class NewBank {
 			commands += "Available commands: \n";
 			commands += "* DELETE <customer ID> \n";
 			commands += "* DELETE <customer ID> <account type> \n";
+			commands += "* AUDITREPORT \n";
 			commands += "* CONFIRM";
 		}
 		else if(name.equals("general")){
