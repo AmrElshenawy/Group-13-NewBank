@@ -332,7 +332,7 @@ public class NewBank {
 				}
 				return "ACTION CONFIRMED!";
 			case "DELETE":
-				// DELETE
+				// DELETE <Customer ID>
 				// DELETE <Customer ID> <AccountType>
 				if(customer.getKey().equalsIgnoreCase("staff")){
 					if(requestSplit.length == 2){
