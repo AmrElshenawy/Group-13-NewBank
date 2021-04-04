@@ -511,6 +511,7 @@ public class NewBank {
 			commands += "Available commands: \n";
 			commands += "* DELETE <customer ID> \n";
 			commands += "* DELETE <customer ID> <account type> \n";
+			commands += "* AUDITREPORT \n";
 			commands += "* CONFIRM";
 		}
 		else if(name.equals("general")){
@@ -518,6 +519,8 @@ public class NewBank {
 			commands += "* NEWACCOUNT <openingbalance> <account type> \n";
 			commands += "* SHOWMYACCOUNTS \n";
 			commands += "* MOVE <amount> <from> <to> \n";
+			commands += "* DEPOSIT <amount> <to account type> \n";
+			commands += "* WITHDRAW <amount> <from account type> \n";
 			commands += "* PAY <amount> <from account type> <to customer name> \n";
 			commands += "* MICROLOAN <amount> <from account type> <to customer name> \n";
 			commands += "* HELP \n";
@@ -538,6 +541,12 @@ public class NewBank {
 				break;
 			case "MOVE":
 				description += "MOVE 5000 checking savings - Will move 5000 from Checking account to Savings account.";
+				break;
+			case "DEPOSIT":
+				description += "DEPOSIT 1000 moneymarket - Will deposit 1000 into Moneymarket account.";
+				break;
+			case "WITHDRAW":
+				description += "WITHDRAW 500 savings - Will withdraw 500 from Savings account.";
 				break;
 			case "PAY":
 				description += "PAY 5500 checking john - Will pay 5500 deducted from Checking paid to John's default account which is always Checking.";
