@@ -15,12 +15,14 @@ public class Account {
 	enum InstructionType {WITHDRAW, DEPOSIT}
 	private Account.InstructionType instructionType;
 	private ArrayList<Transaction> transactions;
+	private double interest;
 
     public Account(int accountId, double openingBalance, AccountType type) {
         
 		this.accountId = accountId;
         this.openingBalance = openingBalance;
         this.accountType = type;
+        this.interest = 0;
     }
 
 	public Account(double openingBalance, AccountType type) {
@@ -28,6 +30,7 @@ public class Account {
 		this.accountId = setAccountNumber(type);
         this.openingBalance = openingBalance;
         this.accountType = type;
+        this.interest = 0;
     }
 
 	// do not delete this second constructor please
@@ -118,10 +121,14 @@ public class Account {
 		return transactions;
 	}
 
+	public double getInterest() { return interest; }
+
 	//setters
 	public void setTransactions(ArrayList<Transaction> transactions) {
 		this.transactions = transactions;
 	}
+
+	public void setInterest(double interest) { this.interest = interest; }
 
 	//print functions
 	public String toString() {

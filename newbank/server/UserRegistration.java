@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class UserRegistration {
 
@@ -28,8 +30,17 @@ public class UserRegistration {
                 }
             } while (bank.checkCustomer(userName) && userName != null);
             // ask for user's name
-            out.println("Enter your full name, as you would like it to appear on your accounts:");
-            String fullName = in.readLine();
+            String fullName;
+            String[] nameSplit;
+            do{
+                out.println("Enter your full name, as you would like it to appear on your accounts:");
+                fullName = in.readLine();
+                nameSplit = fullName.split(" ");
+                if ((fullName == null || nameSplit.length < 2)){
+                    out.println("Name entry invalid. Please try again.");
+                }
+            } while(fullName == null || nameSplit.length < 2);
+
             // ask for user's address
             out.println("Enter the first line of your address. E.g \"123 Penny Lane\"");
             String addressLine1 = in.readLine();
@@ -38,8 +49,14 @@ public class UserRegistration {
             out.println("Enter your postcode: ");
             String addressLine3 = in.readLine();
             // ask for user's DoB
-            out.println("Enter your DoB using the format DD/MM/YYYY:");
-            String dob = in.readLine();
+            String dob;
+            do {
+                out.println("Enter your DoB using the format DD/MM/YYYY:");
+                dob = in.readLine();
+                if (!dobOK(dob)){
+                    out.println("Date of birth invalid. Please try again.");
+                }
+            } while (!dobOK(dob));
             // ask for user's tax ID
             out.println("Enter your tax ID:");
             String taxID = in.readLine();
@@ -101,10 +118,8 @@ public class UserRegistration {
             out.println("Enter the opening balance for the account:");
             String openingBalance = in.readLine();
             Double openingBalanceDouble = Double.parseDouble(openingBalance);
-            out.println("Please choose an account name:");
-            String accountName = in.readLine();
 
-            customer.setAccount(new Account(Integer.parseInt(accountName), openingBalanceDouble, accountType));
+            customer.setAccount(new Account(openingBalanceDouble, accountType));
         }
         catch (IOException e){
             System.out.println(e);
@@ -150,6 +165,44 @@ public class UserRegistration {
             }
         }
         return false;
+    }
+
+    // Helper fucntion to confirm DoB entry uses the correct formatting.
+    public boolean dobOK(String dob){
+        if (dob.length() != 10 || dob.charAt(2) != '/' || dob.charAt(5) != '/'){
+            return false;
+        }
+        String[] dobSplit = dob.split("/");
+        if (dobSplit.length != 3){
+            return false;
+        }
+        for (String number : dobSplit){
+            try {
+                Integer.parseInt(number);
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        List<String> shortMonths = Arrays.asList("04", "06", "09", "11");
+        if (Integer.parseInt(dobSplit[0]) < 1 || Integer.parseInt(dobSplit[1]) < 1 || Integer.parseInt(dobSplit[1]) > 12 ||
+                Integer.parseInt(dobSplit[2]) < 1900 || Integer.parseInt(dobSplit[2]) > 2021){
+            return false;
+        }
+
+        if (shortMonths.contains(dobSplit[1])){
+            if (Integer.parseInt(dobSplit[1]) > 30){
+                return false;
+            }
+        } else if (dobSplit[1].equals("02")){
+            if (Integer.parseInt(dobSplit[1]) > 28){
+                return false;
+            }
+        } else {
+            if (Integer.parseInt(dobSplit[1]) > 31){
+                return false;
+            }
+        }
+        return true;
     }
 
     // Option menu message printer.

@@ -23,9 +23,11 @@ public class NewBank {
 	
 	public NewBank() {
 		customers = new HashMap<>();
+		System.out.println("hashmap filled");
 		fillHashMap_fromDB();
 		transactions = new HashMap<>();
 		readTransactionsFromDB();
+		Interest interest = new Interest(customers,transactions);
 	}
 
 	private void fillHashMap_fromDB() {

@@ -2,3 +2,4 @@ id:1647908596,name:christina,password:Christina123&,accounttype1:checking,accoun
 id:-737511372,name:bhagy,password:Bhagy123&,accounttype1:checking,accountnumber1:20512469,accountbalance1:2000.0,
 id:1618832874,name:john,password:John123&,accounttype1:checking,accountnumber1:25058458,accountbalance1:22000.0,
 id:-1444844,name:staff,password:Staff123&,
+id:120984098,name:NewBank,password:Newbank1*,accounttype1:checking,accountnumber1:99999999,accountbalance1:10000.0
