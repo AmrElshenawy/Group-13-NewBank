@@ -1,6 +1,6 @@
 package newbank.server;
 
-import java.io.FileNotFoundException;
+
 import java.util.HashMap;
 import java.util.Random;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ public class Account {
 	//private String accountName;
 	private int accountId;
 	private double openingBalance;
-	enum AccountType {CHILDREN, SENIOR, CHECKING, SAVINGS, MONEYMARKET, OVERDRAFT}
+	enum AccountType {CHECKING, SAVINGS, MONEYMARKET}
 	private Account.AccountType accountType;
 	enum InstructionType {WITHDRAW, DEPOSIT}
 	private Account.InstructionType instructionType;
@@ -18,7 +18,6 @@ public class Account {
 	private double interest;
 
     public Account(int accountId, double openingBalance, AccountType type) {
-        
 		this.accountId = accountId;
         this.openingBalance = openingBalance;
         this.accountType = type;
@@ -26,14 +25,12 @@ public class Account {
     }
 
 	public Account(double openingBalance, AccountType type) {
-        
 		this.accountId = setAccountNumber(type);
         this.openingBalance = openingBalance;
         this.accountType = type;
         this.interest = 0;
     }
 
-	// do not delete this second constructor please
 	public Account(int accountId){
 		this.accountId = accountId;
 	}
@@ -65,29 +62,20 @@ public class Account {
         String accountNumber;
 
             switch (type) {
-                case CHILDREN:
+                case CHECKING:
                     prefix = "0";
                     break;
-                case SENIOR:
+                case SAVINGS:
                     prefix = "1";
                     break;
-                case CHECKING:
-                    prefix = "2";
-                    break;
-                case SAVINGS:
-                    prefix = "3";
-                    break;
                 case MONEYMARKET:
-                    prefix = "4";
-                    break;
-                case OVERDRAFT:
-                    prefix = "5";
+                    prefix = "2";
                     break;
             }
 
             accountNumber = prefix + baseAccountNumber;
             NewBank bank = new NewBank();
-            HashMap<String, Customer> customerAccounts = bank.getCustomers();
+            HashMap<String, Customer> customerAccounts = bank.getName2CustomersMapping();
             for(Customer customer: customerAccounts.values()){
                 for(Account account: customer.getAccounts()){
                     if(account.getAccountId() !=Integer.parseInt(accountNumber)){
@@ -124,8 +112,8 @@ public class Account {
 	public double getInterest() { return interest; }
 
 	//setters
-	public void setTransactions(ArrayList<Transaction> transactions) {
-		this.transactions = transactions;
+	public void setTransaction(Transaction transactions) {
+        this.transactions.add(transactions);
 	}
 
 	public void setInterest(double interest) { this.interest = interest; }

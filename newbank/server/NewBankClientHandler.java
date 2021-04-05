@@ -40,7 +40,7 @@ public class NewBankClientHandler extends Thread{
 					run();
 				case "2": // Log in existing user
 					// ask for user name
-					out.println("Enter Username");
+					out.println("Enter Registered Name");
 					String userName = in.readLine();
 					// ask for password
 					out.println("Enter Password");
@@ -54,8 +54,8 @@ public class NewBankClientHandler extends Thread{
 						while(true) {
 							String request = in.readLine();
 							System.out.println("Request from " + customer.getKey());
-							String responce = bank.processRequest(customer, request);
-							out.println(responce);
+							String response = bank.processRequest(customer, request);
+							out.println(response);
 						}
 					}
 					else {

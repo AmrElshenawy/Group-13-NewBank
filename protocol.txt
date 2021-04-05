@@ -1,25 +1,40 @@
 This document details the protocol for interacting with the NewBank server.  
 
-A customer enters the command below and sees the messages returned 
+A user enters the command below and sees the messages returned 
 
 SHOWMYACCOUNTS
 Returns a list of all the customers accounts along with their current balance 
 e.g. Main: 1000.0 
 
-NEWACCOUNT <Name> <OpeningBalance> <Type>
-e.g. NEWACCOUNT Investments 50000 MONEYMARKET
+NEWACCOUNT <Type>
+e.g. NEWACCOUNT MONEYMARKET
 Returns SUCCESS or FAIL
 
 MOVE <Amount> <From> <To>
-e.g. MOVE 100 Main Savings 
+e.g. MOVE 100 Checking Savings 
 Returns SUCCESS or FAIL
 
-PAY <Amount> <From Users Account> <To Payee's UserName>
-e.g. PAY John 100
+PAY <amount> <from account type> <to customer name>
+e.g. PAY 100 Checking John
 Returns SUCCESS or FAIL
+
+MICROLOAN <amount> <from account type> <to customer name>
+e.g. MICROLOAN 100 Checking John
+Returns SUCCESS or FAIL
+
+DEPOSIT <amount> <to account type>
+e.g. DEPOSIT 50 Savings
+Returns SUCCESS or FAIL
+
+WITHDRAW <amount> <from account type>
+e.g. WITHDRAW 60 Checking
+Returns SUCCESS or FAIL
+
+DELETE <Customer ID>
+Deletes the customer record for the specified customer ID.
 
 DELETE <Customer ID> <AccountType>
-Deletes a customer. Accessible by staff only
+Deletes the specified account type for the specified customer. Accessible by staff only
 
 CONFIRM
 Confirms CRUD operations on database
@@ -28,3 +43,12 @@ Returns ACTION CONFIRMED!
 AUDITREPORT
 Generates a report of banking activity. Accessible by staff only
 Returns SUCCESS or FAIL
+
+SHOWTRANSACTIONS
+Shows all transactions for current logged in user
+
+HELP
+Displays all of the available commands.
+
+HELP <command name>
+Displays information about the specified command.

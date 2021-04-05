@@ -1,7 +1,6 @@
 package newbank.server;
 
 import java.io.FileNotFoundException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.io.File;
@@ -25,7 +24,7 @@ public class Report {
     //get all customer from the db
     public String allCustomers(){
         String outputString = "Customer accounts:"+"\n";
-        for(Customer record : bank.getCustomers().values()){
+        for(Customer record : bank.getName2CustomersMapping().values()){
             outputString += record.getFullName()+" "+record.getAccounts().toString()+"\n";
         }
         return outputString;
@@ -36,16 +35,14 @@ public class Report {
         Integer count = 0;
         int i = 0;
         List types = Arrays.asList(Account.AccountType.values());
-        for(Customer record : bank.getCustomers().values()){
+        for(Customer record : bank.getName2CustomersMapping().values()){
             for(Account acc: record.getAccounts()){
                 try{
                     if(types.contains(Account.AccountType.valueOf(acc.getAccountType().toString().toUpperCase()))){
                         count++;
                     }
                 }catch (Exception e){
-
                 }
-
             }
             i++;
         }
@@ -54,21 +51,57 @@ public class Report {
 
     //get total amount of deposits
     public String getTotalDeposits(){
-        double total = 0;
-        for(Customer record : bank.getCustomers().values()){
+        double sum = 0;
+        for(Customer record : bank.getName2CustomersMapping().values()){
             for(Account acc: record.getAccounts()){
-                total += acc.getOpeningBalance();
+                sum += acc.getOpeningBalance();
             }
         }
-        return "Total deposits: "+total;
+        return "Total deposits: "+sum;
     }
     //get total amount of accounts providing loans
+    public String accountsOfferingLoans(){
+        int total = 0;
+        double sum = 0;
+        for(MicroLoan record : bank.getAccount2MicroloansOffered().values()){
+            total++;
+            sum += record.getAmount();
+        }
+        return "Number of accounts providing micro loans: " +total +" worth a value of "+sum;
+    }
 
     //get total amount of accounts receiving loans
+    public String accountsReceivingLoans(){
+        int total = 0;
+        double sum = 0;
+        for(MicroLoan record : bank.getAccount2MicroloansReceived().values()){
+            total++;
+            sum += record.getAmount();
+        }
+        return "Number of accounts receiving micro loans: " +total +" worth a value of "+sum;
+    }
 
     //get total amount of customers providing loans
+    public String customersOfferingLoans(){
+        int total = 0;
+        double sum = 0;
+        for(MicroLoan record : bank.getCustomer2MicroloansOffered().values()){
+            total++;
+            sum += record.getAmount();
+        }
+        return "Number of customers providing micro loans: " +total +" worth a value of "+sum;
+    }
 
     //get total amount of customers receiving loans
+    public String customersReceivingLoans(){
+        int total = 0;
+        double sum = 0;
+        for(MicroLoan record : bank.getCustomer2MicroloansReceived().values()){
+            total++;
+            sum += record.getAmount();
+        }
+        return "Number of customers receiving micro loans: " +total +" worth a value of "+sum;
+    }
 
     //total amount of repayments by week and by month
 
@@ -78,10 +111,10 @@ public class Report {
         fileOutput += allCustomers()+"\n";
         fileOutput += getNoAccounts()+"\n";
         fileOutput += getTotalDeposits()+"\n";
-//        fileOutput += accountsProvidingLoans()+"\n";
-//        fileOutput += accountsReceivingLoans()+"\n";
-//        fileOutput += customersProvidingLoans()+"\n";
-//        fileOutput += customersReceivingLoans()+"\n";
+        fileOutput += accountsOfferingLoans()+"\n";
+        fileOutput += accountsReceivingLoans()+"\n";
+        fileOutput += customersOfferingLoans()+"\n";
+        fileOutput += customersReceivingLoans()+"\n";
         System.out.println(fileOutput);
         writeToFile(fileOutput);
     }

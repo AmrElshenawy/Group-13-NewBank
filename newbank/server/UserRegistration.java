@@ -40,7 +40,6 @@ public class UserRegistration {
                     out.println("Name entry invalid. Please try again.");
                 }
             } while(fullName == null || nameSplit.length < 2);
-
             // ask for user's address
             out.println("Enter the first line of your address. E.g \"123 Penny Lane\"");
             String addressLine1 = in.readLine();
@@ -75,12 +74,12 @@ public class UserRegistration {
                 }
             } while (!passwordOK(password1) || !password1.equals(password2) || password1 == null || password2 == null);
 
-            customer = new Customer(fullName);
+            customer = new Customer(fullName.toLowerCase());
             customer.setAddress(addressLine1, addressLine2, addressLine3);
             customer.setBirthdate(dob);
             customer.setTaxId(taxID);
             customer.setPassword(password1);
-
+            customer.setCustomerID((customer.getFullName() + customer.getPassword()).hashCode());
             out.println(accountSelectionMessage());
             String selection = in.readLine();
             switch (selection) {
@@ -92,15 +91,6 @@ public class UserRegistration {
                     break;
                 case "3":
                     accountSetup(Account.AccountType.MONEYMARKET);
-                    break;
-                case "4":
-                    accountSetup(Account.AccountType.OVERDRAFT);
-                    break;
-                case "5":
-                    accountSetup(Account.AccountType.SENIOR);
-                    break;
-                case "6":
-                    accountSetup(Account.AccountType.CHILDREN);
                     break;
                 default : out.println("Invalid selection.");
             }
@@ -216,9 +206,6 @@ public class UserRegistration {
                 "||      1. CHECKING                             ||\n" +
                 "||      2. SAVINGS                              ||\n" +
                 "||      3. MONEYMARKET                          ||\n" +
-                "||      4. OVERDRAFT                            ||\n" +
-                "||      5. SENIOR                               ||\n" +
-                "||      6. CHILDREN                             ||\n" +
                 "||  (enter the number corresponding to your     ||\n" +
                 "||   choice and press enter)                    ||\n" +
                 "==================================================\n" +
@@ -245,5 +232,4 @@ public class UserRegistration {
                 "==================================================\n";
         return congratulationsMessage;
     }
-
 }

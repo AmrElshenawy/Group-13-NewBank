@@ -1,6 +1,7 @@
 package newbank.server;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -107,10 +108,10 @@ public class Interest {
     }
 
     public Transaction transactionHelper(double amount, String senderName, int senderAccountID, String receiverName, int receiverAccountID){
-        Date dateTime = new Date();
+        LocalDateTime dateTime = LocalDateTime.now();
         String formattedDate = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(dateTime);
         String message = "Monthly interest payment of " + amount + " on " + formattedDate;
-        return new Transaction(dateTime, senderAccountID, senderName, receiverAccountID, receiverName, amount, message);
+        return new Transaction(dateTime, senderAccountID, senderName, receiverAccountID, receiverName, amount, message, Transaction.TransactionType.PAYMENT);
     }
 
     public Date todayEleven(){
