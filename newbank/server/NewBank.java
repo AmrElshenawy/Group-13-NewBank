@@ -2,7 +2,6 @@ package newbank.server;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -169,13 +168,7 @@ public class NewBank {
 				if(requestSplit.length == 2){
 					String accountType = requestSplit[1];
 
-					if(accountType.equalsIgnoreCase(Account.AccountType.CHILDREN.toString())){
-						accType = Account.AccountType.CHILDREN;
-					}
-					else if(accountType.equalsIgnoreCase(Account.AccountType.SENIOR.toString())){
-						accType = Account.AccountType.SENIOR;
-					}  
-					else if(accountType.equalsIgnoreCase(Account.AccountType.CHECKING.toString())){
+					if(accountType.equalsIgnoreCase(Account.AccountType.CHECKING.toString())){
 						accType = Account.AccountType.CHECKING;
 					} 
 					else if(accountType.equalsIgnoreCase(Account.AccountType.SAVINGS.toString())){
@@ -183,9 +176,6 @@ public class NewBank {
 					} 
 					else if(accountType.equalsIgnoreCase(Account.AccountType.MONEYMARKET.toString())){
 						accType = Account.AccountType.MONEYMARKET;
-					} 
-					else if(accountType.equalsIgnoreCase(Account.AccountType.OVERDRAFT.toString())){
-						accType = Account.AccountType.OVERDRAFT;
 					} 
 					else{
 						accType = Account.AccountType.CHECKING; // default case
@@ -569,7 +559,7 @@ public class NewBank {
 		String description = "";
 		switch(commandName.toUpperCase()){
 			case "NEWACCOUNT":
-				description += "NEWACCOUNT moneymarket - Will create a new Moneymarket account with 2500 balance.";
+				description += "NEWACCOUNT checking - Will create a new Checking account with 0 balance.";
 				break;
 			case "SHOWMYACCOUNTS":
 				description += "Will display all accounts and their information for the customer.";

@@ -1,7 +1,6 @@
 package newbank.server;
 
 import java.io.FileNotFoundException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.io.File;

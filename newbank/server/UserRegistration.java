@@ -75,15 +75,6 @@ public class UserRegistration {
                 case "3":
                     accountSetup(Account.AccountType.MONEYMARKET);
                     break;
-                case "4":
-                    accountSetup(Account.AccountType.OVERDRAFT);
-                    break;
-                case "5":
-                    accountSetup(Account.AccountType.SENIOR);
-                    break;
-                case "6":
-                    accountSetup(Account.AccountType.CHILDREN);
-                    break;
                 default : out.println("Invalid selection.");
             }
             bank.addCustomer(userName, customer); // add customer to NewBank HashMap.
@@ -160,9 +151,6 @@ public class UserRegistration {
                 "||      1. CHECKING                             ||\n" +
                 "||      2. SAVINGS                              ||\n" +
                 "||      3. MONEYMARKET                          ||\n" +
-                "||      4. OVERDRAFT                            ||\n" +
-                "||      5. SENIOR                               ||\n" +
-                "||      6. CHILDREN                             ||\n" +
                 "||  (enter the number corresponding to your     ||\n" +
                 "||   choice and press enter)                    ||\n" +
                 "==================================================\n" +
@@ -189,5 +177,4 @@ public class UserRegistration {
                 "==================================================\n";
         return congratulationsMessage;
     }
-
 }
