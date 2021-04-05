@@ -26,6 +26,7 @@ public class NewBank {
 	private HashMap<Customer, MicroLoan> customerMicroloansReceived;
 	private HashMap<Account, MicroLoan> accountMicroloansOffered;
 	private HashMap<Account, MicroLoan> accountMicroloansReceived;
+	private boolean didDatabaseChange = false;
 	
 	public NewBank() {
 		customers = new HashMap<>();
@@ -186,10 +187,12 @@ public class NewBank {
 						accType = Account.AccountType.CHECKING; // default case
 					} 
 					customers.get(customer.getKey()).setAccount(new Account(openingBalance,accType));
+					didDatabaseChange = true;
 				} 
 				else{
 					accType = Account.AccountType.CHECKING; //default account type if no type is specified
 					customers.get(customer.getKey()).setAccount(new Account(openingBalance,accType));
+					didDatabaseChange = true;
 				} 
 				return "SUCCESS";
 			case "MOVE":
@@ -228,6 +231,7 @@ public class NewBank {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
+						didDatabaseChange = true;
 						return "SUCCESS! Move transfer complete.";
 					}
 				}
@@ -238,6 +242,7 @@ public class NewBank {
 				} else if(!requestSplit[2].equalsIgnoreCase("CHECKING")){ // if user's account type is not checking
 					return "Error. You can only pay another NewBank user from your checking account";
 				} else {
+					didDatabaseChange = true;
 					return payPerson(customer, requestSplit, Transaction.TransactionType.PAYMENT);
 				}
 			case "DEPOSIT":
@@ -264,6 +269,7 @@ public class NewBank {
 						transactionsList.add(transaction);
 						customers.get(customer.getKey()).setTransactionReceived(transaction);
 						handleTransactions.saveSession(transactionsList);
+						didDatabaseChange = true;
 						return "SUCCESS! You deposited " + deposit + " into your account: " + accountTo.getAccountType();
 					}
 				}catch(Exception e){
@@ -295,6 +301,7 @@ public class NewBank {
 						transactionsList.add(transaction);
 						customers.get(customer.getKey()).setTransactionSent(transaction);
 						handleTransactions.saveSession(transactionsList);
+						didDatabaseChange = true;
 						return "SUCCESS! You withdrew " + withdrawal + " from your account: " + accountFrom.getAccountType();
 					}
 				}catch(Exception e){
@@ -310,6 +317,7 @@ public class NewBank {
 					Customer payee = customers.get(requestSplit[3].toLowerCase());
 					//return payPerson(customer, requestSplit, Transaction.TransactionType.MICROLOAN); //uncomment for testing
 					if(sender.canOfferLoan() && payee.canTakeLoan()){
+						didDatabaseChange = true;
 						return payPerson(customer, requestSplit, Transaction.TransactionType.MICROLOAN);
 					} else if(!sender.canOfferLoan()) {
 						return "YOU ARE NOT AUTHORIZED TO OFFER LOANS";
@@ -319,13 +327,18 @@ public class NewBank {
 				}
 			case "CONFIRM":
 				DatabaseHandler save = new DatabaseHandler();
-				try {
-					save.saveSession(customers);
-
-				} catch (IOException e) {
-					e.printStackTrace();
+				if(!didDatabaseChange){
+					return "NO CHANGES TO CONFIRM.";
 				}
-				return "ACTION CONFIRMED!";
+				else if(didDatabaseChange){
+					try {
+						save.saveSession(customers);
+	
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return "ACTION CONFIRMED!";
+				}
 			case "DELETE":
 				// DELETE <Customer ID>
 				// DELETE <Customer ID> <AccountType>
@@ -336,6 +349,7 @@ public class NewBank {
 							Customer object = record.getValue();
 							if(Integer.toString(object.getCustomerId()).equals(requestSplit[1])){
 								customers.remove(user);
+								didDatabaseChange = true;
 								return "Customer ID# " + object.getCustomerId() + " DELETED!";
 							}
 						}
@@ -348,6 +362,7 @@ public class NewBank {
 								for(Account acc : accList){
 									if(acc.getAccountType().toString().equalsIgnoreCase(requestSplit[2])){
 										object.deleteAccount(acc);
+										didDatabaseChange = true;
 										return "Account type " + requestSplit[2].toUpperCase() + " for customer ID# " + object.getCustomerId() + " DELETED!";
 									}
 								}
