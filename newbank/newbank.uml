@@ -3,30 +3,321 @@
   <ID>JAVA</ID>
   <OriginalElement>newbank</OriginalElement>
   <nodes>
-    <node x="0.0" y="602.0">newbank.server.Customer</node>
-    <node x="251.0" y="392.0">newbank.server.Account.InstructionType</node>
-    <node x="541.0" y="0.0">newbank.server.NewBank</node>
-    <node x="331.0" y="602.0">newbank.client.ExampleClient</node>
-    <node x="0.0" y="348.0">newbank.server.Account.AccountType</node>
-    <node x="647.0" y="602.0">newbank.server.CustomerID</node>
-    <node x="81.5" y="0.0">newbank.server.Account</node>
+    <node x="828.0738636363635" y="2209.0">newbank.server.Customer</node>
+    <node x="960.8238636363635" y="3069.0">newbank.server.NewBankClientHandler</node>
+    <node x="1016.0738636363635" y="2831.0">newbank.server.UserRegistration</node>
+    <node x="947.4999999999999" y="643.5">newbank.server.MicroLoan</node>
+    <node x="2026.2633928571427" y="957.5">newbank.server.Account.InstructionType</node>
+    <node x="740.1697035677087" y="363.0">newbank.server.Transaction.TransactionType</node>
+    <node x="758.5409634912958" y="0.0">newbank.server.Transaction</node>
+    <node x="237.4999999999999" y="902.5">newbank.server.DatabaseHandler</node>
+    <node x="1840.7009535677087" y="1809.0">newbank.server.Account</node>
+    <node x="996.3238636363635" y="3218.0">newbank.server.NewBankServer</node>
+    <node x="940.9374999999999" y="1305.0">newbank.server.NewBank</node>
+    <node x="979.3238636363635" y="3345.0">newbank.client.ExampleClient</node>
+    <node x="2144.263392857143" y="622.0">newbank.server.Account.AccountType</node>
+    <node x="615.4999999999999" y="946.5">newbank.server.TransactionHandler</node>
+    <node x="43.5" y="979.5">newbank.server.CustomerID</node>
+    <node x="1706.5" y="891.0">newbank.server.Report</node>
   </nodes>
   <notes />
   <edges>
+    <edge source="newbank.server.TransactionHandler" target="newbank.server.Transaction">
+      <point x="0.0" y="-71.5" />
+      <point x="770.9999999999999" y="861.0" />
+      <point x="729.6697035677087" y="861.0" />
+      <point x="729.6697035677087" y="313.0" />
+      <point x="953.4255788759112" y="313.0" />
+      <point x="-86.61538461538453" y="126.5" />
+    </edge>
+    <edge source="newbank.server.UserRegistration" target="newbank.server.NewBank">
+      <point x="0.0" y="-94.0" />
+      <point x="1153.5738636363635" y="1789.0" />
+      <point x="1118.8920454545453" y="1789.0" />
+      <point x="-39.54545454545462" y="182.0" />
+    </edge>
+    <edge source="newbank.server.NewBank" target="newbank.server.TransactionHandler">
+      <point x="-54.375" y="-182.0" />
+      <point x="1104.0625" y="1205.0" />
+      <point x="693.2499999999999" y="1205.0" />
+      <point x="-77.75" y="71.5" />
+    </edge>
+    <edge source="newbank.server.Customer" target="newbank.server.Account">
+      <point x="85.90909090909088" y="-281.0" />
+      <point x="1071.4829545454545" y="2169.0" />
+      <point x="1873.3009535677088" y="2169.0" />
+      <point x="-130.4" y="160.0" />
+    </edge>
+    <edge source="newbank.server.NewBank" target="newbank.server.Report">
+      <point x="119.625" y="-182.0" />
+      <point x="1278.0625" y="1215.0" />
+      <point x="1725.3571428571427" y="1215.0" />
+      <point x="-113.14285714285711" y="127.0" />
+    </edge>
+    <edge source="newbank.server.NewBankClientHandler" target="newbank.server.NewBank">
+      <point x="-49.60000000000002" y="-49.5" />
+      <point x="1035.2238636363636" y="3039.0" />
+      <point x="817.5738636363635" y="3039.0" />
+      <point x="817.5738636363635" y="1769.0" />
+      <point x="960.7102272727271" y="1769.0" />
+      <point x="-197.72727272727275" y="182.0" />
+    </edge>
+    <edge source="newbank.server.NewBank" target="newbank.server.Customer">
+      <point x="-79.09090909090912" y="182.0" />
+      <point x="1079.3465909090908" y="1789.0" />
+      <point x="1069.5738636363635" y="1789.0" />
+      <point x="1069.5738636363635" y="2149.0" />
+      <point x="1014.2102272727271" y="2149.0" />
+      <point x="28.636363636363626" y="-281.0" />
+    </edge>
+    <edge source="newbank.server.Customer" target="newbank.server.Transaction">
+      <point x="-143.18181818181813" y="-281.0" />
+      <point x="842.3920454545454" y="2189.0" />
+      <point x="0.0" y="2189.0" />
+      <point x="0.0" y="273.0" />
+      <point x="780.194809645142" y="273.0" />
+      <point x="-259.8461538461538" y="126.5" />
+    </edge>
     <edge source="newbank.server.Account.InstructionType" target="newbank.server.Account">
-      <point x="0.0" y="-60.5" />
-      <point x="373.5" y="323.0" />
-      <point x="326.0" y="323.0" />
-      <point x="81.5" y="149.0" />
+      <point x="30.625" y="60.5" />
+      <point x="2179.3883928571427" y="1739.0" />
+      <point x="2054.638453567709" y="1739.0" />
+      <point x="50.9375" y="-160.0" />
+    </edge>
+    <edge source="newbank.server.NewBank" target="newbank.server.CustomerID">
+      <point x="-206.625" y="-182.0" />
+      <point x="951.8124999999999" y="1275.0" />
+      <point x="130.5" y="1275.0" />
+      <point x="0.0" y="38.5" />
+    </edge>
+    <edge source="newbank.server.UserRegistration" target="newbank.server.Account">
+      <point x="78.57142857142858" y="-94.0" />
+      <point x="1232.1452922077922" y="2801.0" />
+      <point x="2113.5633928571424" y="2801.0" />
+      <point x="2113.5633928571424" y="2189.0" />
+      <point x="2134.1009535677085" y="2189.0" />
+      <point x="130.39999999999998" y="160.0" />
+    </edge>
+    <edge source="newbank.server.Report" target="newbank.server.Account">
+      <point x="113.14285714285722" y="127.0" />
+      <point x="1951.642857142857" y="1275.0" />
+      <point x="1888.9911321391373" y="1275.0" />
+      <point x="1888.9911321391373" y="1689.0" />
+      <point x="1993.5134535677087" y="1689.0" />
+      <point x="-10.1875" y="-160.0" />
+    </edge>
+    <edge source="newbank.server.NewBank" target="newbank.server.DatabaseHandler">
+      <point x="-163.125" y="-182.0" />
+      <point x="995.3124999999999" y="1255.0" />
+      <point x="410.4999999999999" y="1255.0" />
+      <point x="0.0" y="115.5" />
+    </edge>
+    <edge source="newbank.server.Report" target="newbank.server.Account.AccountType">
+      <point x="66.0" y="-127.0" />
+      <point x="1904.5" y="871.0" />
+      <point x="2202.013392857143" y="871.0" />
+      <point x="-57.75" y="104.5" />
+    </edge>
+    <edge source="newbank.server.UserRegistration" target="newbank.server.Account.AccountType">
+      <point x="117.85714285714289" y="-94.0" />
+      <point x="1271.4310064935064" y="2811.0" />
+      <point x="2314.763392857143" y="2811.0" />
+      <point x="2314.763392857143" y="871.0" />
+      <point x="2356.013392857143" y="871.0" />
+      <point x="96.25" y="104.5" />
+    </edge>
+    <edge source="newbank.server.NewBankClientHandler" target="newbank.server.CustomerID">
+      <point x="-99.19999999999993" y="-49.5" />
+      <point x="985.6238636363636" y="3049.0" />
+      <point x="22.0" y="3049.0" />
+      <point x="22.0" y="1285.0" />
+      <point x="72.5" y="1285.0" />
+      <point x="-58.0" y="38.5" />
+    </edge>
+    <edge source="newbank.server.Transaction.TransactionType" target="newbank.server.Transaction">
+      <point x="-83.33333333333326" y="-104.5" />
+      <point x="781.8363702343754" y="323.0" />
+      <point x="996.7332711836034" y="323.0" />
+      <point x="-43.30769230769238" y="126.5" />
+    </edge>
+    <edge source="newbank.server.Transaction" target="newbank.server.Transaction.TransactionType">
+      <point x="0.0" y="126.5" />
+      <point x="1040.0409634912958" y="333.0" />
+      <point x="865.1697035677087" y="333.0" />
+      <point x="0.0" y="-104.5" />
+    </edge>
+    <edge source="newbank.server.MicroLoan" target="newbank.server.Transaction.TransactionType">
+      <point x="-242.33333333333348" y="-83.0" />
+      <point x="1068.6666666666665" y="597.0" />
+      <point x="948.5030369010419" y="597.0" />
+      <point x="83.33333333333326" y="104.5" />
+    </edge>
+    <edge source="newbank.server.Account" target="newbank.server.NewBank">
+      <point x="-132.4375" y="-160.0" />
+      <point x="1871.2634535677087" y="1749.0" />
+      <point x="1197.9829545454545" y="1749.0" />
+      <point x="39.54545454545462" y="182.0" />
     </edge>
     <edge source="newbank.server.Account.AccountType" target="newbank.server.Account">
-      <point x="0.0" y="-104.5" />
-      <point x="115.5" y="323.0" />
-      <point x="163.0" y="323.0" />
-      <point x="-81.5" y="149.0" />
+      <point x="-19.25" y="104.5" />
+      <point x="2240.513392857143" y="871.0" />
+      <point x="2281.763392857143" y="871.0" />
+      <point x="2281.763392857143" y="1759.0" />
+      <point x="2095.388453567709" y="1759.0" />
+      <point x="91.6875" y="-160.0" />
+    </edge>
+    <edge source="newbank.server.Account" target="newbank.server.Account.InstructionType">
+      <point x="30.5625" y="-160.0" />
+      <point x="2034.2634535677087" y="1729.0" />
+      <point x="2168.3883928571427" y="1729.0" />
+      <point x="2168.3883928571427" y="1285.0" />
+      <point x="2118.1383928571427" y="1285.0" />
+      <point x="-30.625" y="60.5" />
+    </edge>
+    <edge source="newbank.server.MicroLoan" target="newbank.server.Transaction">
+      <point x="242.33333333333326" y="-83.0" />
+      <point x="1553.333333333333" y="597.0" />
+      <point x="1540.7076301579625" y="597.0" />
+      <point x="1540.7076301579625" y="333.0" />
+      <point x="1169.9640404143727" y="333.0" />
+      <point x="129.9230769230769" y="126.5" />
+    </edge>
+    <edge source="newbank.server.Account" target="newbank.server.Transaction">
+      <point x="152.8125" y="-160.0" />
+      <point x="2156.513453567709" y="1789.0" />
+      <point x="2385.763392857143" y="1789.0" />
+      <point x="2385.763392857143" y="303.0" />
+      <point x="1299.8871173374496" y="303.0" />
+      <point x="259.8461538461538" y="126.5" />
+    </edge>
+    <edge source="newbank.server.DatabaseHandler" target="newbank.server.Account">
+      <point x="-69.20000000000005" y="115.5" />
+      <point x="341.29999999999984" y="1285.0" />
+      <point x="312.1999999999998" y="1285.0" />
+      <point x="312.1999999999998" y="1759.0" />
+      <point x="1850.8884535677087" y="1759.0" />
+      <point x="-152.8125" y="-160.0" />
+    </edge>
+    <edge source="newbank.server.Account" target="newbank.server.Customer">
+      <point x="0.0" y="160.0" />
+      <point x="2003.7009535677087" y="2189.0" />
+      <point x="1128.7556818181818" y="2189.0" />
+      <point x="143.18181818181824" y="-281.0" />
+    </edge>
+    <edge source="newbank.server.Report" target="newbank.server.NewBank">
+      <point x="-37.714285714285666" y="127.0" />
+      <point x="1800.7857142857142" y="1235.0" />
+      <point x="1321.5625" y="1235.0" />
+      <point x="163.125" y="-182.0" />
+    </edge>
+    <edge source="newbank.server.NewBank" target="newbank.server.Account.AccountType">
+      <point x="97.875" y="-182.0" />
+      <point x="1256.3125" y="1205.0" />
+      <point x="1696.0" y="1205.0" />
+      <point x="1696.0" y="861.0" />
+      <point x="2163.513392857143" y="861.0" />
+      <point x="-96.25" y="104.5" />
+    </edge>
+    <edge source="newbank.server.Report" target="newbank.server.MicroLoan">
+      <point x="-66.0" y="-127.0" />
+      <point x="1772.5" y="851.0" />
+      <point x="1583.625" y="851.0" />
+      <point x="272.625" y="83.0" />
+    </edge>
+    <edge source="newbank.server.NewBankServer" target="newbank.server.NewBankClientHandler">
+      <point x="-44.25" y="-38.5" />
+      <point x="1040.5738636363635" y="3193.0" />
+      <point x="1022.8238636363635" y="3193.0" />
+      <point x="-62.0" y="49.5" />
+    </edge>
+    <edge source="newbank.server.NewBank" target="newbank.server.Transaction">
+      <point x="76.125" y="-182.0" />
+      <point x="1234.5625" y="1195.0" />
+      <point x="1685.0" y="1195.0" />
+      <point x="1685.0" y="323.0" />
+      <point x="1213.271732722065" y="323.0" />
+      <point x="173.23076923076928" y="126.5" />
+    </edge>
+    <edge source="newbank.server.Account" target="newbank.server.Account.AccountType">
+      <point x="132.4375" y="-160.0" />
+      <point x="2136.138453567709" y="1779.0" />
+      <point x="2303.763392857143" y="1779.0" />
+      <point x="2303.763392857143" y="861.0" />
+      <point x="2317.513392857143" y="861.0" />
+      <point x="57.75" y="104.5" />
+    </edge>
+    <edge source="newbank.server.DatabaseHandler" target="newbank.server.Customer">
+      <point x="-138.39999999999998" y="115.5" />
+      <point x="272.0999999999999" y="1285.0" />
+      <point x="301.1999999999998" y="1285.0" />
+      <point x="301.1999999999998" y="2159.0" />
+      <point x="928.3011363636363" y="2159.0" />
+      <point x="-57.27272727272725" y="-281.0" />
+    </edge>
+    <edge source="newbank.server.NewBank" target="newbank.server.Account.InstructionType">
+      <point x="206.625" y="-182.0" />
+      <point x="1365.0625" y="1285.0" />
+      <point x="2056.8883928571427" y="1285.0" />
+      <point x="-91.875" y="60.5" />
+    </edge>
+    <edge source="newbank.server.NewBank" target="newbank.server.MicroLoan">
+      <point x="32.625" y="-182.0" />
+      <point x="1191.0625" y="1175.0" />
+      <point x="1319.0447035677087" y="1175.0" />
+      <point x="1319.0447035677087" y="861.0" />
+      <point x="1220.125" y="861.0" />
+      <point x="-90.875" y="83.0" />
+    </edge>
+    <edge source="newbank.server.NewBank" target="newbank.server.Account">
+      <point x="118.63636363636363" y="182.0" />
+      <point x="1277.0738636363635" y="1729.0" />
+      <point x="1912.0134535677087" y="1729.0" />
+      <point x="-91.6875" y="-160.0" />
+    </edge>
+    <edge source="newbank.server.Report" target="newbank.server.Customer">
+      <point x="37.714285714285666" y="127.0" />
+      <point x="1876.2142857142856" y="1255.0" />
+      <point x="1800.8259535677087" y="1255.0" />
+      <point x="1800.8259535677087" y="2159.0" />
+      <point x="1042.8465909090908" y="2159.0" />
+      <point x="57.27272727272725" y="-281.0" />
+    </edge>
+    <edge source="newbank.server.UserRegistration" target="newbank.server.Customer">
+      <point x="-117.85714285714283" y="-94.0" />
+      <point x="1035.7167207792206" y="2811.0" />
+      <point x="880.5738636363635" y="2811.0" />
+      <point x="-105.0" y="281.0" />
+    </edge>
+    <edge source="newbank.client.ExampleClient" target="newbank.server.NewBankServer">
+      <point x="-52.75" y="-49.5" />
+      <point x="1032.0738636363635" y="3320.0" />
+      <point x="1040.5738636363635" y="3320.0" />
+      <point x="-44.25" y="38.5" />
+    </edge>
+    <edge source="newbank.server.NewBankClientHandler" target="newbank.server.UserRegistration">
+      <point x="0.0" y="-49.5" />
+      <point x="-68.75" y="94.0" />
+    </edge>
+    <edge source="newbank.server.NewBank" target="newbank.server.Transaction.TransactionType">
+      <point x="-10.875" y="-182.0" />
+      <point x="1147.5625" y="1185.0" />
+      <point x="936.9999999999999" y="1185.0" />
+      <point x="936.9999999999999" y="597.0" />
+      <point x="865.1697035677087" y="597.0" />
+      <point x="0.0" y="104.5" />
+    </edge>
+    <edge source="newbank.server.Customer" target="newbank.server.Transaction.TransactionType">
+      <point x="-85.90909090909088" y="-281.0" />
+      <point x="899.6647727272726" y="2169.0" />
+      <point x="33.0" y="2169.0" />
+      <point x="33.0" y="871.0" />
+      <point x="854.1697035677087" y="871.0" />
+      <point x="854.1697035677087" y="597.0" />
+      <point x="781.8363702343754" y="597.0" />
+      <point x="-83.33333333333326" y="104.5" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="1.0" x="384.5" y="485.0" />
+  <settings layout="Hierarchic Group" zoom="1.0" x="1137.5000000000002" y="1712.0000000000002" />
   <SelectedNodes />
   <Categories>
     <Category>Fields</Category>
@@ -36,6 +327,6 @@
     <Category>Inner Classes</Category>
   </Categories>
   <SCOPE>All</SCOPE>
-  <VISIBILITY>private</VISIBILITY>
+  <VISIBILITY>public</VISIBILITY>
 </Diagram>
 
