@@ -163,6 +163,11 @@ public class NewBank {
 				if(accountsList.size() >= 3){
 					return "MAXIMUM NUMBER OF ACCOUNTS REACHED!";
 				}
+				for(Account account : accountsList){
+					if(account.getAccountType().toString().equalsIgnoreCase(requestSplit[1])){
+						return "ERROR. ACCOUNT TYPE ALREADY EXISTS!";
+					}
+				}
 				double openingBalance = 0;
 				Account.AccountType accType;
 				if(requestSplit.length == 2){
