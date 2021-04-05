@@ -10,9 +10,9 @@
 ### **Overview**
 This is a Java server-client architecture project run over the CLI that aims to replicate and develop modern banking features and options in a fast-paced Agile environment.
 
-The project runs over a period of 6 weeks with team members changing roles between Scrum Master, Product Owner and Team Developer. There is no dedicated tester as every developer acts as their own tester for the features they implement. To faciliate an effective and practical Agile workflow, two meetings were held on a weekly basis to address different topics during the sprint. Meeting one would focus on the tickets & features to be worked on for the current/upcoming sprint and setting goals and priorities. In addition, we would discuss sprint review and sprint retrospective. Meeting two would be mid-sprint which focuses mainly on progress by the development team, any blockers or issues slowing down implementations and what could be done to resolve them.
+The project runs over a period of 6 weeks with team members changing roles between Scrum Master, Product Owner and Team Developer. There is no dedicated tester as every developer acts as their own tester for the features they implement. To faciliate an effective and practical Agile workflow, two meetings were held on a weekly basis to address different topics during the sprint. Meeting one would focus on the tickets & features to be worked on for the current/upcoming sprint and setting goals and priorities. In addition, we would discuss sprint review and sprint retrospective. Meeting two would be mid-sprint which focuses mainly on progress by the development team, any blockers or issues slowing down implementations and what could be done to resolve them. This would sometimes also include code-review by the whole team regarding specific features.
 
-We had a dedicated collaboration server which we would reguarlly on a daily basis to discuss different matters over text. This is also where our virtual over-text stand-ups would happen and dicuss different coding challenges and design questions that are being working on during the sprint.
+Furthermore, we had a dedicated collaboration server which we would regularly on a daily basis to discuss different matters over text. This is also where our virtual over-text stand-ups would happen to dicuss different coding challenges and design questions that are being worked on during the sprint.
 
 ### **Details**
 Upon initiating the application, the user has an option to either login into an existing account or sign up for a new account.
@@ -34,33 +34,33 @@ Depending on the IDE used, the application could be started from the run/debug o
 
 There are a few main commands available in order to interact with the bank, those are:
 * `NEWACCOUNT <account type>`
-  * NEWACCOUNT checking - Will create a new Checking account with 0 balance.
+  * `NEWACCOUNT checking` - Will create a new Checking account with 0 balance.
 * `SHOWMYACCOUNTS`
-  * Will display all accounts and their information for the customer.
+  * `SHOWMYACCOUNTS` - Will display all accounts and their information for the customer.
 * `MOVE <amount> <from> <to>`
-  * MOVE 5000 checking savings - Will move 5000 from Checkings account to Savings account.
+  * `MOVE 5000 checking savings` - Will move 5000 from Checkings account to Savings account.
 * `DEPOSIT <amount> <to account type>`
-  * DEPOSIT 1000 moneymarket - Will deposit 1000 into Moneymarket account.
+  * `DEPOSIT 1000 moneymarket` - Will deposit 1000 into Moneymarket account.
 * `WITHDRAW <amount> <from account type>`
-  * WITHDRAW 500 savings - Will withdraw 500 from Savings account.
+  * `WITHDRAW 500 savings` - Will withdraw 500 from Savings account.
 * `SHOWTRANSACTIONS`
-  * SHOWTRANSACTIONS - Will display all incoming and outgoing transactions from this account.
+  * `SHOWTRANSACTIONS` - Will display all incoming and outgoing transactions from this account.
 * `PAY <amount> <from account type> <to customer name>`
-  * PAY 5500 checking john - Will pay 5500 deducted from Checkings paid to John's default account which is always Checkings.
+  * `PAY 5500 checking john` - Will pay 5500 deducted from Checkings paid to John's default account which is always Checkings.
 * `MICROLOAN <amount> <from account type> <to customer name>`
-  * MICROLOAN 5500 checking john - Will send 1000 deducted from Checking to John's default account which is always Checkings.
+  * `MICROLOAN 5500 checking john` - Will send 1000 deducted from Checking to John's default account which is always Checkings.
 * `DELETE <customer ID>`
-  * DELETE 489418943 - Will delete all records pertinent to the customer with ID# 489418943. Accessible by staff members only.
+  * `DELETE 489418943` - Will delete all records pertinent to the customer with ID# 489418943. Accessible by staff members only.
 * `DELETE <customer ID> <account type>`
-  * DELETE 489418943 moneymarket - Will delete Moneymarket account for customer ID# 489418943. Accessible by staff members only.
+  * `DELETE 489418943 moneymarket` - Will delete Moneymarket account for customer ID# 489418943. Accessible by staff members only.
 * `AUDITREPORT`
-  * Generates a report of all banking activity. Accessible by staff members only.
+  * `AUDITREPORT` - Generates a report of all banking activity. Accessible by staff members only.
 * `HELP`
-  * Displays all of the available commands.
+  * `HELP` - Displays all of the available commands.
 * `HELP <command name>`
-  * Displays information about the specified command.
+  * `HELP NEWACCOUNT` Displays information about the NEWACCOUNT command.
 * `CONFIRM`
-  * Will save and confirm all session actions into the database.
+  * `CONFIRM` - Will save and confirm all session actions into the database.
 
 ### **Design**
 To facilitate the server-client architecture, two main objects shall exist. A server object from NewBankServer.java and a client object from ExampleClient.java. A bank object is then created from NewBank.java where all of the main actions of banking would occur. Within the bank object, an intermediate Hashmap data structure is used to store Customer objects. Each Customer object would contain an Account object. These Account objects are to be stored in a List in the Customer object and would refer to each account type.
@@ -69,14 +69,14 @@ In order to save and store actions and transactions occuring over a session's pe
 
 ![Relationship between a live session, Hashmap and the Database](Images/ProcessRequest_Hashmap_Database%20Interaction.png)
 
-The implementation of Microloans is based on a class that inherits the class Transactions. Transactions & TransactionsHandler classes process and store details about a transaction. These include transaction time, ID, sender, receiver, message and message. Microloans inherits Transactions and implements additional attributes inclduing interest rate, instalments, repayment deadline and maximum permitted loan amount. Various rules and restrictions are set in place to allow specfic customers to offer Microloans based on a minimum sit criteria. For instance, a minimum number of deposits over the account's history and funds available.
+The implementation of Microloans is based on a class that inherits the class Transactions. Transactions & TransactionsHandler classes process and store details about a transaction. These include transaction time, ID, sender, receiver, message and message. Microloans inherits Transactions and implements additional attributes including interest rate, instalments, repayment deadline and maximum permitted loan amount. Various rules and restrictions are set in place to allow specfic customers to offer Microloans based on a minimum sit criteria. For instance, a minimum number of deposits over the account's history and funds available.
 
 The calculator of loan repayments with interest rate is based on [this source.](https://www.kasasa.com/blog/how-to-calculate-loan-payments-in-3-easy-steps)
 
 ### **Future features TODO - beyond the project timeline**
-Since our project had a duration of six weeks, we had a number of tickets that we as a team thought would be useful to implement had our project gone over the six-week limit. Some of those features were:
+Since our project had a duration of six weeks, we had a number of tickets that we as a team thought would be useful to implement had our project gone over the six-week limit. Some of those features are:
 1. Re-design the server/client implementation to handle multiple concurrent customers.
-1. Securly protect the Database to prevent multiple customers in different sessions from submitting multiple requests to the same data point.
+1. Securely protect the Database to prevent multiple customers in different sessions from submitting multiple requests to the same data point.
 1. Upgrade the database infrastructure from a CSV file to a dedicated SQL-based data storage.
 1. Introduce and address security and data concerns.
 1. Implement two-step verification for customers.
