@@ -1,5 +1,6 @@
 package newbank.server;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.time.LocalDate;
@@ -177,6 +178,24 @@ public class Customer {
 		}
 		//return true; //uncomment for testing
 		return sumDeposits >= 1000.0 && count >= 3 && totalBalance > 0 ?  true : false;
+	}
+
+	//returns transactions for a given account type
+	public String showTransactions(){
+		String tranSent = "\nHere are the transaction you've sent: \n";
+		String tranReceived = "\nHere are the transaction you've received: \n";
+		try{
+			for(Transaction tran : this.transactionsSent){
+				tranSent += DateTimeFormatter.ofPattern("MM/dd/yyyy").format(tran.getTransactionDateTime())+" | amount: "+tran.getAmount()+" | receiver: "+tran.getReceiverName()+" | type: "+tran.getTransactionType()+"\n";
+			}
+			for(Transaction tran : this.transactionsReceived){
+				tranReceived += DateTimeFormatter.ofPattern("MM/dd/yyyy").format(tran.getTransactionDateTime())+" | amount: "+tran.getAmount()+" | receiver: "+tran.getReceiverName()+" | type: "+tran.getTransactionType()+"\n";
+			}
+
+			return tranSent+tranReceived;
+		}catch(Exception e){
+			return "FAIL. Error: "+e.getMessage()+". Please try again";
+		}
 	}
 
 }

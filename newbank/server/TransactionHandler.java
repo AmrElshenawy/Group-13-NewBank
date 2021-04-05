@@ -1,10 +1,8 @@
 package newbank.server;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class TransactionHandler {

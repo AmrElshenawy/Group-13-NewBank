@@ -109,7 +109,7 @@ public class NewBank {
 			for(ArrayList<String> line: scanOutput){
 				for(int i = 0; i < line.size(); i++){
 					account = new Account(parseInt(line.get(2)));
-					dateTime = LocalDateTime.parse(line.get(1),DateTimeFormatter.ofPattern("dd/MM/yyyy HH.mm.ss"));
+					dateTime = LocalDateTime.parse(line.get(1),DateTimeFormatter.ofPattern("MM/dd/yyyy HH.mm.ss"));
 					int senderId = parseInt(line.get(2));
 					String senderName = line.get(3);
 					int receiverId = parseInt(line.get(4));
@@ -159,16 +159,15 @@ public class NewBank {
 			case "SHOWMYACCOUNTS":
 				return showMyAccounts(customer);
 			case "NEWACCOUNT":
-				// NEWACCOUNT <OpeningBalance> <Type>
+				// NEWACCOUNT <Type>
 				ArrayList<Account> accountsList = customers.get(customer.getKey()).getAccounts();
 				if(accountsList.size() >= 3){
 					return "MAXIMUM NUMBER OF ACCOUNTS REACHED!";
 				}
 				double openingBalance = 0;
-				openingBalance = Double.parseDouble(requestSplit[1]);
 				Account.AccountType accType;
-				if(requestSplit.length == 3){
-					String accountType = requestSplit[2];
+				if(requestSplit.length == 2){
+					String accountType = requestSplit[1];
 
 					if(accountType.equalsIgnoreCase(Account.AccountType.CHILDREN.toString())){
 						accType = Account.AccountType.CHILDREN;
@@ -229,6 +228,11 @@ public class NewBank {
 						transactionsList.add(transaction);
 						customers.get(customer.getKey()).setTransactionSent(transaction);
 						customers.get(customer.getKey()).setTransactionReceived(transaction);
+						try {
+							handleTransactions.saveSession(transactionsList);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 						return "SUCCESS! Move transfer complete.";
 					}
 				}
@@ -236,6 +240,8 @@ public class NewBank {
 				// PAY <Amount> <From User's Account> <To Payee's UserName>
 				if (requestSplit.length != 4){
 					return "FAIL";
+				} else if(!requestSplit[2].equalsIgnoreCase("CHECKING")){ // if user's account type is not checking
+					return "Error. You can only pay another NewBank user from your checking account";
 				} else {
 					return payPerson(customer, requestSplit, Transaction.TransactionType.PAYMENT);
 				}
@@ -244,47 +250,61 @@ public class NewBank {
 				try{
 					Account accountTo = returnAccount(requestSplit[2], customers.get(customer.getKey()));
 					Double deposit = Double.parseDouble(requestSplit[1]);
-					accountTo.modifyBalance(deposit, Account.InstructionType.DEPOSIT);
-					LocalDateTime dateTime = LocalDateTime.now();
-					String formattedDate = DateTimeFormatter.ofPattern("MM/dd/yyyy HH.mm.ss").format(dateTime);
-					int senderId = customers.get(customer.getKey()).getCustomerId(); // customer ID (number)
-					String senderName = customer.getKey();
-					int receiverId = accountTo.getAccountId();
-					String receiverName = customer.getKey();
-					String message = "deposit from "+senderName+" to "+receiverName+" of "+deposit+" on "+ formattedDate;
-					Transaction.TransactionType tranType = Transaction.TransactionType.DEPOSIT;
-					Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, deposit, message, tranType);
-					transactions.put(accountTo, transaction);
-					transactionsList.add(transaction);
-					customers.get(customer.getKey()).setTransactionReceived(transaction);
-					return "SUCCESS! You deposited "+deposit+" into your account: "+accountTo.getAccountType();
+					if (accountTo == null) { // you can't deposit to an account that does not exist
+						return "Error: One or more accounts not recognised. Please check account details and try again.";
+					} else if (deposit <= 0){
+						return "Error: Invalid amount specified. Transfers must be at least £0.01";
+					} else {
+						accountTo.modifyBalance(deposit, Account.InstructionType.DEPOSIT);
+						LocalDateTime dateTime = LocalDateTime.now();
+						String formattedDate = DateTimeFormatter.ofPattern("MM/dd/yyyy HH.mm.ss").format(dateTime);
+						int senderId = customers.get(customer.getKey()).getCustomerId(); // customer ID (number)
+						String senderName = customer.getKey();
+						int receiverId = accountTo.getAccountId();
+						String receiverName = customer.getKey();
+						String message = "deposit from " + senderName + " to " + receiverName + " of " + deposit + " on " + formattedDate;
+						Transaction.TransactionType tranType = Transaction.TransactionType.DEPOSIT;
+						Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, deposit, message, tranType);
+						transactions.put(accountTo, transaction);
+						transactionsList.add(transaction);
+						customers.get(customer.getKey()).setTransactionReceived(transaction);
+						handleTransactions.saveSession(transactionsList);
+						return "SUCCESS! You deposited " + deposit + " into your account: " + accountTo.getAccountType();
+					}
 				}catch(Exception e){
 					return "FAIL. Error: "+e.getMessage()+". Please try again";
 				}
-
 			case "WITHDRAW":
 				// WITHDRAW <Amount> <From User's Account>
 				try{
 					Account accountFrom = returnAccount(requestSplit[2], customers.get(customer.getKey()));
 					Double withdrawal = Double.parseDouble(requestSplit[1]);
-					accountFrom.modifyBalance(withdrawal, Account.InstructionType.WITHDRAW);
-					LocalDateTime dateTime = LocalDateTime.now();
-					String formattedDate = DateTimeFormatter.ofPattern("MM/dd/yyyy HH.mm.ss").format(dateTime);
-					int senderId = accountFrom.getAccountId();
-					String senderName = customer.getKey();
-					int receiverId = customers.get(customer.getKey()).getCustomerId(); // customer ID (number)
-					String receiverName = customer.getKey();
-					String message = "withdrawal by "+receiverName+" from "+receiverName+" of "+withdrawal+" on "+ formattedDate;
-					Transaction.TransactionType tranType = Transaction.TransactionType.WITHDRAWAL;
-					Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, withdrawal, message, tranType);
-					transactions.put(accountFrom, transaction);
-					transactionsList.add(transaction);
-					customers.get(customer.getKey()).setTransactionSent(transaction);
-					return "SUCCESS! You withdrew "+withdrawal+" from your account: "+accountFrom.getAccountType();
+					if (accountFrom == null) { // you can't withdraw from an account that does not exist
+						return "Error: One or more accounts not recognised. Please check account details and try again.";
+					} else if (withdrawal <= 0){
+						return "Error: Invalid amount specified. Transfers must be at least £0.01";
+					} else if (!sufficientFunds(accountFrom, withdrawal)){
+						return "Error: insufficient funds available to carry out transfer";
+					} else {
+						accountFrom.modifyBalance(withdrawal, Account.InstructionType.WITHDRAW);
+						LocalDateTime dateTime = LocalDateTime.now();
+						String formattedDate = DateTimeFormatter.ofPattern("MM/dd/yyyy HH.mm.ss").format(dateTime);
+						int senderId = accountFrom.getAccountId();
+						String senderName = customer.getKey();
+						int receiverId = customers.get(customer.getKey()).getCustomerId(); // customer ID (number)
+						String receiverName = customer.getKey();
+						String message = "withdrawal by " + receiverName + " from " + receiverName + " of " + withdrawal + " on " + formattedDate;
+						Transaction.TransactionType tranType = Transaction.TransactionType.WITHDRAWAL;
+						Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, withdrawal, message, tranType);
+						transactions.put(accountFrom, transaction);
+						transactionsList.add(transaction);
+						customers.get(customer.getKey()).setTransactionSent(transaction);
+						handleTransactions.saveSession(transactionsList);
+						return "SUCCESS! You withdrew " + withdrawal + " from your account: " + accountFrom.getAccountType();
+					}
 				}catch(Exception e){
 					return "FAIL. Error: "+e.getMessage()+". Please try again";
 				}
-
 			case "MICROLOAN":
 				// MICROLOAN <Amount> <From User's Account> <To Payee's UserName>
 				if (requestSplit.length != 4){
@@ -302,12 +322,11 @@ public class NewBank {
 						return "PAYEE NOT AUTHORIZED TO RECEIVE LOANS";
 					} else return "FAIL";
 				}
-
 			case "CONFIRM":
 				DatabaseHandler save = new DatabaseHandler();
 				try {
 					save.saveSession(customers);
-					handleTransactions.saveSession(transactionsList);
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -371,7 +390,14 @@ public class NewBank {
 				else if(requestSplit.length == 2){
 					return helpCommandDescription(requestSplit[1]);
 				}
-				
+			case "SHOWTRANSACTIONS":
+				// SHOWTRANSACTIONS
+				if (requestSplit.length != 1){
+					return "FAIL";
+				} else {
+					return customers.get(customer.getKey()).showTransactions();
+				}
+
 			default : return "FAIL";
 			}
 		}
@@ -461,45 +487,53 @@ public class NewBank {
 		if (user == null || payee == null || !sufficientFunds(user, payment)){
 			return "FAIL";
 		} else {
-			user.modifyBalance(payment, Account.InstructionType.WITHDRAW);
-			payee.modifyBalance(payment, Account.InstructionType.DEPOSIT);
-			LocalDateTime dateTime = LocalDateTime.now();
-			String formattedDate = DateTimeFormatter.ofPattern("MM/dd/yyyy HH.mm.ss").format(dateTime);
-			int senderId = user.getAccountId();
-			int receiverId = payee.getAccountId();
-			String senderName = "";
-			Customer sender = null;
-			String receiverName = "";
-			Customer receiver = null;
-			for(Map.Entry<String, Customer> record : customers.entrySet()) { //record is of type Map, record.getValue() returns a Customer object
-				for(Account account: record.getValue().getAccounts()){ //record.getValue().getAccounts() returns a List of Account objects
-					if(account.getAccountId() == senderId){
-						senderName = record.getKey();
-						sender = record.getValue();
+			//try{
+				user.modifyBalance(payment, Account.InstructionType.WITHDRAW);
+				payee.modifyBalance(payment, Account.InstructionType.DEPOSIT);
+				LocalDateTime dateTime = LocalDateTime.now();
+				String formattedDate = DateTimeFormatter.ofPattern("MM/dd/yyyy HH.mm.ss").format(dateTime);
+				int senderId = user.getAccountId();
+				int receiverId = payee.getAccountId();
+				String senderName = "";
+				Customer sender = null;
+				String receiverName = "";
+				Customer receiver = null;
+				for(Map.Entry<String, Customer> record : customers.entrySet()) { //record is of type Map, record.getValue() returns a Customer object
+					for(Account account: record.getValue().getAccounts()){ //record.getValue().getAccounts() returns a List of Account objects
+						if(account.getAccountId() == senderId){
+							senderName = record.getKey();
+							sender = record.getValue();
+						}
+						if(account.getAccountId() == receiverId){
+							receiverName = record.getKey();
+							receiver = record.getValue();
+						}
+						break;
 					}
-					if(account.getAccountId() == receiverId){
-						receiverName = record.getKey();
-						receiver = record.getValue();
-					}
-					break;
 				}
+				String message = "payment from "+senderName+" to "+receiverName+" of "+payment+" on "+formattedDate;
+				Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, payment, message, type);
+				transactions.put(user, transaction);
+				transactionsList.add(transaction);
+				sender.setTransactionSent(transaction);
+				receiver.setTransactionReceived(transaction);
+				if(type.equals(Transaction.TransactionType.MICROLOAN)){
+					Double interest = 7.00; //this will need to handled better in the future
+					int installments = 12; //this will need to handled better in the future
+					LocalDateTime repaymentDate = dateTime.plus(Period.ofYears(1));
+					MicroLoan microLoan = new MicroLoan(dateTime, senderId, senderName, receiverId, receiverName, payment, message, type, interest, installments, repaymentDate);
+					customerMicroloansOffered.put(sender, microLoan); //creates a lookup mapping for the sending customer to the loan offered
+					customerMicroloansReceived.put(receiver, microLoan); //creates a lookup mapping for the receiving customer to the loan taken
+					accountMicroloansOffered.put(user, microLoan); //creates a lookup mapping for the sending account to the loan offered
+					accountMicroloansReceived.put(payee, microLoan); //creates a lookup mapping for the receiving account to the loan taken
+				}
+			try {
+				handleTransactions.saveSession(transactionsList);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			String message = "payment from "+senderName+" to "+receiverName+" of "+payment+" on "+formattedDate;
-			Transaction transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, payment, message, type);
-			transactions.put(user, transaction);
-			transactionsList.add(transaction);
-			sender.setTransactionSent(transaction);
-			receiver.setTransactionReceived(transaction);
-			if(type.equals(Transaction.TransactionType.MICROLOAN)){
-				Double interest = 7.00; //this will need to handled better in the future
-				int installments = 12; //this will need to handled better in the future
-				LocalDateTime repaymentDate = dateTime.plus(Period.ofYears(1));
-				MicroLoan microLoan = new MicroLoan(dateTime, senderId, senderName, receiverId, receiverName, payment, message, type, interest, installments, repaymentDate);
-				customerMicroloansOffered.put(sender, microLoan); //creates a lookup mapping for the sending customer to the loan offered
-				customerMicroloansReceived.put(receiver, microLoan); //creates a lookup mapping for the receiving customer to the loan taken
-				accountMicroloansOffered.put(user, microLoan); //creates a lookup mapping for the sending account to the loan offered
-				accountMicroloansReceived.put(payee, microLoan); //creates a lookup mapping for the receiving account to the loan taken
-			}
+			//}catch(Exception e){
+			//}
 
 			return "SUCCESS";
 		}
@@ -516,11 +550,12 @@ public class NewBank {
 		}
 		else if(name.equals("general")){
 			commands += "Available commands: \n";
-			commands += "* NEWACCOUNT <openingbalance> <account type> \n";
+			commands += "* NEWACCOUNT <account type> \n";
 			commands += "* SHOWMYACCOUNTS \n";
 			commands += "* MOVE <amount> <from> <to> \n";
 			commands += "* DEPOSIT <amount> <to account type> \n";
 			commands += "* WITHDRAW <amount> <from account type> \n";
+			commands += "* SHOWTRANSACTIONS \n";
 			commands += "* PAY <amount> <from account type> <to customer name> \n";
 			commands += "* MICROLOAN <amount> <from account type> <to customer name> \n";
 			commands += "* HELP \n";
@@ -534,7 +569,7 @@ public class NewBank {
 		String description = "";
 		switch(commandName.toUpperCase()){
 			case "NEWACCOUNT":
-				description += "NEWACCOUNT 2500 moneymarket - Will create a new Moneymarket account with 2500 balance.";
+				description += "NEWACCOUNT moneymarket - Will create a new Moneymarket account with 2500 balance.";
 				break;
 			case "SHOWMYACCOUNTS":
 				description += "Will display all accounts and their information for the customer.";
@@ -547,6 +582,8 @@ public class NewBank {
 				break;
 			case "WITHDRAW":
 				description += "WITHDRAW 500 savings - Will withdraw 500 from Savings account.";
+			case "SHOWTRANSACTIONS":
+				description += "SHOWTRANSACTIONS - Will display all incoming and outgoing transactions from this account.";
 				break;
 			case "PAY":
 				description += "PAY 5500 checking john - Will pay 5500 deducted from Checking paid to John's default account which is always Checking.";
