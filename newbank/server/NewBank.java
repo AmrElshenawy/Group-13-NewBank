@@ -314,6 +314,8 @@ public class NewBank {
 				// MICROLOAN <Amount> <From User's Account> <To Payee's UserName>
 				if (requestSplit.length != 4){
 					return "FAIL";
+				} else if (Integer.parseInt(requestSplit[1]) <= 0){
+					return "Error: Invalid amount specified. Transfers must be at least £0.01";
 				} else {
 					String payeeAccountType = requestSplit[2];
 					Customer sender = customers.get(customer.getKey());
