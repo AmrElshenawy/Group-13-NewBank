@@ -196,7 +196,7 @@ public class Customer {
 			for(Transaction tran : this.transactionsReceived){
 				tranReceived += DateTimeFormatter.ofPattern("MM/dd/yyyy").format(tran.getTransactionDateTime())+
 						" | amount: "+tran.getAmount()+
-						" | receiver: "+tran.getReceiverName()+
+						" | sender: "+tran.getSenderName()+
 						" | type: "+tran.getTransactionType()+
 						" | id: "+tran.getTransactionId()+
 						"\n";
