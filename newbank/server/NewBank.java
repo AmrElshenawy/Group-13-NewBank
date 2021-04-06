@@ -119,6 +119,7 @@ public class NewBank {
 					String message = line.get(7);
 					Transaction.TransactionType tranType = Transaction.TransactionType.valueOf(line.get(8));
 					transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, amount, message, tranType);
+					transaction.setTransactionId(Integer.parseInt(line.get(0)));
 				}
 				transactions.put(account, transaction);
 				transactionsList.add(transaction);
@@ -241,8 +242,10 @@ public class NewBank {
 				if (requestSplit.length != 4){
 					return "FAIL";
 				} else if(!requestSplit[2].equalsIgnoreCase("CHECKING")){ // if user's account type is not checking
-					return "Error. You can only pay another NewBank user from your checking account";
-				} else {
+					return "Error: You can only pay another NewBank user from your checking account";
+				} else if (Integer.parseInt(requestSplit[1]) <= 0){
+					return "Error: Invalid amount specified. Transfers must be at least £0.01";
+				}else {
 					didDatabaseChange = true;
 					return payPerson(customer, requestSplit, Transaction.TransactionType.PAYMENT);
 				}
@@ -312,6 +315,8 @@ public class NewBank {
 				// MICROLOAN <Amount> <From User's Account> <To Payee's UserName>
 				if (requestSplit.length != 4){
 					return "FAIL";
+				} else if (Integer.parseInt(requestSplit[1]) <= 0){
+					return "Error: Invalid amount specified. Transfers must be at least £0.01";
 				} else {
 					String payeeAccountType = requestSplit[2];
 					Customer sender = customers.get(customer.getKey());
