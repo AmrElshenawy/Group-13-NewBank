@@ -186,10 +186,20 @@ public class Customer {
 		String tranReceived = "\nHere are the transaction you've received: \n";
 		try{
 			for(Transaction tran : this.transactionsSent){
-				tranSent += DateTimeFormatter.ofPattern("MM/dd/yyyy").format(tran.getTransactionDateTime())+" | amount: "+tran.getAmount()+" | receiver: "+tran.getReceiverName()+" | type: "+tran.getTransactionType()+"\n";
+				tranSent += DateTimeFormatter.ofPattern("MM/dd/yyyy").format(tran.getTransactionDateTime())+
+						" | amount: "+tran.getAmount()+
+						" | receiver: "+tran.getReceiverName()+
+						" | type: "+tran.getTransactionType()+
+						" | id: "+tran.getTransactionId()+
+						"\n";
 			}
 			for(Transaction tran : this.transactionsReceived){
-				tranReceived += DateTimeFormatter.ofPattern("MM/dd/yyyy").format(tran.getTransactionDateTime())+" | amount: "+tran.getAmount()+" | receiver: "+tran.getReceiverName()+" | type: "+tran.getTransactionType()+"\n";
+				tranReceived += DateTimeFormatter.ofPattern("MM/dd/yyyy").format(tran.getTransactionDateTime())+
+						" | amount: "+tran.getAmount()+
+						" | receiver: "+tran.getReceiverName()+
+						" | type: "+tran.getTransactionType()+
+						" | id: "+tran.getTransactionId()+
+						"\n";
 			}
 
 			return tranSent+tranReceived;

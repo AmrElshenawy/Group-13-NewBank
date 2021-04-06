@@ -118,6 +118,7 @@ public class NewBank {
 					String message = line.get(7);
 					Transaction.TransactionType tranType = Transaction.TransactionType.valueOf(line.get(8));
 					transaction = new Transaction(dateTime, senderId, senderName, receiverId, receiverName, amount, message, tranType);
+					transaction.setTransactionId(Integer.parseInt(line.get(0)));
 				}
 				transactions.put(account, transaction);
 				transactionsList.add(transaction);
