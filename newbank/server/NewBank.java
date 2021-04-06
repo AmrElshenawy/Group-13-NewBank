@@ -241,8 +241,10 @@ public class NewBank {
 				if (requestSplit.length != 4){
 					return "FAIL";
 				} else if(!requestSplit[2].equalsIgnoreCase("CHECKING")){ // if user's account type is not checking
-					return "Error. You can only pay another NewBank user from your checking account";
-				} else {
+					return "Error: You can only pay another NewBank user from your checking account";
+				} else if (Integer.parseInt(requestSplit[1]) <= 0){
+					return "Error: Invalid amount specified. Transfers must be at least £0.01";
+				}else {
 					didDatabaseChange = true;
 					return payPerson(customer, requestSplit, Transaction.TransactionType.PAYMENT);
 				}
