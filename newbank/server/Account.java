@@ -10,7 +10,7 @@ public class Account {
 	//private String accountName;
 	private int accountId;
 	private double openingBalance;
-	enum AccountType {CHILDREN, SENIOR, CHECKING, SAVINGS, MONEYMARKET, OVERDRAFT}
+	enum AccountType {CHECKING, SAVINGS, MONEYMARKET}
 	private Account.AccountType accountType;
 	enum InstructionType {WITHDRAW, DEPOSIT}
 	private Account.InstructionType instructionType;
@@ -59,23 +59,14 @@ public class Account {
         String accountNumber;
 
             switch (type) {
-                case CHILDREN:
+                case CHECKING:
                     prefix = "0";
                     break;
-                case SENIOR:
+                case SAVINGS:
                     prefix = "1";
                     break;
-                case CHECKING:
-                    prefix = "2";
-                    break;
-                case SAVINGS:
-                    prefix = "3";
-                    break;
                 case MONEYMARKET:
-                    prefix = "4";
-                    break;
-                case OVERDRAFT:
-                    prefix = "5";
+                    prefix = "2";
                     break;
             }
 
