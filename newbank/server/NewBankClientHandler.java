@@ -25,7 +25,15 @@ public class NewBankClientHandler extends Thread{
 		try {
 			out.println(welcomeMessage());
 
-			String selection = in.readLine();
+			String[] okEntries = {"1", "2"};
+			String selection;
+			do {
+				selection = in.readLine();
+				if (!selection.equals(okEntries[0]) && !selection.equals(okEntries[1])){
+					out.println("Invalid selection! Please try again.");
+				}
+			} while (!selection.equals(okEntries[0]) && !selection.equals(okEntries[1]));
+
 			switch (selection){
 				case "1": // Register user
 					UserRegistration newUser = new UserRegistration(s, bank);

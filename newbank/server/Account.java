@@ -15,17 +15,20 @@ public class Account {
 	enum InstructionType {WITHDRAW, DEPOSIT}
 	private Account.InstructionType instructionType;
 	private ArrayList<Transaction> transactions;
+	private double interest;
 
     public Account(int accountId, double openingBalance, AccountType type) {
 		this.accountId = accountId;
         this.openingBalance = openingBalance;
         this.accountType = type;
+        this.interest = 0;
     }
 
 	public Account(double openingBalance, AccountType type) {
 		this.accountId = setAccountNumber(type);
         this.openingBalance = openingBalance;
         this.accountType = type;
+        this.interest = 0;
     }
 
 	public Account(int accountId){
@@ -106,10 +109,14 @@ public class Account {
 		return transactions;
 	}
 
+	public double getInterest() { return interest; }
+
 	//setters
 	public void setTransaction(Transaction transactions) {
         this.transactions.add(transactions);
 	}
+
+	public void setInterest(double interest) { this.interest = interest; }
 
 	//print functions
 	public String toString() {
