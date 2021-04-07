@@ -39,6 +39,7 @@ public class NewBank {
 		transactionsList = new ArrayList<>();
 		fillHashMap_fromDB();
 		readTransactionsFromDB();
+		Interest interest = new Interest(customers,transactions);
 
 	}
 
