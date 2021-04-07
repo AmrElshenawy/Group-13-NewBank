@@ -126,8 +126,18 @@ public class NewBank {
 				}
 				transactions.put(account, transaction);
 				transactionsList.add(transaction);
-				customers.get(line.get(3).toLowerCase()).setTransactionSent(transaction);
-				customers.get(line.get(5).toLowerCase()).setTransactionReceived(transaction);
+				switch (transaction.getTransactionType().toString()){
+					case "DEPOSIT":
+						customers.get(line.get(5).toLowerCase()).setTransactionReceived(transaction);
+						break;
+					case "WITHDRAWAL":
+						customers.get(line.get(3).toLowerCase()).setTransactionSent(transaction);
+						break;
+					default:
+						customers.get(line.get(3).toLowerCase()).setTransactionSent(transaction);
+						customers.get(line.get(5).toLowerCase()).setTransactionReceived(transaction);
+						break;
+				}
 				if(transaction.getTransactionType().equals(Transaction.TransactionType.MICROLOAN)){
 					Double interest = 7.00; //this will need to handled better in the future
 					int installments = 12; //this will need to handled better in the future
@@ -149,14 +159,19 @@ public class NewBank {
 		loanRequestArrayList = loanOffersList.getLoanOffers();
 	}
 	
-	public synchronized CustomerID checkLogInDetails(String userName, String password) throws FileNotFoundException {
-		DatabaseHandler customerDB = new DatabaseHandler();
-		customerDB.findInDB(userName.toLowerCase());
-		if(customerDB.getName().equalsIgnoreCase(userName)) {
-			if (customerDB.getPassword().equals(password)){
-				return new CustomerID(userName.toLowerCase());
+	public synchronized CustomerID checkLogInDetails(String userName, String password) throws IOException {
+		try{
+			DatabaseHandler customerDB = new DatabaseHandler();
+			customerDB.findInDB(userName.toLowerCase());
+			if(customerDB.getName().equalsIgnoreCase(userName)) {
+				if (customerDB.getPassword().equals(password)){
+					return new CustomerID(userName.toLowerCase());
+				}
 			}
+		}catch(Exception e){
+			System.out.println("Invalid user credentials. Please select option 1. SIGN UP.");
 		}
+
 		return null;
 	}
 
@@ -408,7 +423,6 @@ public class NewBank {
 					return "NOT A STAFF MEMBER. ACTION DENIED!";
 				}
 			case "AUDITREPORT":
-				// AUDITREPORT
 				if(customer.getKey().equalsIgnoreCase("staff")){
 					try{
 						Report report = new Report();
@@ -434,17 +448,22 @@ public class NewBank {
 					return helpCommandDescription(requestSplit[1]);
 				}
 			case "SHOWTRANSACTIONS":
-				// SHOWTRANSACTIONS
 				if (requestSplit.length != 1){
 					return "FAIL";
 				} else {
 					return customers.get(customer.getKey()).showTransactions();
 				}
-
+			case "LOGOUT":
+				logOut();
 			default : return "FAIL";
 			}
 		}
 		return "FAIL";
+	}
+
+	private void logOut(){
+		System.out.println("\nSUCCESS. You have been logged out.");
+		System.exit(0);
 	}
 
 	private String showMyAccounts(CustomerID customer) {
@@ -582,17 +601,18 @@ public class NewBank {
 		}
 	}
 
-	private String getAvailableCommands(String name){
+	protected String getAvailableCommands(String name){
 		String commands = "";
 		if(name.equals("staff")){
-			commands += "Available commands: \n";
+			commands += "\n Available commands: \n";
 			commands += "* DELETE <customer ID> \n";
 			commands += "* DELETE <customer ID> <account type> \n";
 			commands += "* AUDITREPORT \n";
-			commands += "* CONFIRM";
+			commands += "* CONFIRM \n";
+			commands += "* LOGOUT \n";
 		}
 		else if(name.equals("general")){
-			commands += "Available commands: \n";
+			commands += "\n Available commands: \n";
 			commands += "* NEWACCOUNT <account type> \n";
 			commands += "* SHOWMYACCOUNTS \n";
 			commands += "* MOVE <amount> <from> <to> \n";
@@ -603,7 +623,8 @@ public class NewBank {
 			commands += "* MICROLOAN <amount> <from account type> <to customer name> \n";
 			commands += "* HELP \n";
 			commands += "* HELP <command name> \n";
-			commands += "* CONFIRM";
+			commands += "* CONFIRM \n";
+			commands += "* LOGOUT \n";
 		}
 		return commands;
 	}
@@ -642,6 +663,9 @@ public class NewBank {
 				description += "Generates a report of all banking activity. Accessible by staff members only.";
 			case "CONFIRM":
 				description += "Will save and confirm all session actions into the database.";
+				break;
+			case "LOGOUT":
+				description += "Will close your banking session and exit the application";
 				break;
 		}
 		return description;

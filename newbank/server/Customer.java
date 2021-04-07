@@ -201,7 +201,6 @@ public class Customer {
 						" | id: "+tran.getTransactionId()+
 						"\n";
 			}
-
 			return tranSent+tranReceived;
 		}catch(Exception e){
 			return "FAIL. Error: "+e.getMessage()+". Please try again";
