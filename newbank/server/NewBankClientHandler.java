@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class NewBankClientHandler extends Thread{
 	
@@ -24,7 +27,6 @@ public class NewBankClientHandler extends Thread{
 		// keep getting requests from the client and processing them
 		try {
 			out.println(welcomeMessage());
-
 			String selection = in.readLine();
 			switch (selection){
 				case "1": // Register user
@@ -43,16 +45,28 @@ public class NewBankClientHandler extends Thread{
 					// if the user is authenticated then get requests from the user and process them
 					if(customer != null) {
 						out.println("Log In Successful. What do you want to do?");
+						timedExit(1200); // app times out after 20 minutes
+						if(customer.getKey().equalsIgnoreCase("staff")){
+							out.println(bank.getAvailableCommands("staff"));
+						}
+						else{
+							out.println(bank.getAvailableCommands("general"));
+						}
 						while(true) {
 							String request = in.readLine();
 							System.out.println("Request from " + customer.getKey());
 							String response = bank.processRequest(customer, request);
 							out.println(response);
+							timedExit(120); // app times out 2 minutes after the last command was entered
 						}
 					}
 					else {
 						out.println("Log In Failed");
+						run();
 					}
+				default:
+					out.println("Invalid selection. Try Again.");
+					run();
 			}
 
 		} catch (IOException e) {
@@ -85,4 +99,15 @@ public class NewBankClientHandler extends Thread{
 		return welcomeMessage;
 	}
 
+	private void timedExit(int seconds){
+		Timer timer = new Timer();
+		TimerTask exitApp = new TimerTask() {
+			@Override
+			public void run() {
+				System.out.println("You have been logged out due to inactivity");
+				System.exit(0);
+			}
+		};
+		timer.schedule(exitApp, new Date(System.currentTimeMillis()+seconds*1000));
+	}
 }
