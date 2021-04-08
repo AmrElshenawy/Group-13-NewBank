@@ -208,15 +208,13 @@ public class NewBank {
 						accType = Account.AccountType.MONEYMARKET;
 					} 
 					else{
-						accType = Account.AccountType.CHECKING; // default case
+						return "PLEASE PROVIDE CHECKING, SAVINGS OR MONEYMARKET AS TYPE.";
 					} 
 					customers.get(customer.getKey()).setAccount(new Account(openingBalance,accType));
 					didDatabaseChange = true;
 				} 
 				else{
-					accType = Account.AccountType.CHECKING; //default account type if no type is specified
-					customers.get(customer.getKey()).setAccount(new Account(openingBalance,accType));
-					didDatabaseChange = true;
+					return "INCORRECT COMMAND ENTERED!";
 				} 
 				return "SUCCESS";
 			case "MOVE":
@@ -333,20 +331,17 @@ public class NewBank {
 				}catch(Exception e){
 					return "FAIL. Error: "+e.getMessage()+". Please try again";
 				}
-				case "LOANMARKETPLACE":
-					//A place for members to look to offer loans to other members
-					return "Welcome to the Loan Market Place\nOptions are:\nVIEWLOANREQUESTS\nCREATELOANREQUEST\nLOANCALCULATOR\n";
-				case "VIEWLOANREQUESTS":
+			case "VIEWLOANREQUESTS":
 					//displays the list of current requests
 					return displayLoanRequests (loanRequestArrayList);
-				case "CREATELOANREQUEST":
+			case "CREATELOANREQUEST":
 					// CREATELOANREQUEST <Amount> <interestRate> <Installments> <Duration in weeks>
 					if (checkLoanInputString(requestSplit)) {
 						return loanInputStringError(requestSplit);
 					} else {
 						return createLoanRequest(customer, requestSplit, loanRequestArrayList);
 					}
-				case "LOANCALCULATOR":
+			case "LOANCALCULATOR":
 					// CREATELOANREQUEST <Amount> <interestRate> <Installments> <Duration in weeks>
 					if (checkLoanInputString(requestSplit)) {
 						return loanInputStringError(requestSplit);
@@ -395,10 +390,17 @@ public class NewBank {
 						for(Map.Entry<String, Customer> record : customers.entrySet()){
 							String user = record.getKey();
 							Customer object = record.getValue();
-							if(Integer.toString(object.getCustomerId()).equals(requestSplit[1])){
+							
+							if(requestSplit[1].toString().equalsIgnoreCase("-1444844")){
+								return "CANNOT DELETE STAFF ACCOUNT. ACTION DENIED!";
+							}
+							else if(Integer.toString(object.getCustomerId()).equalsIgnoreCase(requestSplit[1])){
 								customers.remove(user);
 								didDatabaseChange = true;
 								return "Customer ID# " + object.getCustomerId() + " DELETED!";
+							}
+							else{
+								return "ERROR. Cannot find Customer ID.";
 							}
 						}
 					}
@@ -414,14 +416,16 @@ public class NewBank {
 										return "Account type " + requestSplit[2].toUpperCase() + " for customer ID# " + object.getCustomerId() + " DELETED!";
 									}
 								}
-
+								return "ERROR. Cannot find Account Type.";
 							}
 						}
+						return "ERROR. Please check the parameters entered. Cannot find Customer ID for this Account Type.";
 					}
 				}
 				else{
 					return "NOT A STAFF MEMBER. ACTION DENIED!";
 				}
+				break;
 			case "AUDITREPORT":
 				if(customer.getKey().equalsIgnoreCase("staff")){
 					try{
@@ -455,10 +459,10 @@ public class NewBank {
 				}
 			case "LOGOUT":
 				logOut();
-			default : return "FAIL";
+			default : return "UNRECOGNIZED COMMAND.";
 			}
 		}
-		return "FAIL";
+		return "UNRECOGNIZED COMMAND.";
 	}
 
 	private void logOut(){
@@ -621,6 +625,9 @@ public class NewBank {
 			commands += "* SHOWTRANSACTIONS \n";
 			commands += "* PAY <amount> <from account type> <to customer name> \n";
 			commands += "* MICROLOAN <amount> <from account type> <to customer name> \n";
+			commands += "* VIEWLOANREQUESTS \n";
+			commands += "* CREATELOANREQUEST <amount> <interestRate> <installments> <duration in weeks> \n";
+			commands += "* LOANCALCULATOR <amount> <interestRate> <installments> <duration in weeks> \n";
 			commands += "* HELP \n";
 			commands += "* HELP <command name> \n";
 			commands += "* CONFIRM \n";
@@ -654,6 +661,15 @@ public class NewBank {
 				break;
 			case "MICROLOAN":
 				description += "MICROLOAN 5500 checking john - Will send 1000 deducted from Checking to John's default account which is always Checkings.";
+				break;
+			case "VIEWLOANREQUESTS":
+				description += "VIEWLOANREQUESTS - Displays the list of current requests";
+				break;
+			case "CREATELOANREQUEST":
+				description += "CREATELOANREQUEST 2000 5 10 20 - Will create a loan request for 2000 dollars at 5% interest rate for 10 installments over 20 weeks.";
+				break;
+			case "LOANCALCULATOR":
+				description += "LOANCALCULATOR <Amount> <interestRate> <Installments> <Duration in weeks> - calculates the loan details for entered parameters.";
 				break;
 			case "DELETE":
 				description += "DELETE 489418943 - Will delete all records pertinent to the customer with ID# 489418943. Accessible by staff members only. \n";

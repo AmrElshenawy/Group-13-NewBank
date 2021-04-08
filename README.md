@@ -33,34 +33,42 @@ Depending on the IDE used, the application could be started from the run/debug o
 4. `java newbank.client.ExampleClient`
 
 There are a few main commands available in order to interact with the bank, those are:
-* `NEWACCOUNT <account type>`
-  * `NEWACCOUNT checking` - Will create a new Checking account with 0 balance.
-* `SHOWMYACCOUNTS`
-  * `SHOWMYACCOUNTS` - Will display all accounts and their information for the customer.
-* `MOVE <amount> <from> <to>`
-  * `MOVE 5000 checking savings` - Will move 5000 from Checkings account to Savings account.
-* `DEPOSIT <amount> <to account type>`
-  * `DEPOSIT 1000 moneymarket` - Will deposit 1000 into Moneymarket account.
-* `WITHDRAW <amount> <from account type>`
-  * `WITHDRAW 500 savings` - Will withdraw 500 from Savings account.
-* `SHOWTRANSACTIONS`
-  * `SHOWTRANSACTIONS` - Will display all incoming and outgoing transactions from this account.
-* `PAY <amount> <from account type> <to customer name>`
-  * `PAY 5500 checking john` - Will pay 5500 deducted from Checkings paid to John's default account which is always Checkings.
-* `MICROLOAN <amount> <from account type> <to customer name>`
-  * `MICROLOAN 5500 checking john` - Will send 1000 deducted from Checking to John's default account which is always Checkings.
-* `DELETE <customer ID>`
-  * `DELETE 489418943` - Will delete all records pertinent to the customer with ID# 489418943. Accessible by staff members only.
-* `DELETE <customer ID> <account type>`
-  * `DELETE 489418943 moneymarket` - Will delete Moneymarket account for customer ID# 489418943. Accessible by staff members only.
-* `AUDITREPORT`
-  * `AUDITREPORT` - Generates a report of all banking activity. Accessible by staff members only.
-* `HELP`
-  * `HELP` - Displays all of the available commands.
-* `HELP <command name>`
-  * `HELP NEWACCOUNT` Displays information about the NEWACCOUNT command.
-* `CONFIRM`
-  * `CONFIRM` - Will save and confirm all session actions into the database.
+1. `NEWACCOUNT <account type>`
+    * `NEWACCOUNT checking` - Will create a new Checking account with 0 balance.
+1. `SHOWMYACCOUNTS`
+    * `SHOWMYACCOUNTS` - Will display all accounts and their information for the customer.
+1. `MOVE <amount> <from> <to>`
+    * `MOVE 5000 checking savings` - Will move 5000 from Checkings account to Savings account.
+1. `DEPOSIT <amount> <to account type>`
+    * `DEPOSIT 1000 moneymarket` - Will deposit 1000 into Moneymarket account.
+1. `WITHDRAW <amount> <from account type>`
+    * `WITHDRAW 500 savings` - Will withdraw 500 from Savings account.
+1. `SHOWTRANSACTIONS`
+    * `SHOWTRANSACTIONS` - Will display all incoming and outgoing transactions from this account.
+1. `PAY <amount> <from account type> <to customer name>`
+    * `PAY 5500 checking john` - Will pay 5500 deducted from Checkings paid to John's default account which is always Checkings.
+1. `MICROLOAN <amount> <from account type> <to customer name>`
+    * `MICROLOAN 5500 checking john` - Will send 1000 deducted from Checking to John's default account which is always Checkings.
+1. `VIEWLOANREQUESTS`
+    * `VIEWLOANREQUESTS` - Displays the list of current requests.
+1. `CREATELOANREQUEST <amount> <interestRate> <installments> <duration in weeks>`
+    * `CREATELOANREQUEST 2000 5 10 20` - Will create a loan request for 2000 dollars at 5% interest rate for 10 installments over 20 weeks.
+1. `LOANCALCULATOR <amount> <interestRate> <installments> <duration in weeks>`
+    * `LOANCALCULATOR 2000 5 10 20` - Calculates the loan details for entered parameters.
+1. `DELETE <customer ID>`
+    * `DELETE 489418943` - Will delete all records pertinent to the customer with ID# 489418943. Accessible by staff members only.
+1. `DELETE <customer ID> <account type>`
+    * `DELETE 489418943 moneymarket` - Will delete Moneymarket account for customer ID# 489418943. Accessible by staff members only.
+1. `AUDITREPORT`
+    * `AUDITREPORT` - Generates a report of all banking activity. Accessible by staff members only.
+1. `HELP`
+    * `HELP` - Displays all of the available commands.
+1. `HELP <command name>`
+    * `HELP NEWACCOUNT` Displays information about the NEWACCOUNT command.
+1. `CONFIRM`
+    * `CONFIRM` - Will save and confirm all session actions into the database.
+1. `LOGOUT`
+    * `LOGOUT` - Will close your banking session and exit the application.
 
 ### **Design**
 To facilitate the server-client architecture, two main objects shall exist. A server object from NewBankServer.java and a client object from ExampleClient.java. A bank object is then created from NewBank.java where all of the main actions of banking would occur. Within the bank object, an intermediate Hashmap data structure is used to store Customer objects. Each Customer object would contain an Account object. These Account objects are to be stored in a List in the Customer object and would refer to each account type.
@@ -69,7 +77,7 @@ In order to save and store actions and transactions occuring over a session's pe
 
 ![Relationship between a live session, Hashmap and the Database](Images/ProcessRequest_Hashmap_Database%20Interaction.png)
 
-The implementation of Microloans is based on a class that inherits the class Transactions. Transactions & TransactionsHandler classes process and store details about a transaction. These include transaction time, ID, sender, receiver, message and message. Microloans inherits Transactions and implements additional attributes including interest rate, instalments, repayment deadline and maximum permitted loan amount. Various rules and restrictions are set in place to allow specfic customers to offer Microloans based on a minimum sit criteria. For instance, a minimum number of deposits over the account's history and funds available.
+The implementation of Microloans is based on a class that inherits the class Transactions. Transactions & TransactionsHandler classes process and store details about a transaction. These include transaction time, ID, sender, receiver, message and message. Microloans inherits Transactions and implements additional attributes including interest rate, instalments, repayment deadline and maximum permitted loan amount. Various rules and restrictions are set in place to allow specfic customers to offer Microloans based on a minimum sit criteria. For instance, a minimum number of deposits over the account's history and funds available. Furthermore, a loan marketplace has been developed where customers can request loans and other members can logon and see the available requests, which they can fulfill/offer if they wish to. A loan calculator also exists to calculate a loan before raising one.
 
 The calculator of loan repayments with interest rate is based on [this source.](https://www.kasasa.com/blog/how-to-calculate-loan-payments-in-3-easy-steps)
 
