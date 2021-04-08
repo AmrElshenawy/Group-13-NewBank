@@ -30,7 +30,7 @@ public class Interest {
             }
         };
 
-        System.out.println("Interest Calculator started");
+        //System.out.println("Interest Calculator started");
         Timer daily = new Timer("Daily Interest Calculator");
 
         daily.scheduleAtFixedRate(dailyInterest, todayEleven(), TimeUnit.DAYS.toMillis(1));
@@ -45,7 +45,7 @@ public class Interest {
             }
         };
 
-        System.out.println("Interest payment started");
+        //System.out.println("Interest payment started");
         Timer monthly = new Timer("Monthly Interest Payment");
 
         monthly.scheduleAtFixedRate(interestPayment, todayElevenThirty(), TimeUnit.DAYS.toMillis(30));
