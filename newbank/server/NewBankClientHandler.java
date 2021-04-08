@@ -27,6 +27,8 @@ public class NewBankClientHandler extends Thread{
 		// keep getting requests from the client and processing them
 		try {
 			out.println(welcomeMessage());
+			TimerTask task = newTask();
+			timedExit("start", task); // app times out after 5 minutes
 			String[] okEntries = {"1", "2"};
 			String selection;
 			do {
@@ -41,6 +43,7 @@ public class NewBankClientHandler extends Thread{
 					UserRegistration newUser = new UserRegistration(s, bank);
 					run();
 				case "2": // Log in existing user
+					timedExit("stop", task);
 					// ask for user name
 					out.println("Enter Registered Name");
 					String userName = in.readLine();
@@ -53,7 +56,8 @@ public class NewBankClientHandler extends Thread{
 					// if the user is authenticated then get requests from the user and process them
 					if(customer != null) {
 						out.println("Log In Successful. What do you want to do?");
-						timedExit(1200); // app times out after 20 minutes
+						task = newTask();
+						timedExit("start", task);
 						if(customer.getKey().equalsIgnoreCase("staff")){
 							out.println(bank.getAvailableCommands("staff"));
 						}
@@ -65,7 +69,9 @@ public class NewBankClientHandler extends Thread{
 							//System.out.println("Request from " + customer.getKey());
 							String response = bank.processRequest(customer, request);
 							out.println(response);
-							timedExit(120); // app times out 2 minutes after the last command was entered
+							timedExit("stop", task); // app times out 2 minutes after the last command was entered
+							task = newTask();
+							timedExit("start", task);
 						}
 					}
 					else {
@@ -107,15 +113,31 @@ public class NewBankClientHandler extends Thread{
 		return welcomeMessage;
 	}
 
-	private void timedExit(int seconds){
+	private void timedExit(String instruction, TimerTask task){
 		Timer timer = new Timer();
-		TimerTask exitApp = new TimerTask() {
+		if(instruction.equals("start")){
+			//System.out.println("started!");
+			timer.schedule(task, new Date(System.currentTimeMillis()+300*1000));
+			DatabaseHandler save = new DatabaseHandler();
+			try {
+				save.saveSession(bank.getName2CustomersMapping());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else if(instruction.equals("stop")){
+			//System.out.println("stopped!");
+			task.cancel();
+		}
+	}
+
+	private TimerTask newTask(){
+		return new TimerTask() {
 			@Override
 			public void run() {
 				System.out.println("You have been logged out due to inactivity");
 				System.exit(0);
 			}
 		};
-		timer.schedule(exitApp, new Date(System.currentTimeMillis()+seconds*1000));
 	}
+
 }

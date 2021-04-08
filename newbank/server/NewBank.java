@@ -549,7 +549,6 @@ public class NewBank {
 		if (user == null || payee == null || !sufficientFunds(user, payment)){
 			return "FAIL";
 		} else {
-			//try{
 				user.modifyBalance(payment, Account.InstructionType.WITHDRAW);
 				payee.modifyBalance(payment, Account.InstructionType.DEPOSIT);
 				LocalDateTime dateTime = LocalDateTime.now();
@@ -594,8 +593,6 @@ public class NewBank {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			//}catch(Exception e){
-			//}
 
 			return "SUCCESS";
 		}
@@ -615,7 +612,7 @@ public class NewBank {
 			commands += "\n Available commands: \n";
 			commands += "* NEWACCOUNT <account type> \n";
 			commands += "* SHOWMYACCOUNTS \n";
-			commands += "* MOVE <amount> <from> <to> \n";
+			commands += "* MOVE <amount> <from account type> <to account type> \n";
 			commands += "* DEPOSIT <amount> <to account type> \n";
 			commands += "* WITHDRAW <amount> <from account type> \n";
 			commands += "* SHOWTRANSACTIONS \n";
