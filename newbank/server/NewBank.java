@@ -208,15 +208,13 @@ public class NewBank {
 						accType = Account.AccountType.MONEYMARKET;
 					} 
 					else{
-						accType = Account.AccountType.CHECKING; // default case
+						return "PLEASE PROVIDE CHECKING, SAVINGS OR MONEYMARKET AS TYPE.";
 					} 
 					customers.get(customer.getKey()).setAccount(new Account(openingBalance,accType));
 					didDatabaseChange = true;
 				} 
 				else{
-					accType = Account.AccountType.CHECKING; //default account type if no type is specified
-					customers.get(customer.getKey()).setAccount(new Account(openingBalance,accType));
-					didDatabaseChange = true;
+					return "INCORRECT COMMAND ENTERED!";
 				} 
 				return "SUCCESS";
 			case "MOVE":
@@ -333,20 +331,20 @@ public class NewBank {
 				}catch(Exception e){
 					return "FAIL. Error: "+e.getMessage()+". Please try again";
 				}
-				case "LOANMARKETPLACE":
+			case "LOANMARKETPLACE":
 					//A place for members to look to offer loans to other members
 					return "Welcome to the Loan Market Place\nOptions are:\nVIEWLOANREQUESTS\nCREATELOANREQUEST\nLOANCALCULATOR\n";
-				case "VIEWLOANREQUESTS":
+			case "VIEWLOANREQUESTS":
 					//displays the list of current requests
 					return displayLoanRequests (loanRequestArrayList);
-				case "CREATELOANREQUEST":
+			case "CREATELOANREQUEST":
 					// CREATELOANREQUEST <Amount> <interestRate> <Installments> <Duration in weeks>
 					if (checkLoanInputString(requestSplit)) {
 						return loanInputStringError(requestSplit);
 					} else {
 						return createLoanRequest(customer, requestSplit, loanRequestArrayList);
 					}
-				case "LOANCALCULATOR":
+			case "LOANCALCULATOR":
 					// CREATELOANREQUEST <Amount> <interestRate> <Installments> <Duration in weeks>
 					if (checkLoanInputString(requestSplit)) {
 						return loanInputStringError(requestSplit);
@@ -455,10 +453,10 @@ public class NewBank {
 				}
 			case "LOGOUT":
 				logOut();
-			default : return "FAIL";
+			default : return "UNRECOGNIZED COMMAND.";
 			}
 		}
-		return "FAIL";
+		return "UNRECOGNIZED COMMAND.";
 	}
 
 	private void logOut(){
