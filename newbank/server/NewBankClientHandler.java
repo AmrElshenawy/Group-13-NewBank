@@ -117,7 +117,7 @@ public class NewBankClientHandler extends Thread{
 		Timer timer = new Timer();
 		if(instruction.equals("start")){
 			//System.out.println("started!");
-			timer.schedule(task, new Date(System.currentTimeMillis()+20*1000));
+			timer.schedule(task, new Date(System.currentTimeMillis()+300*1000));
 		} else if(instruction.equals("stop")){
 			//System.out.println("stopped!");
 			task.cancel();
