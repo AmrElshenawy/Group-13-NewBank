@@ -15,7 +15,7 @@ public class DELETE_UnitTest {
     private NewBank bank = new NewBank();
 
     @Test
-    @DisplayName("Fails if DELETE is lowercase -> (delete 522655285")
+    @DisplayName("Fails if DELETE is lowercase -> (delete 522655285)")
     public void TEST1() throws FileNotFoundException{
         //bank = new NewBank();
         assertEquals("UNRECOGNIZED COMMAND.", bank.processRequest(new CustomerID("staff"), "delete 522655285"));
@@ -57,14 +57,14 @@ public class DELETE_UnitTest {
     @Test
     @DisplayName("Fails if customer ID doesn't exist for account type deletion -> For Staff: (DELETE 132456 MONEYMARKET)")
     public void TEST7() throws FileNotFoundException{
-        assertEquals("ERROR. Cannot find Customer ID for this Account Type.", bank.processRequest(new CustomerID("staff"), "DELETE 123456 MONEYMARKET"));
+        assertEquals("ERROR. Please check the parameters entered. Cannot find Customer ID for this Account Type.", bank.processRequest(new CustomerID("staff"), "DELETE 123456 MONEYMARKET"));
     }
 
     @Test
     @DisplayName("Passes with deleting account type case-insensitive -> For Staff: (DELETE 1647908596 SAVINGS), (DELETE 1647908596 savings)")
     public void TEST8() throws FileNotFoundException{
-        //assertEquals("Account type SAVINGS for customer ID# 1647908596 DELETED!", bank.processRequest(new CustomerID("staff"), "DELETE 1647908596 SAVINGS"));
-        //bank = new NewBank();
+        assertEquals("Account type SAVINGS for customer ID# 1647908596 DELETED!", bank.processRequest(new CustomerID("staff"), "DELETE 1647908596 SAVINGS"));
+        bank = new NewBank();
         assertEquals("Account type SAVINGS for customer ID# 1647908596 DELETED!", bank.processRequest(new CustomerID("staff"), "DELETE 1647908596 savings"));
     }
 
@@ -72,5 +72,11 @@ public class DELETE_UnitTest {
     @DisplayName("Passes with deleting an existing customer ID -> For Staff: (DELETE 1647908596)")
     public void TEST9() throws FileNotFoundException{
         assertEquals("Customer ID# 1647908596 DELETED!", bank.processRequest(new CustomerID("staff"), "DELETE 1647908596"));
+    }
+
+    @Test
+    @DisplayName("Fails if Customer ID# and Account Type are swapped -> For Staff: (DELETE savings 1647908596)")
+    public void TEST10() throws FileNotFoundException{
+        assertEquals("ERROR. Please check the parameters entered. Cannot find Customer ID for this Account Type.", bank.processRequest(new CustomerID("staff"), "DELETE savings 1647908596"));
     }
 }

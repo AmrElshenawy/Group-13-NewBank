@@ -419,7 +419,7 @@ public class NewBank {
 								return "ERROR. Cannot find Account Type.";
 							}
 						}
-						return "ERROR. Cannot find Customer ID for this Account Type.";
+						return "ERROR. Please check the parameters entered. Cannot find Customer ID for this Account Type.";
 					}
 				}
 				else{
