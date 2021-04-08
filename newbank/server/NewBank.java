@@ -331,9 +331,6 @@ public class NewBank {
 				}catch(Exception e){
 					return "FAIL. Error: "+e.getMessage()+". Please try again";
 				}
-			case "LOANMARKETPLACE":
-					//A place for members to look to offer loans to other members
-					return "Welcome to the Loan Market Place\nOptions are:\nVIEWLOANREQUESTS\nCREATELOANREQUEST\nLOANCALCULATOR\n";
 			case "VIEWLOANREQUESTS":
 					//displays the list of current requests
 					return displayLoanRequests (loanRequestArrayList);
@@ -619,6 +616,9 @@ public class NewBank {
 			commands += "* SHOWTRANSACTIONS \n";
 			commands += "* PAY <amount> <from account type> <to customer name> \n";
 			commands += "* MICROLOAN <amount> <from account type> <to customer name> \n";
+			commands += "* VIEWLOANREQUESTS \n";
+			commands += "* CREATELOANREQUEST <amount> <interestRate> <installments> <duration in weeks> \n";
+			commands += "* LOANCALCULATOR <amount> <interestRate> <installments> <duration in weeks> \n";
 			commands += "* HELP \n";
 			commands += "* HELP <command name> \n";
 			commands += "* CONFIRM \n";
@@ -652,6 +652,15 @@ public class NewBank {
 				break;
 			case "MICROLOAN":
 				description += "MICROLOAN 5500 checking john - Will send 1000 deducted from Checking to John's default account which is always Checkings.";
+				break;
+			case "VIEWLOANREQUESTS":
+				description += "VIEWLOANREQUESTS - Displays the list of current requests";
+				break;
+			case "CREATELOANREQUEST":
+				description += "CREATELOANREQUEST 2000 5 10 20 - Will create a loan request for 2000 dollars at 5% interest rate for 10 installments over 20 weeks.";
+				break;
+			case "LOANCALCULATOR":
+				description += "LOANCALCULATOR <Amount> <interestRate> <Installments> <Duration in weeks> - calculates the loan details for entered parameters.";
 				break;
 			case "DELETE":
 				description += "DELETE 489418943 - Will delete all records pertinent to the customer with ID# 489418943. Accessible by staff members only. \n";
