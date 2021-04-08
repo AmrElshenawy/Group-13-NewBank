@@ -97,6 +97,7 @@ public class UserRegistration {
             bank.addCustomer(userName, customer); // add customer to NewBank HashMap.
             out.println(congratulationsMessage());
             in.readLine();
+            bank.printHashMap();
         }
         catch (IOException e){
             System.out.println(e);

@@ -619,4 +619,14 @@ public class NewBank {
 		}
 		return description;
 	}
+
+	public void printHashMap(){
+		for (String customerName : customers.keySet()){
+			Customer customer = customers.get(customerName);
+			for (Account account : customer.getAccounts()){
+				System.out.println("Username: " + customerName + ", Account number: " + account.getAccountId() + ", Account type: " + account.getAccountType() +
+						", Account balance: " + account.getOpeningBalance());
+			}
+		}
+	}
 }
