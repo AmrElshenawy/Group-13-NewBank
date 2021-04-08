@@ -33,6 +33,7 @@ public class NewBankClientHandler extends Thread{
 				selection = in.readLine();
 				if (!selection.equals(okEntries[0]) && !selection.equals(okEntries[1])){
 					out.println("Invalid selection! Please try again.");
+					run();
 				}
 			} while (!selection.equals(okEntries[0]) && !selection.equals(okEntries[1]));
 			switch (selection){
@@ -61,7 +62,7 @@ public class NewBankClientHandler extends Thread{
 						}
 						while(true) {
 							String request = in.readLine();
-							System.out.println("Request from " + customer.getKey());
+							//System.out.println("Request from " + customer.getKey());
 							String response = bank.processRequest(customer, request);
 							out.println(response);
 							timedExit(120); // app times out 2 minutes after the last command was entered
