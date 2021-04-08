@@ -29,3 +29,5 @@ ExampleClient/
 out/
 auditReport.txt
 .gradle/
+*/TransactionsTable.txt
+*/newbank.uml

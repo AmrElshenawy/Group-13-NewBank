@@ -1,7 +1,5 @@
 package newbank.client;
 
-import newbank.server.NewBankServer;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -55,10 +53,10 @@ public class ExampleClient extends Thread{
 	}
 	
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
+
 		//NewBankServer server = new NewBankServer(14002);
 		//server.start();
 
 		new ExampleClient("localhost",14002).start();
-
 	}
 }

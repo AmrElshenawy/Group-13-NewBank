@@ -47,6 +47,10 @@ Returns SUCCESS or FAIL
 SHOWTRANSACTIONS
 Shows all transactions for current logged in user
 
+LOGOUT
+Logs a user out and ends the session.
+Returns SUCCESS
+
 HELP
 Displays all of the available commands.
 

@@ -33,7 +33,6 @@ public class Interest {
             }
         };
 
-
         System.out.println("Interest Calculator started. Next update at " + dateFormat.format(todayEleven()) + ".");
         Timer daily = new Timer("Daily Interest Calculator");
         long timePeriod = TimeUnit.DAYS.toMillis(1);

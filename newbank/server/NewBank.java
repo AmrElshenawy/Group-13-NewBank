@@ -5,10 +5,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
 import static java.lang.Double.parseDouble;
@@ -27,7 +24,12 @@ public class NewBank {
 	private HashMap<Account, MicroLoan> accountMicroloansOffered;
 	private HashMap<Account, MicroLoan> accountMicroloansReceived;
 	private boolean didDatabaseChange = false;
-	
+	private ArrayList<LoanRequest> loanRequestArrayList;
+	protected Double maxLoanAmount = 1000.00;
+	protected Double maxMicroLoanRate = 7.25;
+	protected int maxLoanDuration = 104; //number of weeks
+	protected int minLoanDuration = 1; // 1 week duration
+
 	public NewBank() {
 		customers = new HashMap<>();
 		transactions = new HashMap<>();
@@ -40,6 +42,7 @@ public class NewBank {
 		fillHashMap_fromDB();
 		readTransactionsFromDB();
 		Interest interest = new Interest(customers,transactions);
+		populateLoanRequestList();
 
 	}
 
@@ -123,8 +126,18 @@ public class NewBank {
 				}
 				transactions.put(account, transaction);
 				transactionsList.add(transaction);
-				customers.get(line.get(3).toLowerCase()).setTransactionSent(transaction);
-				customers.get(line.get(5).toLowerCase()).setTransactionReceived(transaction);
+				switch (transaction.getTransactionType().toString()){
+					case "DEPOSIT":
+						customers.get(line.get(5).toLowerCase()).setTransactionReceived(transaction);
+						break;
+					case "WITHDRAWAL":
+						customers.get(line.get(3).toLowerCase()).setTransactionSent(transaction);
+						break;
+					default:
+						customers.get(line.get(3).toLowerCase()).setTransactionSent(transaction);
+						customers.get(line.get(5).toLowerCase()).setTransactionReceived(transaction);
+						break;
+				}
 				if(transaction.getTransactionType().equals(Transaction.TransactionType.MICROLOAN)){
 					Double interest = 7.00; //this will need to handled better in the future
 					int installments = 12; //this will need to handled better in the future
@@ -141,15 +154,24 @@ public class NewBank {
 			e.printStackTrace();
 		}
 	}
+	private void  populateLoanRequestList(){
+		LoanOfferHandler loanOffersList = new LoanOfferHandler();
+		loanRequestArrayList = loanOffersList.getLoanOffers();
+	}
 	
-	public synchronized CustomerID checkLogInDetails(String userName, String password) throws FileNotFoundException {
-		DatabaseHandler customerDB = new DatabaseHandler();
-		customerDB.findInDB(userName.toLowerCase());
-		if(customerDB.getName().equalsIgnoreCase(userName)) {
-			if (customerDB.getPassword().equals(password)){
-				return new CustomerID(userName.toLowerCase());
+	public synchronized CustomerID checkLogInDetails(String userName, String password) throws IOException {
+		try{
+			DatabaseHandler customerDB = new DatabaseHandler();
+			customerDB.findInDB(userName.toLowerCase());
+			if(customerDB.getName().equalsIgnoreCase(userName)) {
+				if (customerDB.getPassword().equals(password)){
+					return new CustomerID(userName.toLowerCase());
+				}
 			}
+		}catch(Exception e){
+			System.out.println("Invalid user credentials. Please select option 1. SIGN UP.");
 		}
+
 		return null;
 	}
 
@@ -311,6 +333,26 @@ public class NewBank {
 				}catch(Exception e){
 					return "FAIL. Error: "+e.getMessage()+". Please try again";
 				}
+				case "LOANMARKETPLACE":
+					//A place for members to look to offer loans to other members
+					return "Welcome to the Loan Market Place\nOptions are:\nVIEWLOANREQUESTS\nCREATELOANREQUEST\nLOANCALCULATOR\n";
+				case "VIEWLOANREQUESTS":
+					//displays the list of current requests
+					return displayLoanRequests (loanRequestArrayList);
+				case "CREATELOANREQUEST":
+					// CREATELOANREQUEST <Amount> <interestRate> <Installments> <Duration in weeks>
+					if (checkLoanInputString(requestSplit)) {
+						return loanInputStringError(requestSplit);
+					} else {
+						return createLoanRequest(customer, requestSplit, loanRequestArrayList);
+					}
+				case "LOANCALCULATOR":
+					// CREATELOANREQUEST <Amount> <interestRate> <Installments> <Duration in weeks>
+					if (checkLoanInputString(requestSplit)) {
+						return loanInputStringError(requestSplit);
+					} else {
+						return loanCalculator(customer, requestSplit, loanRequestArrayList);
+					}
 			case "MICROLOAN":
 				// MICROLOAN <Amount> <From User's Account> <To Payee's UserName>
 				if (requestSplit.length != 4){
@@ -381,7 +423,6 @@ public class NewBank {
 					return "NOT A STAFF MEMBER. ACTION DENIED!";
 				}
 			case "AUDITREPORT":
-				// AUDITREPORT
 				if(customer.getKey().equalsIgnoreCase("staff")){
 					try{
 						Report report = new Report();
@@ -407,17 +448,22 @@ public class NewBank {
 					return helpCommandDescription(requestSplit[1]);
 				}
 			case "SHOWTRANSACTIONS":
-				// SHOWTRANSACTIONS
 				if (requestSplit.length != 1){
 					return "FAIL";
 				} else {
 					return customers.get(customer.getKey()).showTransactions();
 				}
-
+			case "LOGOUT":
+				logOut();
 			default : return "FAIL";
 			}
 		}
 		return "FAIL";
+	}
+
+	private void logOut(){
+		System.out.println("\nSUCCESS. You have been logged out.");
+		System.exit(0);
 	}
 
 	private String showMyAccounts(CustomerID customer) {
@@ -555,17 +601,18 @@ public class NewBank {
 		}
 	}
 
-	private String getAvailableCommands(String name){
+	protected String getAvailableCommands(String name){
 		String commands = "";
 		if(name.equals("staff")){
-			commands += "Available commands: \n";
+			commands += "\n Available commands: \n";
 			commands += "* DELETE <customer ID> \n";
 			commands += "* DELETE <customer ID> <account type> \n";
 			commands += "* AUDITREPORT \n";
-			commands += "* CONFIRM";
+			commands += "* CONFIRM \n";
+			commands += "* LOGOUT \n";
 		}
 		else if(name.equals("general")){
-			commands += "Available commands: \n";
+			commands += "\n Available commands: \n";
 			commands += "* NEWACCOUNT <account type> \n";
 			commands += "* SHOWMYACCOUNTS \n";
 			commands += "* MOVE <amount> <from> <to> \n";
@@ -576,7 +623,8 @@ public class NewBank {
 			commands += "* MICROLOAN <amount> <from account type> <to customer name> \n";
 			commands += "* HELP \n";
 			commands += "* HELP <command name> \n";
-			commands += "* CONFIRM";
+			commands += "* CONFIRM \n";
+			commands += "* LOGOUT \n";
 		}
 		return commands;
 	}
@@ -616,17 +664,94 @@ public class NewBank {
 			case "CONFIRM":
 				description += "Will save and confirm all session actions into the database.";
 				break;
+			case "LOGOUT":
+				description += "Will close your banking session and exit the application";
+				break;
 		}
 		return description;
 	}
 
-	public void printHashMap(){
-		for (String customerName : customers.keySet()){
+	public void printHashMap() {
+		for (String customerName : customers.keySet()) {
 			Customer customer = customers.get(customerName);
-			for (Account account : customer.getAccounts()){
+			for (Account account : customer.getAccounts()) {
 				System.out.println("Username: " + customerName + ", Account number: " + account.getAccountId() + ", Account type: " + account.getAccountType() +
 						", Account balance: " + account.getOpeningBalance());
 			}
 		}
+	}
+
+	//Method to print out loan requests
+	private String displayLoanRequests (ArrayList<LoanRequest> loanRequestsList){
+		String requests="";
+		String loanRequests;
+		ListIterator<LoanRequest> loan = loanRequestsList.listIterator();
+		while (loan.hasNext())
+		{
+			loanRequests = loan.next().displayRequest();
+			requests = requests.concat(loanRequests);
+			//requests = requests.concat(\n);
+		}
+		return requests;
+	}
+	//Method to create a customer microloan request
+	private String createLoanRequest(CustomerID customer, String[] requestSplit, ArrayList<LoanRequest> loanRequestArrayList){
+		LoanRequest request = new LoanRequest(findCustomerIDNumber(customer), customer.getKey(), Double.parseDouble(requestSplit[1]), Double.parseDouble(requestSplit[2]), Integer.parseInt(requestSplit[3]), Integer.parseInt(requestSplit[4]));
+		loanRequestArrayList.add(request);
+		return "success";
+	}
+	//Helper method to get a users id from the Customer ID Object from the hashmap
+	private int findCustomerIDNumber(CustomerID id){
+		Customer profile = customers.get(id.getKey());
+		return profile.getCustomerId();
+	}
+	//Method to create a customer microloan request
+	private String loanCalculator(CustomerID customer, String[] requestSplit, ArrayList<LoanRequest> loanRequestArrayList){
+		LoanRequest request = new LoanRequest(findCustomerIDNumber(customer), customer.getKey(), Double.parseDouble(requestSplit[1]), Double.parseDouble(requestSplit[2]), Integer.parseInt(requestSplit[3]), Integer.parseInt(requestSplit[4]));
+		return request.displayRequest();
+	}
+	/* Method to check MarketPlace String Entry Errors
+    Loan Command <Amount> <interestRate> <Installments>
+    Checks:
+    * Number of arguments
+    * If loan request exceeds max loan amount
+    * If interest rate exceeds max MicroLoan interest rate or is less than 0.
+    * If pay back installments exceed monthly installments. Weekly, biweekly or monthly are okay.
+    */
+	private boolean checkLoanInputString (String [] requestSplit){
+		if (requestSplit.length != 5) {
+			return true;
+		}
+		if (Double.parseDouble(requestSplit[1]) > maxLoanAmount){
+			return true;
+		}
+		if (Double.parseDouble(requestSplit[2]) > maxMicroLoanRate || Double.parseDouble(requestSplit[2]) < 0){
+			return true;
+		}
+		if (Integer.parseInt(requestSplit[4]) > maxLoanDuration || Integer.parseInt(requestSplit[4]) < minLoanDuration){
+			return true;
+		}
+		if ((Integer.parseInt(requestSplit[4])*12)/(52*Integer.parseInt(requestSplit[4])) > 1){
+			return true;
+		}
+		return false;
+	}
+	private String loanInputStringError (String [] requestSplit){
+		if (requestSplit.length != 5) {
+			return "FAIL - Improper Number of Arguments";
+		}
+		if (Double.parseDouble(requestSplit[1]) > maxLoanAmount){
+			return "You have exceeded the allowable loan amount request of " + maxLoanAmount + " pounds";
+		}
+		if (Double.parseDouble(requestSplit[2]) > maxMicroLoanRate || Double.parseDouble(requestSplit[2]) < 0){
+			return "Interest rate must between 0 - " + maxMicroLoanRate +" %";
+		}
+		if (Integer.parseInt(requestSplit[4]) > maxLoanDuration || Integer.parseInt(requestSplit[4]) < minLoanDuration){
+			return "Loan Request needs to between " + minLoanDuration + "week and " + maxLoanDuration +"weeks.";
+		}
+		if ((Integer.parseInt(requestSplit[4])*12)/(52*Integer.parseInt(requestSplit[4])) > 1){
+			return "Installment payments must be at least made monthly";
+		}
+		return "False";
 	}
 }
