@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import newbank.server.NewBankServer;
+
 public class ExampleClient extends Thread{
 	
 	private Socket server;
