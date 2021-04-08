@@ -390,10 +390,17 @@ public class NewBank {
 						for(Map.Entry<String, Customer> record : customers.entrySet()){
 							String user = record.getKey();
 							Customer object = record.getValue();
-							if(Integer.toString(object.getCustomerId()).equals(requestSplit[1])){
+							
+							if(requestSplit[1].toString().equalsIgnoreCase("-1444844")){
+								return "CANNOT DELETE STAFF ACCOUNT. ACTION DENIED!";
+							}
+							else if(Integer.toString(object.getCustomerId()).equalsIgnoreCase(requestSplit[1])){
 								customers.remove(user);
 								didDatabaseChange = true;
 								return "Customer ID# " + object.getCustomerId() + " DELETED!";
+							}
+							else{
+								return "ERROR. Cannot find Customer ID.";
 							}
 						}
 					}
@@ -409,14 +416,16 @@ public class NewBank {
 										return "Account type " + requestSplit[2].toUpperCase() + " for customer ID# " + object.getCustomerId() + " DELETED!";
 									}
 								}
-
+								return "ERROR. Cannot find Account Type.";
 							}
 						}
+						return "ERROR. Cannot find Customer ID for this Account Type.";
 					}
 				}
 				else{
 					return "NOT A STAFF MEMBER. ACTION DENIED!";
 				}
+				break;
 			case "AUDITREPORT":
 				if(customer.getKey().equalsIgnoreCase("staff")){
 					try{
