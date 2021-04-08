@@ -69,7 +69,7 @@ public class NewBankClientHandler extends Thread{
 							//System.out.println("Request from " + customer.getKey());
 							String response = bank.processRequest(customer, request);
 							out.println(response);
-							timedExit("stop", task); // app times out 2 minutes after the last command was entered
+							timedExit("stop", task);
 							task = newTask();
 							timedExit("start", task);
 						}
@@ -117,13 +117,7 @@ public class NewBankClientHandler extends Thread{
 		Timer timer = new Timer();
 		if(instruction.equals("start")){
 			//System.out.println("started!");
-			timer.schedule(task, new Date(System.currentTimeMillis()+300*1000));
-			DatabaseHandler save = new DatabaseHandler();
-			try {
-				save.saveSession(bank.getName2CustomersMapping());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			timer.schedule(task, new Date(System.currentTimeMillis()+20*1000));
 		} else if(instruction.equals("stop")){
 			//System.out.println("stopped!");
 			task.cancel();
@@ -134,6 +128,13 @@ public class NewBankClientHandler extends Thread{
 		return new TimerTask() {
 			@Override
 			public void run() {
+				//save changes to database before closing
+				DatabaseHandler save = new DatabaseHandler();
+				try {
+					save.saveSession(bank.getName2CustomersMapping());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				System.out.println("You have been logged out due to inactivity");
 				System.exit(0);
 			}

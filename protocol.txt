@@ -22,6 +22,17 @@ MICROLOAN <amount> <from account type> <to customer name>
 e.g. MICROLOAN 100 Checking John
 Returns SUCCESS or FAIL
 
+VIEWLOANREQUESTS
+Displays the list of current requests
+
+CREATELOANREQUEST <amount> <interestRate> <installments> <duration in weeks>
+e.g. CREATELOANREQUEST 2000 5 10 20
+Will create a loan request for 2000 dollars at 5% interest rate for 10 installments over 20 weeks.
+
+LOANCALCULATOR <amount> <interestRate> <installments> <duration in weeks>
+e.g. CREATELOANREQUEST 2000 5 10 20
+Calculates the loan details for entered parameters.
+
 DEPOSIT <amount> <to account type>
 e.g. DEPOSIT 50 Savings
 Returns SUCCESS or FAIL
