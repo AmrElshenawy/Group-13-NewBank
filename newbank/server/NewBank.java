@@ -727,6 +727,10 @@ public class NewBank {
 		if (Double.parseDouble(requestSplit[1]) > maxLoanAmount){
 			return true;
 		}
+
+		if (Double.parseDouble(requestSplit[1]) < 0){
+		    return true;
+        }
 		if (Double.parseDouble(requestSplit[2]) > maxMicroLoanRate || Double.parseDouble(requestSplit[2]) < 0){
 			return true;
 		}
@@ -735,6 +739,7 @@ public class NewBank {
 		}
 		if ((Integer.parseInt(requestSplit[4])*12)/(52*Integer.parseInt(requestSplit[4])) > 1){
 			return true;
+
 		}
 		return false;
 	}
@@ -745,6 +750,10 @@ public class NewBank {
 		if (Double.parseDouble(requestSplit[1]) > maxLoanAmount){
 			return "You have exceeded the allowable loan amount request of " + maxLoanAmount + " pounds";
 		}
+
+		if(Double.parseDouble(requestSplit[1]) < 0){
+		    return "You cannot have a negative loan amount, please add value greater than zero";
+        }
 		if (Double.parseDouble(requestSplit[2]) > maxMicroLoanRate || Double.parseDouble(requestSplit[2]) < 0){
 			return "Interest rate must between 0 - " + maxMicroLoanRate +" %";
 		}
