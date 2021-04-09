@@ -63,13 +63,13 @@ public class Account {
 
             switch (type) {
                 case CHECKING:
-                    prefix = "0";
-                    break;
-                case SAVINGS:
                     prefix = "1";
                     break;
-                case MONEYMARKET:
+                case SAVINGS:
                     prefix = "2";
+                    break;
+                case MONEYMARKET:
+                    prefix = "3";
                     break;
             }
 
