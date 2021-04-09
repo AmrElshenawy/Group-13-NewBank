@@ -186,20 +186,32 @@ public class Customer {
 		String tranReceived = "\nHere are the transaction you've received: \n";
 		try{
 			for(Transaction tran : this.transactionsSent){
-				tranSent += DateTimeFormatter.ofPattern("MM/dd/yyyy").format(tran.getTransactionDateTime())+
-						" | amount: "+tran.getAmount()+
-						" | receiver: "+tran.getReceiverName()+
-						" | type: "+tran.getTransactionType()+
-						" | id: "+tran.getTransactionId()+
-						"\n";
+				for(Account account : accounts){
+					if(tran.getSenderId() == account.getAccountId()){
+						tranSent += DateTimeFormatter.ofPattern("MM/dd/yyyy").format(tran.getTransactionDateTime())+
+								" | amount: "+tran.getAmount()+
+								" | account: "+tran.getSenderId()+" ("+account.getAccountType()+")"+
+								" | receiver: "+tran.getReceiverName()+
+								" | type: "+tran.getTransactionType()+
+								" | id: "+tran.getTransactionId()+
+								"\n";
+					}
+				}
+
 			}
 			for(Transaction tran : this.transactionsReceived){
-				tranReceived += DateTimeFormatter.ofPattern("MM/dd/yyyy").format(tran.getTransactionDateTime())+
-						" | amount: "+tran.getAmount()+
-						" | sender: "+tran.getSenderName()+
-						" | type: "+tran.getTransactionType()+
-						" | id: "+tran.getTransactionId()+
-						"\n";
+				for(Account account : accounts){
+					if(tran.getReceiverId() == account.getAccountId()){
+						tranReceived += DateTimeFormatter.ofPattern("MM/dd/yyyy").format(tran.getTransactionDateTime())+
+								" | amount: "+tran.getAmount()+
+								" | account: "+tran.getReceiverId()+" ("+account.getAccountType()+")"+
+								" | sender: "+tran.getSenderName()+
+								" | type: "+tran.getTransactionType()+
+								" | id: "+tran.getTransactionId()+
+								"\n";
+					}
+				}
+
 			}
 			return tranSent+tranReceived;
 		}catch(Exception e){
