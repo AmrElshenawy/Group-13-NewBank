@@ -608,15 +608,17 @@ public class NewBank {
 	protected String getAvailableCommands(String name){
 		String commands = "";
 		if(name.equals("staff")){
-			commands += "\n Available commands: \n";
+			commands += "\nAvailable commands: \n";
 			commands += "* DELETE <customer ID> \n";
 			commands += "* DELETE <customer ID> <account type> \n";
 			commands += "* AUDITREPORT \n";
+			commands += "* HELP \n";
+			commands += "* HELP <command name> \n";
 			commands += "* CONFIRM \n";
-			commands += "* LOGOUT \n";
+			commands += "* LOGOUT";
 		}
 		else if(name.equals("general")){
-			commands += "\n Available commands: \n";
+			commands += "\nAvailable commands: \n";
 			commands += "* NEWACCOUNT <account type> \n";
 			commands += "* SHOWMYACCOUNTS \n";
 			commands += "* MOVE <amount> <from> <to> \n";
@@ -631,7 +633,7 @@ public class NewBank {
 			commands += "* HELP \n";
 			commands += "* HELP <command name> \n";
 			commands += "* CONFIRM \n";
-			commands += "* LOGOUT \n";
+			commands += "* LOGOUT";
 		}
 		return commands;
 	}
@@ -653,6 +655,7 @@ public class NewBank {
 				break;
 			case "WITHDRAW":
 				description += "WITHDRAW 500 savings - Will withdraw 500 from Savings account.";
+				break;
 			case "SHOWTRANSACTIONS":
 				description += "SHOWTRANSACTIONS - Will display all incoming and outgoing transactions from this account.";
 				break;
@@ -669,7 +672,7 @@ public class NewBank {
 				description += "CREATELOANREQUEST 2000 5 10 20 - Will create a loan request for 2000 dollars at 5% interest rate for 10 installments over 20 weeks.";
 				break;
 			case "LOANCALCULATOR":
-				description += "LOANCALCULATOR <Amount> <interestRate> <Installments> <Duration in weeks> - calculates the loan details for entered parameters.";
+				description += "LOANCALCULATOR 2000 5 10 20 - Calculates the loan details for entered parameters.";
 				break;
 			case "DELETE":
 				description += "DELETE 489418943 - Will delete all records pertinent to the customer with ID# 489418943. Accessible by staff members only. \n";
@@ -677,12 +680,14 @@ public class NewBank {
 				break;
 			case "AUDITREPORT":
 				description += "Generates a report of all banking activity. Accessible by staff members only.";
+				break;
 			case "CONFIRM":
 				description += "Will save and confirm all session actions into the database.";
 				break;
 			case "LOGOUT":
 				description += "Will close your banking session and exit the application";
 				break;
+			default: return "UNRECOGNIZED COMMAND.";
 		}
 		return description;
 	}
