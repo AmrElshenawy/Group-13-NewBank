@@ -60,17 +60,17 @@ public class DELETE_UnitTest {
     }
 
     @Test
-    @DisplayName("Passes with deleting account type case-insensitive -> For Staff: (DELETE 1647908596 SAVINGS), (DELETE 1647908596 savings)")
+    @DisplayName("Passes with deleting account type case-insensitive -> For Staff: (DELETE 1618832874 SAVINGS), (DELETE 1618832874 savings)")
     public void TESTh() throws FileNotFoundException{
-        assertEquals("Account type SAVINGS for customer ID# 1647908596 DELETED!", bank.processRequest(new CustomerID("staff"), "DELETE 1647908596 SAVINGS"));
+        assertEquals("Account type SAVINGS for customer ID# 1618832874 DELETED!", bank.processRequest(new CustomerID("staff"), "DELETE 1618832874 SAVINGS"));
         bank = new NewBank();
-        assertEquals("Account type SAVINGS for customer ID# 1647908596 DELETED!", bank.processRequest(new CustomerID("staff"), "DELETE 1647908596 savings"));
+        assertEquals("Account type SAVINGS for customer ID# 1618832874 DELETED!", bank.processRequest(new CustomerID("staff"), "DELETE 1618832874 savings"));
     }
 
     @Test
-    @DisplayName("Passes with deleting an existing customer ID -> For Staff: (DELETE 1647908596)")
+    @DisplayName("Passes with deleting an existing customer ID -> For Staff: (DELETE 1618832874)")
     public void TESTi() throws FileNotFoundException{
-        assertEquals("Customer ID# 1647908596 DELETED!", bank.processRequest(new CustomerID("staff"), "DELETE 1647908596"));
+        assertEquals("Customer ID# 1618832874 DELETED!", bank.processRequest(new CustomerID("staff"), "DELETE 1618832874"));
     }
 
     @Test

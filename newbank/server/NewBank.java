@@ -379,11 +379,10 @@ public class NewBank {
 				else if(didDatabaseChange){
 					try {
 						save.saveSession(customers);
-	
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					return "ACTION CONFIRMED!";
+					return "CHANGES CONFIRMED!";
 				}
 			case "DELETE":
 				// DELETE <Customer ID>
@@ -402,10 +401,8 @@ public class NewBank {
 								didDatabaseChange = true;
 								return "Customer ID# " + object.getCustomerId() + " DELETED!";
 							}
-							else{
-								return "ERROR. Cannot find Customer ID.";
-							}
 						}
+						return "ERROR. Cannot find Customer ID.";
 					}
 					else if(requestSplit.length == 3){
 						for(Map.Entry<String, Customer> record :customers.entrySet()){
