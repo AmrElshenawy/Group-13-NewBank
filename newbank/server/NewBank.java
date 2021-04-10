@@ -9,6 +9,7 @@ import java.util.*;
 
 import static java.lang.Integer.parseInt;
 import static java.lang.Double.parseDouble;
+import static newbank.server.Transaction.TransactionType; //Enum bank account types to check valid accounts
 
 public class NewBank {
 	
@@ -29,6 +30,7 @@ public class NewBank {
 	protected Double maxMicroLoanRate = 7.25;
 	protected int maxLoanDuration = 104; //number of weeks
 	protected int minLoanDuration = 1; // 1 week duration
+	private String[] errorMessage;
 
 	public NewBank() {
 		customers = new HashMap<>();
@@ -39,6 +41,7 @@ public class NewBank {
 		accountMicroloansOffered = new HashMap<>();
 		accountMicroloansReceived = new HashMap<>();
 		transactionsList = new ArrayList<>();
+		errorMessage = new String[1];
 		fillHashMap_fromDB();
 		readTransactionsFromDB();
 		Interest interest = new Interest(customers,transactions);
@@ -219,8 +222,10 @@ public class NewBank {
 				return "SUCCESS";
 			case "MOVE":
 				// MOVE <Amount> <From> <To>
-				if (requestSplit.length != 4){
-					return "Error: Invalid input. To move money between accounts, please use the following" +
+				if (moveInputStringError(requestSplit)){
+					return "Error:" + errorMessage[0] + "\nInvalid input. To move money between accounts, please use " +
+							"the " +
+							"following" +
 							" input format: \"MOVE <Amount> <From> <To>\"";
 				} else {
 					Account accountFrom = returnAccount(requestSplit[2], customers.get(customer.getKey()));
@@ -228,8 +233,6 @@ public class NewBank {
 					Double amount = Double.parseDouble(requestSplit[1]);
 					if (accountFrom == null || accountTo == null) {
 						return "Error: One or more accounts not recognised. Please check account details and try again.";
-					} else if (amount <= 0){
-						return "Error: Invalid amount specified. Transfers must be at least £0.01";
 					} else if (!sufficientFunds(accountFrom, amount)){
 						return "Error: insufficient funds available to carry out transfer";
 					} else {
@@ -764,5 +767,22 @@ public class NewBank {
 			return "Installment payments must be at least made monthly";
 		}
 		return "False";
+	}
+	private boolean moveInputStringError (String [] requestSplit){
+		if (requestSplit.length != 4) {
+			errorMessage[0] = " - Improper Number of Arguments";
+			return true;
+		}
+		if (Double.parseDouble(requestSplit[1]) <= 0){
+			errorMessage[0] = " - Invalid amount specified. Transfers must be at least £0.01";
+			return true;
+		}
+		List t = Arrays.asList(TransactionType.values());
+		if(!t.contains(requestSplit[2]) || !t.contains(requestSplit[3])){
+			errorMessage[0] = " - One or more accounts not recognised. Please check account details and try " +
+					"again.";
+			return true;
+		}
+		return false;
 	}
 }
