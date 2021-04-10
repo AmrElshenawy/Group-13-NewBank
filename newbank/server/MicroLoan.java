@@ -49,8 +49,13 @@ public class MicroLoan extends Transaction{
     // calculate interest and payments
     public Double monthlyRepayment(){
         Double p = amount;
-        Double r = (interestRate/100)/installments;
-        int n = installments;
-        return p*(r*(1+r)*n)/((1+r)*n-1); // source: https://www.kasasa.com/blog/how-to-calculate-loan-payments-in-3-easy-steps;
+        Double n = (double)installments;
+        Double r = (interestRate/(100.00*n));
+        return p*(r*Math.pow((1+r),n))/(Math.pow((1+r),n)-1);// source: https://math.stackexchange.com/questions/664029/whats-the-math-formula-that-is-used-to-calculate-the-monthly-payment-in-this-mo#:~:text=A%20is%20the%20periodic%20amortization,%3D%2030%20%C3%97%2012%20%3D%20360)
+        //Double p = amount;
+        //Double r = (interestRate/100)/installments;
+        //int n = installments;
+        //return p*(r*(1+r)*n)/((1+r)*n-1); // source: https://www.kasasa.com/blog/how-to-calculate-loan-payments-in-3
+        // -easy-steps;
     }
 }
