@@ -6,11 +6,11 @@ SHOWMYACCOUNTS
 Returns a list of all the customers accounts along with their current balance 
 e.g. Main: 1000.0 
 
-NEWACCOUNT <Type>
+NEWACCOUNT <account type>
 e.g. NEWACCOUNT MONEYMARKET
 Returns SUCCESS or FAIL
 
-MOVE <Amount> <From> <To>
+MOVE <amount> <from account type> <to account type>
 e.g. MOVE 100 Checking Savings 
 Returns SUCCESS or FAIL
 
