@@ -20,6 +20,11 @@ public class UserRegistration {
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             out = new PrintWriter(s.getOutputStream(), true);
 
+            // Give user the option to return to the login screen
+            out.println("Press ENTER to continue with registration, or type \"back\" + press ENTER to return to the login screen.");
+            if (in.readLine().toLowerCase().equals("back")){
+                return;
+            }
             // ask for username
             String userName;
             do {
