@@ -4,3 +4,5 @@ id:-2147064780,name:amhar,password:Amhar123&,accounttype1:checking,accountnumber
 id:-737511372,name:bhagy,password:Bhagy123&,accounttype1:checking,accountnumber1:1512469,accountbalance1:2220.0,accounttype2:savings,accountnumber2:20673045,accountbalance2:1500.0,
 id:1618832874,name:john,password:John123&,accounttype1:checking,accountnumber1:15058458,accountbalance1:25595.0,accounttype2:savings,accountnumber2:24685857,accountbalance2:50.0,
 id:-1444844,name:staff,password:Staff123&,
+id:-619185799,name:harold,password:Password1!,accounttype1:checking,accountnumber1:16453428,accountbalance1:1000.0,
+id:-1864884505,name:newbank,password:Password1!,accounttype1:checking,accountnumber1:9062883,accountbalance1:1000000.0,

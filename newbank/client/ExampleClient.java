@@ -57,8 +57,8 @@ public class ExampleClient extends Thread{
 	
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
 		
-		NewBankServer server = new NewBankServer(14002);
-		server.start();
+		//NewBankServer server = new NewBankServer(14002);
+		//server.start();
 		
 		new ExampleClient("localhost",14002).start();
 	}
