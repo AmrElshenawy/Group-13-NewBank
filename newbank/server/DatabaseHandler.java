@@ -183,13 +183,14 @@ public class DatabaseHandler  {
     public void saveSession(HashMap<String, Customer> customers) throws IOException{
         BufferedWriter writer = new BufferedWriter(new FileWriter(dB, false));
         String output = "";
-        for(Customer customer : customers.values()){
+        for (String customerUserName : customers.keySet()) {
+            Customer customer = customers.get(customerUserName);
             output += "id:" + customer.getCustomerId() + ",";
-            output += "name:" + customer.getFullName() + ",";
+            output += "name:" + customerUserName + ",";
             output += "password:" + customer.getPassword() + ",";
             Integer counter = 1;
-            if(customer.getAccounts().size() >= 1){
-                for(Account account : customer.getAccounts()){
+            if (customer.getAccounts().size() >= 1) {
+                for (Account account : customer.getAccounts()) {
                     output += "accounttype" + counter.toString() + ":" + account.getAccountType().toString().toLowerCase() + ",";
                     output += "accountnumber" + counter.toString() + ":" + account.getAccountId() + ",";
                     output += "accountbalance" + counter.toString() + ":" + account.getOpeningBalance() + ",";
