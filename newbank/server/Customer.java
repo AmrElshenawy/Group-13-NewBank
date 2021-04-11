@@ -170,14 +170,14 @@ public class Customer {
 		for(Account account : this.accounts) {
 			totalBalance = +account.getOpeningBalance();
 		}
-		System.out.println("totalbalance = " + totalBalance);
+		//System.out.println("totalbalance = " + totalBalance); //uncomment for testing
 		for(Transaction transaction : this.transactionsSent){
 			if(transaction.getTransactionType().equals(Transaction.TransactionType.DEPOSIT)){
 				count++;
 				sumDeposits =+ transaction.getAmount();
 			}
 		}
-		System.out.println("sumDeposits = "+ sumDeposits);
+		//System.out.println("sumDeposits = "+ sumDeposits); //uncomment for testing
 		//return true; //uncomment for testing
 		return sumDeposits >= 1000.0 && count >= 3 && totalBalance > 0 ?  true : false;
 	}

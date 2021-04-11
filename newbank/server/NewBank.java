@@ -221,12 +221,16 @@ public class NewBank {
 				} 
 				return "SUCCESS";
 			case "MOVE":
-				// MOVE <Amount> <From> <To>
+				// MOVE <Amount> <From AccountType> <To AccountType>
 				if (moveInputStringError(requestSplit)){
 					return "Error:" + errorMessage[0] + "\nInvalid input. To move money between accounts, please use " +
 							"the " +
 							"following" +
 							" input format: \"MOVE <Amount> <From> <To>\"";
+				} else if (Integer.parseInt(requestSplit[1]) <= 0){
+					return "Error: Invalid amount specified. Transfers must be at least £0.01";
+				} else if (Integer.parseInt(requestSplit[1]) > 1000000) {
+					return "Error: Invalid amount specified. Transfers cannot exceed £1 million. Please contact Customer Service to authorize payment";
 				} else {
 					Account accountFrom = returnAccount(requestSplit[2], customers.get(customer.getKey()));
 					Account accountTo = returnAccount(requestSplit[3], customers.get(customer.getKey()));
@@ -261,19 +265,23 @@ public class NewBank {
 					}
 				}
 			case "PAY":
-				// PAY <Amount> <From User's Account> <To Payee's UserName>
+				// PAY <Amount> <From User's AccountType> <To Payee's UserName>
 				if (requestSplit.length != 4){
 					return "FAIL";
 				} else if(!requestSplit[2].equalsIgnoreCase("CHECKING")){ // if user's account type is not checking
 					return "Error: You can only pay another NewBank user from your checking account";
 				} else if (Integer.parseInt(requestSplit[1]) <= 0){
 					return "Error: Invalid amount specified. Transfers must be at least £0.01";
-				}else {
+				} else if (Integer.parseInt(requestSplit[1]) > 1000000) {
+					return "Error: Invalid amount specified. Transfers cannot exceed £1 million. Please contact Customer Service to authorize payment";
+				} else if(customers.get(requestSplit[3].toLowerCase()) == null) {
+					return "Error: Payee does not exists in our records. Please check your payment instructions";
+				} else {
 					didDatabaseChange = true;
 					return payPerson(customer, requestSplit, Transaction.TransactionType.PAYMENT);
 				}
 			case "DEPOSIT":
-				// DEPOSIT <Amount> <To User's Account>
+				// DEPOSIT <Amount> <To User's AccountType>
 				try{
 					Account accountTo = returnAccount(requestSplit[2], customers.get(customer.getKey()));
 					Double deposit = Double.parseDouble(requestSplit[1]);
@@ -281,6 +289,8 @@ public class NewBank {
 						return "Error: One or more accounts not recognised. Please check account details and try again.";
 					} else if (deposit <= 0){
 						return "Error: Invalid amount specified. Transfers must be at least £0.01";
+					} else if (deposit > 1000000){
+						return "Error: Invalid amount specified. Transfers cannot exceed £1 million. Please contact Customer Service to authorize payment";
 					} else {
 						accountTo.modifyBalance(deposit, Account.InstructionType.DEPOSIT);
 						LocalDateTime dateTime = LocalDateTime.now();
@@ -303,7 +313,7 @@ public class NewBank {
 					return "FAIL. Error: "+e.getMessage()+". Please try again";
 				}
 			case "WITHDRAW":
-				// WITHDRAW <Amount> <From User's Account>
+				// WITHDRAW <Amount> <From User's AccountType>
 				try{
 					Account accountFrom = returnAccount(requestSplit[2], customers.get(customer.getKey()));
 					Double withdrawal = Double.parseDouble(requestSplit[1]);
@@ -311,6 +321,8 @@ public class NewBank {
 						return "Error: One or more accounts not recognised. Please check account details and try again.";
 					} else if (withdrawal <= 0){
 						return "Error: Invalid amount specified. Transfers must be at least £0.01";
+					} else if (Integer.parseInt(requestSplit[1]) > 1000000){
+						return "Error: Invalid amount specified. Transfers cannot exceed £1 million. Please contact Customer Service to authorize payment";
 					} else if (!sufficientFunds(accountFrom, withdrawal)){
 						return "Error: insufficient funds available to carry out transfer";
 					} else {
@@ -357,6 +369,8 @@ public class NewBank {
 					return "FAIL";
 				} else if (Integer.parseInt(requestSplit[1]) <= 0 || Integer.parseInt(requestSplit[1]) > 1000){
 					return "Error: Invalid amount specified. Loans must be at least £0.01 and at most £1000";
+				} else if(customers.get(requestSplit[3].toLowerCase()) == null) {
+					return "Error: Payee does not exists in our records. Please check your payment instructions";
 				} else {
 					String payeeAccountType = requestSplit[2];
 					Customer sender = customers.get(customer.getKey());
