@@ -9,7 +9,7 @@ import java.util.*;
 
 import static java.lang.Integer.parseInt;
 import static java.lang.Double.parseDouble;
-import static newbank.server.Transaction.TransactionType; //Enum bank account types to check valid accounts
+import static newbank.server.Account.AccountType; //Enum bank account types to check valid accounts
 
 public class NewBank {
 	
@@ -793,7 +793,7 @@ public class NewBank {
 			errorMessage[0] = " - Invalid amount specified. Transfers must be at least £0.01";
 			return true;
 		}
-		List t = Arrays.asList(TransactionType.values());
+		List t = Arrays.asList(AccountType.values());
 		if(!t.contains(requestSplit[2]) || !t.contains(requestSplit[3])){
 			errorMessage[0] = " - One or more accounts not recognised. Please check account details and try " +
 					"again.";
