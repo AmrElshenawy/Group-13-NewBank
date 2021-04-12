@@ -66,7 +66,7 @@ public class NewBankClientHandler extends Thread{
 						}
 						while(true) {
 							String request = in.readLine();
-							//System.out.println("Request from " + customer.getKey());
+							System.out.println("Request from " + customer.getKey());
 							String response = bank.processRequest(customer, request);
 							out.println(response);
 							timedExit("stop", task);
@@ -116,10 +116,10 @@ public class NewBankClientHandler extends Thread{
 	private void timedExit(String instruction, TimerTask task){
 		Timer timer = new Timer();
 		if(instruction.equals("start")){
-			//System.out.println("started!");
+			System.out.println("started!");
 			timer.schedule(task, new Date(System.currentTimeMillis()+300*1000));
 		} else if(instruction.equals("stop")){
-			//System.out.println("stopped!");
+			System.out.println("stopped!");
 			task.cancel();
 		}
 	}
