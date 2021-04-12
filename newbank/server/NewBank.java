@@ -794,7 +794,11 @@ public class NewBank {
 			return true;
 		}
 		List t = Arrays.asList(AccountType.values());
-		if(!t.contains(requestSplit[2]) || !t.contains(requestSplit[3])){
+		List <String> tString = new ArrayList<String>(3);
+		tString.add(t.get(0).toString());
+		tString.add(t.get(1).toString());
+		tString.add(t.get(2).toString());
+		if(!tString.contains(requestSplit[2]) || !tString.contains(requestSplit[3])){
 			errorMessage[0] = " - One or more accounts not recognised. Please check account details and try " +
 					"again.";
 			return true;
