@@ -71,7 +71,7 @@ public class ExampleClient extends Thread{
 		Timer timer = new Timer();
 		if(instruction.equals("start")){
 			//System.out.println("started!");
-			timer.schedule(task, new Date(System.currentTimeMillis()+30*1000));
+			timer.schedule(task, new Date(System.currentTimeMillis()+300*1000));
 		} else if(instruction.equals("stop")){
 			//System.out.println("stopped!");
 			task.cancel();
