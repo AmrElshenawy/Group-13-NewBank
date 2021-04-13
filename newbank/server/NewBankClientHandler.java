@@ -27,11 +27,13 @@ public class NewBankClientHandler extends Thread{
 		// keep getting requests from the client and processing them
 		try {
 			out.println(welcomeMessage());
-			TimerTask task = newTask();
-			timedExit("start", task); // app times out after 5 minutes
+			//TimerTask task = newTask();
+			//timedExit("start", task); // app times out after 5 minutes
 			String[] okEntries = {"1", "2"};
 			String selection;
+			try{
 			do {
+
 				selection = in.readLine();
 				if (!selection.equals(okEntries[0]) && !selection.equals(okEntries[1])){
 					out.println("Invalid selection! Please try again.");
@@ -43,7 +45,7 @@ public class NewBankClientHandler extends Thread{
 					UserRegistration newUser = new UserRegistration(s, bank);
 					run();
 				case "2": // Log in existing user
-					timedExit("stop", task);
+					//timedExit("stop", task);
 					// ask for user name
 					out.println("Enter Registered Name");
 					String userName = in.readLine();
@@ -56,8 +58,8 @@ public class NewBankClientHandler extends Thread{
 					// if the user is authenticated then get requests from the user and process them
 					if(customer != null) {
 						out.println("Log In Successful. What do you want to do?");
-						task = newTask();
-						timedExit("start", task);
+						//task = newTask();
+						//timedExit("start", task);
 						if(customer.getKey().equalsIgnoreCase("staff")){
 							out.println(bank.getAvailableCommands("staff"));
 						}
@@ -69,9 +71,16 @@ public class NewBankClientHandler extends Thread{
 							System.out.println("Request from " + customer.getKey());
 							String response = bank.processRequest(customer, request);
 							out.println(response);
-							timedExit("stop", task);
-							task = newTask();
-							timedExit("start", task);
+							DatabaseHandler save = new DatabaseHandler();
+							NewBank bank = new NewBank();
+							try {
+								save.saveSession(bank.getName2CustomersMapping());
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							//timedExit("stop", task);
+							//task = newTask();
+							//timedExit("start", task);
 						}
 					}
 					else {
@@ -82,11 +91,9 @@ public class NewBankClientHandler extends Thread{
 					out.println("Invalid selection. Try Again.");
 					run();
 			}
+			}catch(Exception e){}
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		finally {
+		} finally {
 			try {
 				in.close();
 				out.close();
@@ -116,10 +123,10 @@ public class NewBankClientHandler extends Thread{
 	private void timedExit(String instruction, TimerTask task){
 		Timer timer = new Timer();
 		if(instruction.equals("start")){
-			System.out.println("started!");
+			//System.out.println("started!");
 			timer.schedule(task, new Date(System.currentTimeMillis()+300*1000));
 		} else if(instruction.equals("stop")){
-			System.out.println("stopped!");
+			//System.out.println("stopped!");
 			task.cancel();
 		}
 	}
