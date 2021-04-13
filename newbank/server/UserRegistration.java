@@ -28,8 +28,8 @@ public class UserRegistration {
             // ask for username
             String userName;
             do {
-                out.println("Please choose a username:");
-                userName = in.readLine();
+                out.println("Please choose a username (note: usernames are not case sensitive):");
+                userName = in.readLine().toLowerCase();
                 if (bank.checkCustomer(userName)) {
                     out.println("Username is already taken!");
                 }
